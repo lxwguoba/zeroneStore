@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/lystore" />
             <option value="$PROJECT_DIR$/myapplication" />
             <option value="$PROJECT_DIR$/shopingtime" />
+            <option value="$PROJECT_DIR$/shopingtimetest" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
