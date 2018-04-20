@@ -114,7 +114,9 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
                     break;
                 case 511:
                     Toast.makeText(MakeSureTheOrderActivity.this, "网络超时，请重试", Toast.LENGTH_SHORT).show();
-                    loading_dailog.dismiss();
+                    if (loading_dailog!=null){
+                        loading_dailog.dismiss();
+                    }
                     break;
             }
         }

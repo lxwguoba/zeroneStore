@@ -42,17 +42,17 @@ import java.util.Map;
  */
 
 public class LoginActivity extends BaseAppActivity {
-
     private ZLoadingDialog loading_dailog;
     private EditText username;
     private EditText password;
     private LoginActivity mContext;
     private AccountInfoDao accountInfoDao;
     private CheckBox login_rember_account;
-    //
     private boolean checkboolen = false;
     private ImageView showpassword;
     private boolean showBoolean = false;
+    private TextView agreement;
+    private ImageView closeactivity;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -93,14 +93,12 @@ public class LoginActivity extends BaseAppActivity {
                         e.printStackTrace();
                     }
                     break;
-
                 case 2:
                     if (showBoolean) {
                         password.setInputType(InputType.TYPE_CLASS_TEXT);
                     } else {
                         password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
                     }
-
                     break;
                 case 511:
                     Toast.makeText(LoginActivity.this, "网络超时，请重试", Toast.LENGTH_SHORT).show();
@@ -109,9 +107,6 @@ public class LoginActivity extends BaseAppActivity {
             }
         }
     };
-    private TextView agreement;
-    private ImageView closeactivity;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,7 +118,6 @@ public class LoginActivity extends BaseAppActivity {
         initview();
         action();
     }
-
     private void initPosInfo() {
 //        Intent intent = new Intent("sunmi.payment.L3");
 //        String transId = System.currentTimeMillis() + "";
@@ -137,7 +131,6 @@ public class LoginActivity extends BaseAppActivity {
 //            Toast.makeText(this, "此机器上没有安装L3应用", Toast.LENGTH_SHORT).show();
 //        }
     }
-
     /**
      * 控件的点击事件处理
      */
@@ -151,7 +144,6 @@ public class LoginActivity extends BaseAppActivity {
                 handler.sendMessage(message);
             }
         });
-
         closeactivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,7 +151,6 @@ public class LoginActivity extends BaseAppActivity {
             }
         });
     }
-
     private void initview() {
         closeactivity = (ImageView) findViewById(R.id.closeactivity);
         agreement = (TextView) findViewById(R.id.agreement);
@@ -175,11 +166,9 @@ public class LoginActivity extends BaseAppActivity {
                 username.setText(account.getAccount_name());
                 password.setText(account.getAccount_pwd());
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         findViewById(R.id.loginbtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -189,13 +178,11 @@ public class LoginActivity extends BaseAppActivity {
     }
 
     private void intoLoginAction() {
-
         String user = username.getText().toString();
         String pwd = password.getText().toString();
         Map<String, String> loginMap = new HashMap<String, String>();
         loginMap.put("account", user);
         loginMap.put("password", pwd);
-
         if (!NetworkUtil.isNetworkAvailable(LoginActivity.this)) {
             Toast.makeText(LoginActivity.this, "网络不可用，请检查", Toast.LENGTH_SHORT).show();
             return;
@@ -203,7 +190,6 @@ public class LoginActivity extends BaseAppActivity {
         loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "登录中。。。。");
         loading_dailog.show();
         NetUtils.netWorkByMethodPost(mContext, loginMap, IpConfig.URL_LOGIN, handler, 0);
-
     }
 
     /**

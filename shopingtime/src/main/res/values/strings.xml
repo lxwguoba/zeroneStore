@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">""</string>
+    <string name="app_name">"零壹零售"</string>
     <string name="account">账号</string>
     <string name="password">密码</string>
     <string name="input_account">请输入您的会员账号</string>

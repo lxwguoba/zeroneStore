@@ -126,7 +126,7 @@ public class OrderListActvity extends BaseAppActivity {
             switch (msg.what) {
                 case 0:
                     String shoplistJson = (String) msg.obj;
-                    Log.i("URL", "000000000000==" + shoplistJson);
+                    Log.w("URL", "000000000000==" + shoplistJson);
                     loading_dailog.dismiss();
                     try {
                         JSONObject jsonshoplist = new JSONObject(shoplistJson);
