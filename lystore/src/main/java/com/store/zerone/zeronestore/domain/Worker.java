@@ -1,4 +1,5 @@
 package com.store.zerone.zeronestore.domain;
+
 import java.io.Serializable;
 
 /**
@@ -12,7 +13,7 @@ public class Worker implements Serializable {
      * name : 唐中林13662666768   店员名称
      */
 
-    private String  icon_thumb;
+    private String icon_thumb;
     private String workerid;
     private String reception_qr;
     private String name;

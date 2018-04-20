@@ -23,10 +23,12 @@
             android:text="选择规格"
             android:textColor="#000"
             android:textSize="18sp" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#f2f2f2" />
+
         <LinearLayout
             android:id="@+id/recycleview"
             android:layout_width="match_parent"
@@ -45,8 +47,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@mipmap/icon_options_money_sure_bg"
-            android:layout_alignParentBottom="true">
+            android:layout_alignParentBottom="true"
+            android:background="@mipmap/icon_options_money_sure_bg">
 
             <TextView
                 android:id="@+id/priceText"
@@ -73,9 +75,9 @@
                 android:id="@+id/options_btn"
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
-                android:background="@mipmap/icon_options_sure_btn_bg"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:background="@mipmap/icon_options_sure_btn_bg"
                 android:text="确定"
                 android:textColor="#fff"
                 android:textSize="18sp" />

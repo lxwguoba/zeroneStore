@@ -9,11 +9,11 @@
         android:id="@+id/tvGoodsItemTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:padding="10dp"
-        android:textColor="@color/color_666"
         android:gravity="left|center_vertical"
-        android:textAppearance="?android:textAppearanceMedium" />
+        android:padding="10dp"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textColor="@color/color_666"
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
 </LinearLayout>

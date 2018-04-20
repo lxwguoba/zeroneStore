@@ -12,7 +12,7 @@ import java.util.List;
 
 public class DataUtils {
 
-    public static String data="{\n" +
+    public static String data = "{\n" +
             "    \"data\": [\n" +
             "        {\n" +
             "            \"goodscatrgory\": {\n" +
@@ -133,6 +133,7 @@ public class DataUtils {
         T[] arr = new Gson().fromJson(gsonString, cls);
         return Arrays.asList(arr); //or return Arrays.asList(new Gson().fromJson(s, clazz)); for a one-liner
     }
+
     /**
      * 转成bean
      *

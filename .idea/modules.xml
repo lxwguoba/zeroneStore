@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/SunmiScan/SunmiScan.iml" filepath="$PROJECT_DIR$/SunmiScan/SunmiScan.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lynewretail/lynewretail.iml" filepath="$PROJECT_DIR$/lynewretail/lynewretail.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lystore/lystore.iml" filepath="$PROJECT_DIR$/lystore/lystore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/myapplication/myapplication.iml" filepath="$PROJECT_DIR$/myapplication/myapplication.iml" />
+      <module fileurl="file://$PROJECT_DIR$/shopingtime/shopingtime.iml" filepath="$PROJECT_DIR$/shopingtime/shopingtime.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zeroneStore.iml" filepath="$PROJECT_DIR$/zeroneStore.iml" />
+    </modules>
+  </component>
+</project>

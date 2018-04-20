@@ -5,17 +5,17 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
+        android:name=".application.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/app_logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/app_logo"
         android:supportsRtl="true"
-        android:name=".application.MyApplication"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         <activity android:name="com.store.zerone.zeronestore.activity.LoginActivity">
@@ -25,8 +25,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".ResultActivity"/>
-        <activity android:name=".ScanQrCodeGetGoods"/>
+        <activity android:name=".ResultActivity" />
+        <activity android:name=".ScanQrCodeGetGoods" />
         <!--接收结果广播-->
         <receiver android:name="com.store.zerone.zeronestore.ResultReceiver">
             <intent-filter>

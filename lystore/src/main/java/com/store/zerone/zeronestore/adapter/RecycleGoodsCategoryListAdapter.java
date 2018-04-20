@@ -20,21 +20,24 @@ import java.util.List;
 
 public class RecycleGoodsCategoryListAdapter extends RecyclerView.Adapter<RecycleGoodsCategoryListAdapter.ViewHolder> {
 
+    public Context mContext;
+    OnItemClickListener mOnItemClickListener;
     //当前选中的位置
     private int selectPosition;
     private List<GoodsListBean.DataEntity.GoodscatrgoryEntity> dataList;
-    public Context mContext;
+
     public RecycleGoodsCategoryListAdapter(List<GoodsListBean.DataEntity.GoodscatrgoryEntity> dataList, Context context) {
-        this.dataList=dataList;
-        this.mContext=context;
+        this.dataList = dataList;
+        this.mContext = context;
     }
 
     /**
      * 数据发生改变的方法
+     *
      * @param dataList 发生改变的集合类
      */
-    public  void  changeData(List<GoodsListBean.DataEntity.GoodscatrgoryEntity> dataList){
-        this.dataList=dataList;
+    public void changeData(List<GoodsListBean.DataEntity.GoodscatrgoryEntity> dataList) {
+        this.dataList = dataList;
         notifyDataSetChanged();
     }
 
@@ -49,50 +52,46 @@ public class RecycleGoodsCategoryListAdapter extends RecyclerView.Adapter<Recycl
     public void onBindViewHolder(ViewHolder holder, final int position) {
         holder.goodsCategoryName.setText(dataList.get(position).getName());
         holder.shopCartNum.setText(String.valueOf(dataList.get(position).getBugNum()));
-        if(dataList.get(position).getBugNum()>0){
+        if (dataList.get(position).getBugNum() > 0) {
             holder.shopCartNum.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             holder.shopCartNum.setVisibility(View.GONE);
         }
         if (selectPosition != -1) {
             if (selectPosition == position) {
                 holder.goodsCategoryName.setBackgroundResource(R.mipmap.icon_goodscate_bg);
-                holder.goodsCategoryName.setTextColor(Color.rgb(255,255,255));
+                holder.goodsCategoryName.setTextColor(Color.rgb(255, 255, 255));
             } else {
-                holder.goodsCategoryName.setBackgroundColor(Color.rgb(255,255,255));
-                holder.goodsCategoryName.setTextColor(Color.rgb(55,55,55));
+                holder.goodsCategoryName.setBackgroundColor(Color.rgb(255, 255, 255));
+                holder.goodsCategoryName.setTextColor(Color.rgb(55, 55, 55));
             }
         } else {
-            holder.goodsCategoryName.setBackgroundColor(Color.rgb(255,255,255));
-            holder.goodsCategoryName.setTextColor(Color.rgb(55,55,55));
+            holder.goodsCategoryName.setBackgroundColor(Color.rgb(255, 255, 255));
+            holder.goodsCategoryName.setTextColor(Color.rgb(55, 55, 55));
         }
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mOnItemClickListener!=null){
-                    mOnItemClickListener.onItemClick(view,position);
+                if (mOnItemClickListener != null) {
+                    mOnItemClickListener.onItemClick(view, position);
                 }
             }
         });
 
     }
 
-    public interface OnItemClickListener{
-        void onItemClick(View view, int position);
+    public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {
+        this.mOnItemClickListener = mOnItemClickListener;
     }
 
-    OnItemClickListener mOnItemClickListener;
-    public void setOnItemClickListener(OnItemClickListener mOnItemClickListener){
-        this.mOnItemClickListener=mOnItemClickListener;
-    }
     @Override
     public int getItemCount() {
         return dataList.size();
     }
 
-
     /**
      * 设置选中index
+     *
      * @param position 选中分类的下标
      */
     public void setCheckPosition(int position) {
@@ -100,10 +99,16 @@ public class RecycleGoodsCategoryListAdapter extends RecyclerView.Adapter<Recycl
         notifyDataSetChanged();
     }
 
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView goodsCategoryName;
         public final TextView shopCartNum;
         public final View root;
+
         public ViewHolder(View root) {
             super(root);
             goodsCategoryName = (TextView) root.findViewById(R.id.goodsCategoryNameTV);

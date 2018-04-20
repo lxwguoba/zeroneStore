@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/background">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/connect_method"
                 android:textColor="@color/white"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/setting_textview1"
@@ -37,7 +37,7 @@
                 android:gravity="right|center_vertical"
                 android:text="AIDL"
                 android:textColor="@color/gray"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/info_title"
                 android:textColor="@color/white"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -61,7 +61,7 @@
                 android:gravity="right|center_vertical"
                 android:text=""
                 android:textColor="@color/gray"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -81,7 +81,7 @@
             android:gravity="center"
             android:text="@string/connect_service"
             android:textColor="@color/white"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/setting_disconected"
@@ -92,6 +92,6 @@
             android:gravity="center"
             android:text="@string/disconnect_service"
             android:textColor="@color/white1"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
     </LinearLayout>
 </RelativeLayout>

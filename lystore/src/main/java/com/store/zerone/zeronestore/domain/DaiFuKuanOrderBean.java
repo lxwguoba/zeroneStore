@@ -116,6 +116,99 @@ public class DaiFuKuanOrderBean implements Serializable {
         }
 
         public static class ListBean implements Serializable {
+            /**
+             * id : 247
+             * ordersn : 17072805580532
+             * stockminus : null
+             * weid : 3
+             * shareid : 41
+             * from_user : 5sanke
+             * price : 680
+             * goodsprice : 680.00
+             * dispatchprice : 0.00
+             * fetchnextday : 0
+             * transid : 0
+             * status : 0
+             * sendtype : 3
+             * paytype : 4
+             * goodstype : 0
+             * remark :
+             * addressid : 235
+             * expresssn :
+             * express :
+             * expresscom :
+             * dispatchwkid : 0
+             * createtime : 1501232915
+             * updatetime : 0
+             * isrest : 0
+             * rsreson :
+             * sendtime : 0
+             * confirmedby : 0
+             * hongbao : 0.00
+             * ztdid : 5
+             * tableid : 0
+             * ztdname : 垫江县玉锅宴食府
+             * ztpassword :
+             * ztdwkrid : 0
+             * dispatchchoice : 3
+             * datednum : 0
+             * datedtime : 0
+             * reported : 0
+             * discount : 0.00
+             * commission : 68.00
+             * realname : 垫江县玉锅宴食府的散客
+             * mobile :
+             */
+
+            private String seat_fee;
+            private String id;
+            private String ordersn;
+            private Object stockminus;
+            private String weid;
+            private String shareid;
+            private String from_user;
+            private String price;
+            private String goodsprice;
+            private String dispatchprice;
+            private String fetchnextday;
+            private String transid;
+            private String status;
+            private String sendtype;
+            private String paytype;
+            private String goodstype;
+            private String remark;
+            private String addressid;
+            private String expresssn;
+            private String express;
+            private String expresscom;
+            private String dispatchwkid;
+            private String createtime;
+            private String updatetime;
+            private String isrest;
+            private String rsreson;
+            private String sendtime;
+            private String confirmedby;
+            private String hongbao;
+            private String ztdid;
+            private String tableid;
+            private String ztdname;
+            private String ztpassword;
+            private String ztdwkrid;
+            private String dispatchchoice;
+            private String datednum;
+            private String datedtime;
+            private String reported;
+            private String discount;
+            private String commission;
+            private String realname;
+            private String mobile;
+            private String tableName;
+            private String rp_times;
+            private String kp_times;
+            private String print_order;
+            //优惠折扣
+            private String sale;
+
             @Override
             public String toString() {
                 return "ListBean{" +
@@ -167,104 +260,6 @@ public class DaiFuKuanOrderBean implements Serializable {
                         ", print_order='" + print_order + '\'' +
                         '}';
             }
-
-            /**
-             * id : 247
-             * ordersn : 17072805580532
-             * stockminus : null
-             * weid : 3
-             * shareid : 41
-             * from_user : 5sanke
-             * price : 680
-             * goodsprice : 680.00
-             * dispatchprice : 0.00
-             * fetchnextday : 0
-             * transid : 0
-             * status : 0
-             * sendtype : 3
-             * paytype : 4
-             * goodstype : 0
-             * remark :
-             * addressid : 235
-             * expresssn :
-             * express :
-             * expresscom :
-             * dispatchwkid : 0
-             * createtime : 1501232915
-             * updatetime : 0
-             * isrest : 0
-             * rsreson :
-             * sendtime : 0
-             * confirmedby : 0
-             * hongbao : 0.00
-             * ztdid : 5
-             * tableid : 0
-             * ztdname : 垫江县玉锅宴食府
-             * ztpassword :
-             * ztdwkrid : 0
-             * dispatchchoice : 3
-             * datednum : 0
-             * datedtime : 0
-             * reported : 0
-             * discount : 0.00
-             * commission : 68.00
-             * realname : 垫江县玉锅宴食府的散客
-             * mobile :
-             */
-
-            private  String seat_fee;
-            private String id;
-            private String ordersn;
-            private Object stockminus;
-            private String weid;
-            private String shareid;
-            private String from_user;
-            private String price;
-            private String goodsprice;
-            private String dispatchprice;
-            private String fetchnextday;
-            private String transid;
-            private String status;
-            private String sendtype;
-            private String paytype;
-            private String goodstype;
-            private String remark;
-            private String addressid;
-            private String expresssn;
-            private String express;
-            private String expresscom;
-            private String dispatchwkid;
-            private String createtime;
-            private String updatetime;
-            private String isrest;
-            private String rsreson;
-            private String sendtime;
-            private String confirmedby;
-            private String hongbao;
-            private String ztdid;
-            private String tableid;
-            private String ztdname;
-            private String ztpassword;
-            private String ztdwkrid;
-            private String dispatchchoice;
-            private String datednum;
-            private String datedtime;
-            private String reported;
-            private String discount;
-            private String commission;
-            private String realname;
-            private String mobile;
-
-            private String tableName;
-
-            private String rp_times;
-
-            private String kp_times;
-
-            private String print_order;
-
-            //优惠折扣
-            private  String sale;
 
             public String getSale() {
                 return sale;

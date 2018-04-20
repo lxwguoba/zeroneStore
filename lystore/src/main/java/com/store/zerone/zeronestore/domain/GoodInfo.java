@@ -8,16 +8,8 @@ import java.util.List;
  * 商品详情的实体类
  */
 
-public class GoodInfo implements Serializable{
+public class GoodInfo implements Serializable {
 
-
-    @Override
-    public String toString() {
-        return "GoodInfo{" +
-                "goodsnum=" + goodsnum +
-                ", goodslist=" + goodslist +
-                '}';
-    }
 
     /**
      * goodsnum : 4
@@ -26,6 +18,14 @@ public class GoodInfo implements Serializable{
 
     private int goodsnum;
     private List<GoodslistBean> goodslist;
+
+    @Override
+    public String toString() {
+        return "GoodInfo{" +
+                "goodsnum=" + goodsnum +
+                ", goodslist=" + goodslist +
+                '}';
+    }
 
     public int getGoodsnum() {
         return goodsnum;
@@ -44,15 +44,6 @@ public class GoodInfo implements Serializable{
     }
 
     public static class GoodslistBean implements Serializable {
-        @Override
-        public String toString() {
-            return "GoodslistBean{" +
-                    "id='" + id + '\'' +
-                    ", name='" + name + '\'' +
-                    ", gooslist=" + gooslist +
-                    '}';
-        }
-
         /**
          * id : 11
          * name : 面
@@ -62,6 +53,15 @@ public class GoodInfo implements Serializable{
         private String id;
         private String name;
         private List<GooslistBean> gooslist;
+
+        @Override
+        public String toString() {
+            return "GoodslistBean{" +
+                    "id='" + id + '\'' +
+                    ", name='" + name + '\'' +
+                    ", gooslist=" + gooslist +
+                    '}';
+        }
 
         public String getId() {
             return id;
@@ -88,21 +88,6 @@ public class GoodInfo implements Serializable{
         }
 
         public static class GooslistBean implements Serializable {
-            @Override
-            public String toString() {
-                return "GooslistBean{" +
-                        "id='" + id + '\'' +
-                        ", title='" + title + '\'' +
-                        ", marketprice=" + marketprice +
-                        ", thumb='" + thumb + '\'' +
-                        ", total='" + total + '\'' +
-                        ", hasoption='" + hasoption + '\'' +
-                        ", yuanjia='" + yuanjia + '\'' +
-                        ", total_in_cart=" + total_in_cart +
-                        ", options=" + options +
-                        '}';
-            }
-
             /**
              * id : 3013
              * title : 过桥线
@@ -124,6 +109,21 @@ public class GoodInfo implements Serializable{
             private String yuanjia;
             private int total_in_cart;
             private List<OptionsBean> options;
+
+            @Override
+            public String toString() {
+                return "GooslistBean{" +
+                        "id='" + id + '\'' +
+                        ", title='" + title + '\'' +
+                        ", marketprice=" + marketprice +
+                        ", thumb='" + thumb + '\'' +
+                        ", total='" + total + '\'' +
+                        ", hasoption='" + hasoption + '\'' +
+                        ", yuanjia='" + yuanjia + '\'' +
+                        ", total_in_cart=" + total_in_cart +
+                        ", options=" + options +
+                        '}';
+            }
 
             public String getId() {
                 return id;

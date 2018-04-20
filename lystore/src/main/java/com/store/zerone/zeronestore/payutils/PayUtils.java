@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.android.qzs.voiceannouncementlibrary.VoiceUtils;
 import com.store.zerone.zeronestore.Util;
 
 /**
@@ -14,20 +13,21 @@ import com.store.zerone.zeronestore.Util;
  * 这个用来吊起支付的页面
  */
 
-public class PayUtils  {
+public class PayUtils {
 
     /**
      * 拉起支付页面
-     * @param money 金额
+     *
+     * @param money   金额
      * @param context 上下文
      */
-    public static void pullUPPay(String money, Context context){
-        Log.i("UUUU",money);
-        double dmoney= Double.parseDouble(money)*100;
+    public static void pullUPPay(String money, Context context) {
+        Log.i("UUUU", money);
+        double dmoney = Double.parseDouble(money) * 100;
         long mone = new Double(dmoney).longValue();
         Intent intent = new Intent("sunmi.payment.L3");
-        String transId = System.currentTimeMillis()+ "";
-        intent.putExtra("transId",transId);
+        String transId = System.currentTimeMillis() + "";
+        intent.putExtra("transId", transId);
         intent.putExtra("transType", 0);
 //        用户自选 这里可以让用户选择  默认的是让用户自己选
 
@@ -46,10 +46,10 @@ public class PayUtils  {
         }
     }
 
-    public static void print(Context context){
+    public static void print(Context context) {
         Intent intent = new Intent("sunmi.payment.L3");
-        String transId = System.currentTimeMillis()+ "";
-        intent.putExtra("transId",transId);
+        String transId = System.currentTimeMillis() + "";
+        intent.putExtra("transId", transId);
         intent.putExtra("transType", 11);
         intent.putExtra("isLastTrade", true);
         intent.putExtra("appId", context.getPackageName());

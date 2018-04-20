@@ -7,7 +7,7 @@ import java.util.List;
  * Created by dalong on 2016/12/27.
  */
 
-public class GoodsListBean implements Serializable{
+public class GoodsListBean implements Serializable {
 
 
     private List<DataEntity> data;
@@ -21,14 +21,14 @@ public class GoodsListBean implements Serializable{
     }
 
     public static class DataEntity {
+        private GoodscatrgoryEntity goodscatrgory;
+
         @Override
         public String toString() {
             return "DataEntity{" +
                     "goodscatrgory=" + goodscatrgory +
                     '}';
         }
-
-        private GoodscatrgoryEntity goodscatrgory;
 
         public GoodscatrgoryEntity getGoodscatrgory() {
             return goodscatrgory;
@@ -39,16 +39,6 @@ public class GoodsListBean implements Serializable{
         }
 
         public static class GoodscatrgoryEntity implements Serializable {
-            @Override
-            public String toString() {
-                return "GoodscatrgoryEntity{" +
-                        "c_id=" + c_id +
-                        ", name='" + name + '\'' +
-                        ", bugNum=" + bugNum +
-                        ", goodsitem=" + goodsitem +
-                        '}';
-            }
-
             /**
              * goodsitem : [{"name":"苹果","price":10,"introduce":"苹果好吃啊，很甜！","moreStandard":false},{"name":"香蕉","price":10,"introduce":"香蕉好吃啊，又大很甜！","moreStandard":false},{"name":"橘子","price":10,"introduce":"橘子非常好吃啊，很甜！","moreStandard":false},{"name":"榴莲","price":10,"introduce":"我对象喜欢吃榴莲！","moreStandard":false},{"name":"桃子","price":10,"introduce":"大龙家的桃子就是好吃！","moreStandard":false},{"name":"橘子","price":10,"introduce":"橘子非常好吃啊，很甜！","moreStandard":false},{"name":"梨","price":10,"introduce":"梨非常好吃啊，很甜！","moreStandard":false}]
              * name : 水果
@@ -58,6 +48,16 @@ public class GoodsListBean implements Serializable{
             private String name;
             private int bugNum;
             private List<GoodsitemEntity> goodsitem;
+
+            @Override
+            public String toString() {
+                return "GoodscatrgoryEntity{" +
+                        "c_id=" + c_id +
+                        ", name='" + name + '\'' +
+                        ", bugNum=" + bugNum +
+                        ", goodsitem=" + goodsitem +
+                        '}';
+            }
 
             public int getC_id() {
                 return c_id;
@@ -71,16 +71,16 @@ public class GoodsListBean implements Serializable{
                 return name;
             }
 
+            public void setName(String name) {
+                this.name = name;
+            }
+
             public int getBugNum() {
                 return bugNum;
             }
 
             public void setBugNum(int bugNum) {
                 this.bugNum = bugNum;
-            }
-
-            public void setName(String name) {
-                this.name = name;
             }
 
             public List<GoodsitemEntity> getGoodsitem() {
@@ -105,7 +105,7 @@ public class GoodsListBean implements Serializable{
                  */
 
                 //这个是实体类的id
-                private  int  gb_id;
+                private int gb_id;
                 //这个是商品id
                 private String id;
                 private String title;

@@ -5,7 +5,6 @@ import java.util.List;
 
 /**
  * Created by Administrator on 2017/8/3.
- *
  */
 
 public class HuiYuanInfoBean implements Serializable {
@@ -28,7 +27,7 @@ public class HuiYuanInfoBean implements Serializable {
         this.memberlist = memberlist;
     }
 
-    public static class MemberlistBean  implements Serializable{
+    public static class MemberlistBean implements Serializable {
         /**
          * id : 76
          * weid : 3

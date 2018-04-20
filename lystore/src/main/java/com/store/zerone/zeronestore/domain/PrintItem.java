@@ -7,12 +7,12 @@ import java.io.Serializable;
  * Author  LiuXingWen
  */
 
-public class PrintItem implements Serializable{
+public class PrintItem implements Serializable {
 
-      private  String goodsname;
-      private   String gcount;
-      private  String  gprice;
-      private  String  options;
+    private String goodsname;
+    private String gcount;
+    private String gprice;
+    private String options;
 
     public String getOptions() {
         return options;

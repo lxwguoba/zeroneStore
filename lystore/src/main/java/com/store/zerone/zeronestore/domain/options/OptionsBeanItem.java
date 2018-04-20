@@ -7,7 +7,7 @@ import java.io.Serializable;
  * Author  LiuXingWen
  */
 
-public class OptionsBeanItem implements Serializable{
+public class OptionsBeanItem implements Serializable {
 
 
     /**

@@ -3,7 +3,6 @@ package com.store.zerone.zeronestore.baseacticity;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
-
 import android.view.Window;
 import android.widget.Toast;
 
@@ -18,7 +17,8 @@ import com.store.zerone.zeronestore.application.MyApplication;
 public class BaseAppActivity extends Activity {
 
     private MyApplication baseApp;
-    private  BaseAppActivity oContext;
+    private BaseAppActivity oContext;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -34,8 +34,9 @@ public class BaseAppActivity extends Activity {
         // 调用添加方法
         addActivity();
     }
+
     /**
-     *  添加Activity方法
+     * 添加Activity方法
      */
     public void addActivity() {
         //调用myApplication的添加Activity方法
@@ -56,8 +57,10 @@ public class BaseAppActivity extends Activity {
         // 调用myApplication的销毁所有Activity方法
         baseApp.removeALLActivity();
     }
+
     /**
      * 把Toast定义成一个方法  可以重复使用，使用时只需要传入需要提示的内容即可
+     *
      * @param text
      */
     public void showToast(String text) {

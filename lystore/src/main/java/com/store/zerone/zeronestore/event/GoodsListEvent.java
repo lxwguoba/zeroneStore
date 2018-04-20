@@ -8,6 +8,6 @@ public class GoodsListEvent {
     public int[] buyNums;
 
     public GoodsListEvent(int[] buyNums) {
-        this.buyNums =buyNums;
+        this.buyNums = buyNums;
     }
 }

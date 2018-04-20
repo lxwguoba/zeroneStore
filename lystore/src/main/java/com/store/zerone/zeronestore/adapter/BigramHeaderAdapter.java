@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.eowise.recyclerview.stickyheaders.StickyHeadersAdapter;
 import com.store.zerone.zeronestore.R;
 import com.store.zerone.zeronestore.domain.GoodsListBean;
@@ -15,9 +16,10 @@ import java.util.List;
 public class BigramHeaderAdapter implements StickyHeadersAdapter<BigramHeaderAdapter.ViewHolder> {
 
 
-    private  Context mContext;
+    private Context mContext;
     private List<GoodsListBean.DataEntity.GoodscatrgoryEntity.GoodsitemEntity> dataList;
     private List<GoodsListBean.DataEntity.GoodscatrgoryEntity> goodscatrgoryEntities;
+
     public BigramHeaderAdapter(Context context, List<GoodsListBean.DataEntity.GoodscatrgoryEntity.GoodsitemEntity> items
             , List<GoodsListBean.DataEntity.GoodscatrgoryEntity> goodscatrgoryEntities) {
         this.mContext = context;

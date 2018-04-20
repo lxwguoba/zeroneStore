@@ -11,19 +11,19 @@ import java.util.List;
 
 public class PrintBean implements Serializable {
     //订单编号
-    private  String ordersn;
+    private String ordersn;
     //下单时间
-    private  String createTime ;
+    private String createTime;
     //订单总金额
-    private  String  pmoney;
+    private String pmoney;
     //桌子名称
-    private String  table_name;
+    private String table_name;
     //餐位费
-    private String   canweifei;
+    private String canweifei;
     //订单状态
-    private String   orderTuype;
+    private String orderTuype;
     //备注
-    private  String  remark;
+    private String remark;
     private List<PrintItem> list;
 
 

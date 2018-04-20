@@ -37,7 +37,6 @@ import com.store.zerone.zeronestore.domain.OrderInfo;
 import com.store.zerone.zeronestore.utils.LoadingUtils;
 import com.store.zerone.zeronestore.utils.MapUtilsSetParam;
 import com.store.zerone.zeronestore.utils.NetUtils;
-import com.store.zerone.zeronestore.utils.Utils;
 import com.store.zerone.zeronestore.utils.UtilsTime;
 import com.zyao89.view.zloading.ZLoadingDialog;
 
@@ -57,10 +56,10 @@ import java.util.Map;
 
 public class YFFragment extends Fragment {
 
+    List<DaiFuKuanOrderBean.DataBean.ListBean> getOrderList;
     private View view;
     private RecyclerView ordercycle;
     private OrderListCycleAdapter cycAdapter;
-    List<DaiFuKuanOrderBean.DataBean.ListBean> getOrderList;
     private ZLoadingDialog loading_dailog;
     private PopupWindow mPopupWindow;
     private View mContentView;
@@ -78,8 +77,118 @@ public class YFFragment extends Fragment {
     private EditText zhekou_edt;
     private TextView dingdanjine;
     private TextView seale_money;
-    private RelativeLayout sure_relative;
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case ContantData.GETORDERLISTDF:
+                    String orderJon = (String) msg.obj;
+                    Log.i("URL", "=======================================================");
+                    Log.d("URL", orderJon);
+                    Log.i("URL", "=======================================================");
+                    String orderJson = (String) msg.obj;
+                    DaiFuKuanOrderBean daiFuKuanOrderBean = JSON.parseObject(orderJson, DaiFuKuanOrderBean.class);
+                    if (daiFuKuanOrderBean.getStatus() == 0) {
+                        return;
+                    }
+                    List<DaiFuKuanOrderBean.DataBean.ListBean> list = daiFuKuanOrderBean.getData().getList();
+                    getOrderList.clear();
+                    if (list.size() > 0) {
+                        for (int i = 0; i < list.size(); i++) {
+                            getOrderList.add(list.get(i));
+                        }
+                    }
+                    cycAdapter.notifyDataSetChanged();
+                    loading_dailog.dismiss();
+                    break;
 
+                case ContantData.GETORDERLISTDETAILS:
+                    String orderdetailsJson = (String) msg.obj;
+                    Log.i("TAG", "orderjson7777=" + orderdetailsJson);
+                    try {
+                        JSONObject json = new JSONObject(orderdetailsJson);
+                        String userstr = json.getJSONObject("data").getJSONObject("item").getString("user");
+                        String shrname = json.getJSONObject("data").getJSONObject("orderownner").getString("realname");
+                        String ordersn = json.getJSONObject("data").getJSONObject("item").getString("ordersn");
+                        String createTime = json.getJSONObject("data").getJSONObject("item").getString("createtime");
+                        long time = Long.parseLong(createTime);
+                        ordertime.setText("下单时间：" + UtilsTime.getTime(time));
+                        if ("1.00".equals(json.getJSONObject("data").getJSONObject("item").getString("sale"))) {
+                            zhekou_edt.setText("未打折");
+                            zhekou_money.setText(json.getJSONObject("data").getJSONObject("item").getString("price") + "");
+                            //订单总金额
+                            order_money.setText(json.getJSONObject("data").getJSONObject("item").getString("price") + "");
+                        } else {
+                            double yhzk = Double.parseDouble(json.getJSONObject("data").getJSONObject("item").getString("sale")) * 10;
+                            zhekou_edt.setText(yhzk + "折");
+                            double ysje = Double.parseDouble(json.getJSONObject("data").getJSONObject("item").getString("price")) * Double.parseDouble(json.getJSONObject("data").getJSONObject("item").getString("sale"));
+                            zhekou_money.setText(ysje + "");
+                            order_money.setText(ysje + "");
+                        }
+
+                        dingdanjine.setText("￥" + json.getJSONObject("data").getJSONObject("item").getString("goodsprice"));
+                        order_details_num.setText(ordersn);
+                        String jsonObject = json.getJSONObject("data").getString("sharemem");
+                        tablename.setText("桌子名称：" + json.getJSONObject("data").getJSONObject("tableinfo").getString("tablename"));
+                        String datenum = json.getJSONObject("data").getJSONObject("tableinfo").getString("datenum");
+
+                        seale_money.setText("￥" + json.getJSONObject("data").getJSONObject("item").getString("seat_fee"));
+
+                        if ("1".equals(json.getJSONObject("data").getJSONObject("item").getString("dispatchchoice"))) {
+                            //外卖
+//                            addfood.setVisibility(View.GONE);
+//                            submit_pay.setText("确认付款");
+//                            zhuozi.setText("关闭订单");
+                        } else if ("2".equals(json.getJSONObject("data").getJSONObject("item").getString("dispatchchoice"))) {
+                            //2.预约就餐订单
+//                            addfood.setVisibility(View.GONE);
+//                            submit_pay.setText("确认付款");
+//                            zhuozi.setText("关闭订单");
+                        } else if ("3".equals(json.getJSONObject("data").getJSONObject("item").getString("dispatchchoice"))) {
+                            //2.现场订单
+//                                Log.d("NewOrderDetails", json.getJSONObject("data").getJSONObject("tableinfo").getString("tableid"));
+//                            if (json.getJSONObject("data").getJSONObject("tableinfo").getString("tableid") == null) {
+//                                zhuozi.setText("绑定桌子");
+//                            } else {
+//                                zhuozi.setText("换桌子");
+//                            }
+                        }
+
+
+                        ///--------------------
+                        JSONArray jsonArray = json.getJSONObject("data").getJSONObject("item").getJSONArray("goods");
+                        if (jsonArray != null) {
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                OrderInfo.DataBean.ItemBean.GoodsBean goods = new OrderInfo.DataBean.ItemBean.GoodsBean();
+                                goods.setId(jsonArray.getJSONObject(i).getString("id"));
+                                goods.setCommission(jsonArray.getJSONObject(i).getString("commission"));
+                                goods.setGoodssn(jsonArray.getJSONObject(i).getString("goodssn"));
+                                goods.setMarketprice(jsonArray.getJSONObject(i).getString("marketprice"));
+                                goods.setOid(jsonArray.getJSONObject(i).getString("oid"));
+                                goods.setOptionid(jsonArray.getJSONObject(i).getString("optionid"));
+                                goods.setOptionname(jsonArray.getJSONObject(i).getString("optionname"));
+                                goods.setPrice(jsonArray.getJSONObject(i).getString("price"));
+                                goods.setProductsn(jsonArray.getJSONObject(i).getString("productsn"));
+                                goods.setThumb(jsonArray.getJSONObject(i).getString("thumb"));
+                                goods.setTitle(jsonArray.getJSONObject(i).getString("title"));
+                                goods.setTotal(jsonArray.getJSONObject(i).getString("total"));
+                                goods.setType(jsonArray.getJSONObject(i).getString("type"));
+                                goods.setUnit(jsonArray.getJSONObject(i).getString("unit"));
+                                listBeen.add(goods);
+                            }
+                            popAdapter.notifyDataSetChanged();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    loadingDetails.dismiss();
+                    break;
+            }
+        }
+    };
+    private RelativeLayout sure_relative;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
@@ -118,27 +227,28 @@ public class YFFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void LoadingData() {
-        parentview = (LinearLayout)view.findViewById(R.id.parentview);
+        parentview = (LinearLayout) view.findViewById(R.id.parentview);
         getOrderList = new ArrayList<>();
         loading_dailog = LoadingUtils.getDailog(getContext(), Color.RED, "获取订单中。。。。");
         loading_dailog.show();
         //获取order的数据
         Map<String, String> mapOrder = MapUtilsSetParam.getMap(getContext());
         mapOrder.put("opp", "orderlist");
-        mapOrder.put("branchid",  "4");
+        mapOrder.put("branchid", "4");
         mapOrder.put("page", "1");
         mapOrder.put("status", "1");
         NetUtils.netWorkByMethodPost(getActivity(), mapOrder, IpConfig.URL, handler, ContantData.GETORDERLISTDF);
     }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void initView() {
-        ordercycle = (RecyclerView)view.findViewById(R.id.order_recycle);
+        ordercycle = (RecyclerView) view.findViewById(R.id.order_recycle);
         GridLayoutManager manager = new GridLayoutManager(getContext(), 1);
         ordercycle.setLayoutManager(manager);
         cycAdapter = new OrderListCycleAdapter(getOrderList);
         ordercycle.setAdapter(cycAdapter);
         //------------------------------------pop---------------------------------
-        if(mContentView == null){
+        if (mContentView == null) {
             mContentView = LayoutInflater.from(getContext()).inflate(R.layout.activity_order_df_details_pop, null);
         }
         sure_relative = (RelativeLayout) mContentView.findViewById(R.id.sure_relative);
@@ -146,140 +256,26 @@ public class YFFragment extends Fragment {
         tablename = (TextView) mContentView.findViewById(R.id.tablename);
         ordertime = (TextView) mContentView.findViewById(R.id.ordertime);
         order_details_num = (TextView) mContentView.findViewById(R.id.order_details_num);
-        dingdanjine = (TextView)mContentView.findViewById(R.id.dingdanjine);
-        seale_money = (TextView)mContentView.findViewById(R.id.seale_money);
+        dingdanjine = (TextView) mContentView.findViewById(R.id.dingdanjine);
+        seale_money = (TextView) mContentView.findViewById(R.id.seale_money);
         order_money = (TextView) mContentView.findViewById(R.id.order_money);
         zhekou_money = (TextView) mContentView.findViewById(R.id.zhekou_money);
         zhekou_edt = (EditText) mContentView.findViewById(R.id.zhekou_edt);
         popListview = (ListView) mContentView.findViewById(R.id.order_details_list_goods);
-        popAdapter = new ListOrdeDetailsItemrAdapter(getContext(),listBeen);
+        popAdapter = new ListOrdeDetailsItemrAdapter(getContext(), listBeen);
         popListview.setAdapter(popAdapter);
         //------------------------------------pop---------------------------------
     }
 
-
-    Handler handler  =  new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what){
-                case ContantData.GETORDERLISTDF:
-                    String  orderJon= (String) msg.obj;
-                    Log.i("URL","=======================================================");
-                    Log.d("URL",orderJon);
-                    Log.i("URL","=======================================================");
-                    String orderJson = (String) msg.obj;
-                    DaiFuKuanOrderBean daiFuKuanOrderBean = JSON.parseObject(orderJson, DaiFuKuanOrderBean.class);
-                    if (daiFuKuanOrderBean.getStatus() == 0) {
-                        return;
-                    }
-                    List<DaiFuKuanOrderBean.DataBean.ListBean> list = daiFuKuanOrderBean.getData().getList();
-                    getOrderList.clear();
-                    if (list.size() > 0) {
-                        for (int i = 0; i < list.size(); i++) {
-                            getOrderList.add(list.get(i));
-                        }
-                    }
-                    cycAdapter.notifyDataSetChanged();
-                    loading_dailog.dismiss();
-                    break;
-
-                case ContantData.GETORDERLISTDETAILS:
-                    String orderdetailsJson = (String) msg.obj;
-                    Log.i("TAG", "orderjson7777=" + orderdetailsJson);
-                    try {
-                        JSONObject json = new JSONObject(orderdetailsJson);
-                        String userstr = json.getJSONObject("data").getJSONObject("item").getString("user");
-                        String shrname = json.getJSONObject("data").getJSONObject("orderownner").getString("realname");
-                        String ordersn = json.getJSONObject("data").getJSONObject("item").getString("ordersn");
-                        String createTime = json.getJSONObject("data").getJSONObject("item").getString("createtime");
-                        long time = Long.parseLong(createTime);
-                        ordertime.setText("下单时间："+ UtilsTime.getTime(time));
-                        if ("1.00".equals(json.getJSONObject("data").getJSONObject("item").getString("sale"))) {
-                            zhekou_edt.setText("未打折");
-                            zhekou_money.setText(json.getJSONObject("data").getJSONObject("item").getString("price")+"");
-                            //订单总金额
-                            order_money.setText(json.getJSONObject("data").getJSONObject("item").getString("price")+"");
-                        } else {
-                            double yhzk = Double.parseDouble(json.getJSONObject("data").getJSONObject("item").getString("sale")) * 10;
-                            zhekou_edt.setText(yhzk + "折");
-                            double ysje = Double.parseDouble(json.getJSONObject("data").getJSONObject("item").getString("price")) * Double.parseDouble(json.getJSONObject("data").getJSONObject("item").getString("sale"));
-                            zhekou_money.setText(ysje+"");
-                            order_money.setText(ysje+"");
-                        }
-
-                        dingdanjine.setText("￥" + json.getJSONObject("data").getJSONObject("item").getString("goodsprice"));
-                        order_details_num.setText(ordersn);
-                        String jsonObject = json.getJSONObject("data").getString("sharemem");
-                        tablename.setText("桌子名称："+json.getJSONObject("data").getJSONObject("tableinfo").getString("tablename"));
-                        String datenum = json.getJSONObject("data").getJSONObject("tableinfo").getString("datenum");
-
-                        seale_money.setText("￥" + json.getJSONObject("data").getJSONObject("item").getString("seat_fee"));
-
-                        if ("1".equals(json.getJSONObject("data").getJSONObject("item").getString("dispatchchoice"))) {
-                            //外卖
-//                            addfood.setVisibility(View.GONE);
-//                            submit_pay.setText("确认付款");
-//                            zhuozi.setText("关闭订单");
-                        } else if ("2".equals(json.getJSONObject("data").getJSONObject("item").getString("dispatchchoice"))) {
-                            //2.预约就餐订单
-//                            addfood.setVisibility(View.GONE);
-//                            submit_pay.setText("确认付款");
-//                            zhuozi.setText("关闭订单");
-                        } else if ("3".equals(json.getJSONObject("data").getJSONObject("item").getString("dispatchchoice"))) {
-                            //2.现场订单
-//                                Log.d("NewOrderDetails", json.getJSONObject("data").getJSONObject("tableinfo").getString("tableid"));
-//                            if (json.getJSONObject("data").getJSONObject("tableinfo").getString("tableid") == null) {
-//                                zhuozi.setText("绑定桌子");
-//                            } else {
-//                                zhuozi.setText("换桌子");
-//                            }
-                        }
-
-
-
-                        ///--------------------
-                        JSONArray jsonArray = json.getJSONObject("data").getJSONObject("item").getJSONArray("goods");
-                        if (jsonArray != null) {
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                OrderInfo.DataBean.ItemBean.GoodsBean goods = new OrderInfo.DataBean.ItemBean.GoodsBean();
-                                goods.setId(jsonArray.getJSONObject(i).getString("id"));
-                                goods.setCommission(jsonArray.getJSONObject(i).getString("commission"));
-                                goods.setGoodssn(jsonArray.getJSONObject(i).getString("goodssn"));
-                                goods.setMarketprice(jsonArray.getJSONObject(i).getString("marketprice"));
-                                goods.setOid(jsonArray.getJSONObject(i).getString("oid"));
-                                goods.setOptionid(jsonArray.getJSONObject(i).getString("optionid"));
-                                goods.setOptionname(jsonArray.getJSONObject(i).getString("optionname"));
-                                goods.setPrice(jsonArray.getJSONObject(i).getString("price"));
-                                goods.setProductsn(jsonArray.getJSONObject(i).getString("productsn"));
-                                goods.setThumb(jsonArray.getJSONObject(i).getString("thumb"));
-                                goods.setTitle(jsonArray.getJSONObject(i).getString("title"));
-                                goods.setTotal(jsonArray.getJSONObject(i).getString("total"));
-                                goods.setType(jsonArray.getJSONObject(i).getString("type"));
-                                goods.setUnit(jsonArray.getJSONObject(i).getString("unit"));
-                                listBeen.add(goods);
-                            }
-                            popAdapter.notifyDataSetChanged();
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    loadingDetails.dismiss();
-                    break;
-            }
-        }
-    };
-
-
     /**
      * popwindow的初始化
      */
-    public void setPopWindow(){
+    public void setPopWindow() {
 
         mPopupWindow = new PopupWindow(mContentView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
         mPopupWindow.setTouchable(true);
         mPopupWindow.setOutsideTouchable(false);
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
-        mPopupWindow.showAtLocation(parentview, Gravity.CENTER,0,0);
-    }}
+        mPopupWindow.showAtLocation(parentview, Gravity.CENTER, 0, 0);
+    }
+}

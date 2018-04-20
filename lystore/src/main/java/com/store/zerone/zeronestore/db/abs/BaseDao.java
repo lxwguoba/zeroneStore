@@ -41,6 +41,7 @@ public class BaseDao extends SQLiteOpenHelper {
 
     /**
      * 这个是用来存储session
+     *
      * @param db
      */
     public void createSessionTable(SQLiteDatabase db) {
@@ -69,6 +70,7 @@ public class BaseDao extends SQLiteOpenHelper {
         sb.append(" );");
         db.execSQL(sb.toString());
     }
+
     /**
      * 菜品详情的表创建
      *

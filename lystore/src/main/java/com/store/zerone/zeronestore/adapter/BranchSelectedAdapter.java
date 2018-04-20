@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.store.zerone.zeronestore.R;
 import com.store.zerone.zeronestore.domain.Branch;
@@ -23,16 +24,17 @@ public class BranchSelectedAdapter extends RecyclerView.Adapter<BranchSelectedAd
     private List<Branch> list;
     private OnItemClickListener mOnItemClickListener;
     private OnItemLongClickListener mOnItemLongClickListener;
+
     public BranchSelectedAdapter(List<Branch> list) {
         this.list = list;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (context==null){
-            context=parent.getContext();
+        if (context == null) {
+            context = parent.getContext();
         }
-        View view = LayoutInflater.from(context).inflate(R.layout.activity_branch_selected_items,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.activity_branch_selected_items, parent, false);
 
         return new ViewHolder(view);
     }
@@ -42,21 +44,21 @@ public class BranchSelectedAdapter extends RecyclerView.Adapter<BranchSelectedAd
         Branch fd = list.get(position);
         holder.fDName.setText(fd.getZtdname());
         Glide.with(context).load(fd.getThumb()).into(holder.fDImg);
-        if(mOnItemClickListener != null){
+        if (mOnItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = holder.getLayoutPosition(); // 1
-                    mOnItemClickListener.onItemClick(holder.itemView,position); // 2
+                    mOnItemClickListener.onItemClick(holder.itemView, position); // 2
                 }
             });
         }
-        if(mOnItemLongClickListener != null){
+        if (mOnItemLongClickListener != null) {
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     int position = holder.getLayoutPosition();
-                    mOnItemLongClickListener.onItemLongClick(holder.itemView,position);
+                    mOnItemLongClickListener.onItemLongClick(holder.itemView, position);
                     return true;
                 }
             });
@@ -68,30 +70,33 @@ public class BranchSelectedAdapter extends RecyclerView.Adapter<BranchSelectedAd
         return list.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        private final TextView fDName;
-        private final CircleImageView fDImg;
-        public ViewHolder(View itemView) {
-            super(itemView);
-            fDImg = (CircleImageView) itemView.findViewById(R.id.fd_img);
-            fDName  = (TextView) itemView.findViewById(R.id.fd_name);
-        }
-    }
-
     //
-    public interface OnItemClickListener{
-        void onItemClick(View view, int position);
-    }
-    public interface OnItemLongClickListener{
-        void onItemLongClick(View view, int position);
-    }
-    //
-    public void setOnItemClickListener(OnItemClickListener mOnItemClickListener){
+    public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {
         this.mOnItemClickListener = mOnItemClickListener;
     }
 
     public void setOnItemLongClickListener(OnItemLongClickListener mOnItemLongClickListener) {
         this.mOnItemLongClickListener = mOnItemLongClickListener;
+    }
+
+    //
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
+    public interface OnItemLongClickListener {
+        void onItemLongClick(View view, int position);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        private final TextView fDName;
+        private final CircleImageView fDImg;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            fDImg = (CircleImageView) itemView.findViewById(R.id.fd_img);
+            fDName = (TextView) itemView.findViewById(R.id.fd_name);
+        }
     }
 }

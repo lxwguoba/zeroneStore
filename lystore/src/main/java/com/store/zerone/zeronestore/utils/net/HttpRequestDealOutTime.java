@@ -18,42 +18,41 @@ import com.store.zerone.zeronestore.application.MyApplication;
  * 这个页面的请求已经处理了超时后的问题
  */
 
-public class HttpRequestDealOutTime  {
+public class HttpRequestDealOutTime {
 
     static int DEFAULT_TIMEOUT_MS = 10000;
     static int DEFAULT_MAX_RETRIES = 3;
 
     /**
-     *
-     * @param url  访问路径
-     * @param context 上下文
-     * @param handler  handler机制用来处理刷新数据和UI
+     * @param url           访问路径
+     * @param context       上下文
+     * @param handler       handler机制用来处理刷新数据和UI
      * @param responseStaus 设置成功后的状态值
      */
-     public static void HttpGet(String url, Context context, final Handler handler, final Integer responseStaus) {
-         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-             @Override
-             public void onResponse(String res) {
-                 Message mess= new Message();
-                  mess.what=responseStaus;
-                  mess.obj=res;
-                 handler.sendMessage(mess);
-             }
-         }, new Response.ErrorListener() {
-             @Override
-             public void onErrorResponse(VolleyError volleyError) {
-                 Message mess= new Message();
-                 mess.what=0;
-                 mess.obj=volleyError.toString();
-                 handler.sendMessage(mess);
+    public static void HttpGet(String url, Context context, final Handler handler, final Integer responseStaus) {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String res) {
+                Message mess = new Message();
+                mess.what = responseStaus;
+                mess.obj = res;
+                handler.sendMessage(mess);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Message mess = new Message();
+                mess.what = 0;
+                mess.obj = volleyError.toString();
+                handler.sendMessage(mess);
 
-             }
-         });
+            }
+        });
         // 设置Volley超时重试策略
-         stringRequest.setTag("");
-         stringRequest.setRetryPolicy(new DefaultRetryPolicy(DEFAULT_TIMEOUT_MS, DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-         RequestQueue requestQueue = MyApplication.getQueues();
-         requestQueue.start();
-         requestQueue.add(stringRequest);
-     }
+        stringRequest.setTag("");
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(DEFAULT_TIMEOUT_MS, DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        RequestQueue requestQueue = MyApplication.getQueues();
+        requestQueue.start();
+        requestQueue.add(stringRequest);
+    }
 }

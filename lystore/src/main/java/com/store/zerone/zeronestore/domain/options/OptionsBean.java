@@ -9,16 +9,15 @@ import java.util.List;
  */
 
 public class OptionsBean implements Serializable {
-    private String  id;
-    private String  weid;
-    private String  title;
-    private String  description;
-    private String  displaytype;
-    private String  content;
-    private String  goodsid;
-    private String  displayorder;
+    private String id;
+    private String weid;
+    private String title;
+    private String description;
+    private String displaytype;
+    private String content;
+    private String goodsid;
+    private String displayorder;
     private List<OptionsBeanItem> items;
-
 
 
     public String getId() {

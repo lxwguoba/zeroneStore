@@ -7,9 +7,8 @@ import android.widget.ListAdapter;
 
 /**
  * Created by Administrator on 2017/8/1.
- *
+ * <p>
  * 用来设置gridview的高度
- *
  */
 
 public class SetGridViewHeight {
@@ -34,9 +33,9 @@ public class SetGridViewHeight {
         // 获取listview的布局参数
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         // 设置高度
-        if (totalHeight>200){
-            params.height =200;
-        }else {
+        if (totalHeight > 200) {
+            params.height = 200;
+        } else {
             params.height = totalHeight;
         }
         // 设置margin
@@ -52,8 +51,8 @@ public class SetGridViewHeight {
             return;
         }
         // 固定列宽，有多少列3
-        int col =3;
-        int totalHeight =20;
+        int col = 3;
+        int totalHeight = 20;
         // i每次加4，相当于listAdapter.getCount()小于等于4时 循环一次，计算一次item的高度，
         // listAdapter.getCount()小于等于8时计算两次高度相加
         for (int i = 0; i < listAdapter.getCount(); i += col) {
@@ -66,9 +65,9 @@ public class SetGridViewHeight {
         // 获取listview的布局参数
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         // 设置高度
-        if (totalHeight>200){
-            params.height =200;
-        }else {
+        if (totalHeight > 200) {
+            params.height = 200;
+        } else {
             params.height = totalHeight;
         }
 

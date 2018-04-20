@@ -56,7 +56,7 @@ dependencies {
     compile 'com.sunmi:sunmiui:latest.release'
     //打印机的配置-------------------------------
     //语音播报功能设置-----------------------------
-     compile 'com.github.javaexception:VoiceAnnouncements:v1.0'
+    compile 'com.github.javaexception:VoiceAnnouncements:v1.0'
     //语音播报功能设置----------------------------------
 
     //zxing库的使用---------------------------------

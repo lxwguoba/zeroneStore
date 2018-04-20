@@ -1,6 +1,8 @@
 package com.store.zerone.zeronestore.application;
+
 import android.app.Activity;
 import android.app.Application;
+
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.store.zerone.zeronestore.utils.AidlUtil;
@@ -15,26 +17,28 @@ import java.util.List;
  */
 
 public class MyApplication extends Application {
+    public static RequestQueue queues;
     /**
      * 请求栈
      */
     private boolean isAidl;
-    public static RequestQueue queues;
     //用于存放所有启动的Activity的集合 便于删除
     private List<Activity> activityList;
+
+    public static RequestQueue getQueues() {
+        return queues;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
-        activityList=new ArrayList<Activity>();
+        activityList = new ArrayList<Activity>();
         ZXingLibrary.initDisplayOpinion(this);
         queues = Volley.newRequestQueue(getApplicationContext());
         isAidl = true;
         AidlUtil.getInstance().connectPrinterService(this);
     }
 
-    public static RequestQueue getQueues() {
-        return queues;
-    }
     /**
      * 添加Activity
      */

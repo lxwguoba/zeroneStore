@@ -46,12 +46,13 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
     private TextView shopCart;
     private ImageView buyImg;
     //isgod是为了让有规格的菜品点击后只能选中后 才能点击  这样防止多次启动popwindow
-    private  int  isgod=0;
+    private int isgod = 0;
     private List<GoodsListBean.DataEntity.GoodscatrgoryEntity> goodscatrgoryEntities;
     private String[] mSectionLetters;
     private List<GoodsListBean.DataEntity.GoodscatrgoryEntity.GoodsitemEntity> selectGoods = new ArrayList<>();
 
     private Handler handler;
+    private OnShopCartGoodsChangeListener mOnGoodsNunChangeListener = null;
 
     /**
      * @param context
@@ -221,10 +222,10 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
                     Message mes = new Message();
                     mes.what = 10000;
                     mes.obj = position;
-                    if (isgod==0){
+                    if (isgod == 0) {
                         handler.sendMessage(mes);
                     }
-                    isgod=1;
+                    isgod = 1;
                 } else {
                     goodsNum[position]++;
                     selectGoods.add(dataList.get(position));
@@ -415,7 +416,6 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
         return set;
     }
 
-
     /**
      * 隐藏减号的动画
      *
@@ -467,44 +467,9 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
 
     }
 
-    private OnShopCartGoodsChangeListener mOnGoodsNunChangeListener = null;
-
     public void setOnShopCartGoodsChangeListener(OnShopCartGoodsChangeListener e) {
         mOnGoodsNunChangeListener = e;
     }
-
-    public interface OnShopCartGoodsChangeListener {
-        public void onNumChange();
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        public final ImageView ivGoodsImage;
-        public final TextView goodsCategoryName;
-        public final TextView tvGoodsDescription;
-        public final LinearLayout goodsInfo;
-        public final TextView tvGoodsPrice;
-        public final TextView tvGoodsIntegral;
-        public final ImageView ivGoodsMinus;
-        public final TextView tvGoodsSelectNum;
-        public final ImageView ivGoodsAdd;
-        public final View root;
-
-        public ViewHolder(View root) {
-            super(root);
-            ivGoodsImage = (ImageView) root.findViewById(R.id.ivGoodsImage);
-            goodsCategoryName = (TextView) root.findViewById(R.id.goodsCategoryName);
-            tvGoodsDescription = (TextView) root.findViewById(R.id.tvGoodsDescription);
-            goodsInfo = (LinearLayout) root.findViewById(R.id.goodsInfo);
-            tvGoodsPrice = (TextView) root.findViewById(R.id.tvGoodsPrice);
-            tvGoodsIntegral = (TextView) root.findViewById(R.id.tvGoodsIntegral);
-            ivGoodsMinus = (ImageView) root.findViewById(R.id.ivGoodsMinus);
-            tvGoodsSelectNum = (TextView) root.findViewById(R.id.tvGoodsSelectNum);
-            ivGoodsAdd = (ImageView) root.findViewById(R.id.ivGoodsAdd);
-            this.root = root;
-        }
-    }
-
 
     public void setListOptions(JSONObject obj, int position) throws JSONException {
         if (list.size() > 0) {
@@ -603,7 +568,39 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
         double totalmoney = Double.parseDouble(df.format(totalPrice));
         EventBus.getDefault().post(new MessageEvent(buyNum, totalmoney, list, selectGoods));
         EventBus.getDefault().post(new GoodsListEvent(mGoodsCategoryBuyNums));
-        isgod=0;
+        isgod = 0;
         notifyDataSetChanged();
+    }
+
+    public interface OnShopCartGoodsChangeListener {
+        public void onNumChange();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        public final ImageView ivGoodsImage;
+        public final TextView goodsCategoryName;
+        public final TextView tvGoodsDescription;
+        public final LinearLayout goodsInfo;
+        public final TextView tvGoodsPrice;
+        public final TextView tvGoodsIntegral;
+        public final ImageView ivGoodsMinus;
+        public final TextView tvGoodsSelectNum;
+        public final ImageView ivGoodsAdd;
+        public final View root;
+
+        public ViewHolder(View root) {
+            super(root);
+            ivGoodsImage = (ImageView) root.findViewById(R.id.ivGoodsImage);
+            goodsCategoryName = (TextView) root.findViewById(R.id.goodsCategoryName);
+            tvGoodsDescription = (TextView) root.findViewById(R.id.tvGoodsDescription);
+            goodsInfo = (LinearLayout) root.findViewById(R.id.goodsInfo);
+            tvGoodsPrice = (TextView) root.findViewById(R.id.tvGoodsPrice);
+            tvGoodsIntegral = (TextView) root.findViewById(R.id.tvGoodsIntegral);
+            ivGoodsMinus = (ImageView) root.findViewById(R.id.ivGoodsMinus);
+            tvGoodsSelectNum = (TextView) root.findViewById(R.id.tvGoodsSelectNum);
+            ivGoodsAdd = (ImageView) root.findViewById(R.id.ivGoodsAdd);
+            this.root = root;
+        }
     }
 }

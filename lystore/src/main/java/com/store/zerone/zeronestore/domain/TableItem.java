@@ -10,9 +10,9 @@ public class TableItem {
     private int[] align;
 
     public TableItem() {
-        text = new String[]{"test","test","test"};
-        width = new int[]{1,1,1};
-        align = new int[]{0,0,0};
+        text = new String[]{"test", "test", "test"};
+        width = new int[]{1, 1, 1};
+        align = new int[]{0, 0, 0};
     }
 
     public String[] getText() {

@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 public class SessionBean implements Serializable {
     private String s_id;
-    private  String s_value;
+    private String s_value;
 
     public SessionBean() {
     }

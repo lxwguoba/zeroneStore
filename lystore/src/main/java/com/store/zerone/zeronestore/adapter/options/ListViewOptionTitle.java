@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
+
 import com.store.zerone.zeronestore.R;
 import com.store.zerone.zeronestore.domain.options.OptionsBean;
 import com.store.zerone.zeronestore.utils.SetGridViewHeight;
@@ -69,8 +70,8 @@ public class ListViewOptionTitle extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.titleName.setText(list.get(position).getTitle() + ":");
-        Log.i("OptionsActivity",list.get(position).getTitle() + ":");
-        Log.i("OptionsActivity",list.get(position).getItems().toString());
+        Log.i("OptionsActivity", list.get(position).getTitle() + ":");
+        Log.i("OptionsActivity", list.get(position).getItems().toString());
         final GridViewOptionAdapter gridViewOptionAdapter = new GridViewOptionAdapter(list.get(position).getItems(), context, "");
         holder.gridView.setAdapter(gridViewOptionAdapter);
         SetGridViewHeight.setListViewHeightBasedOnChildrenAUTO(holder.gridView);

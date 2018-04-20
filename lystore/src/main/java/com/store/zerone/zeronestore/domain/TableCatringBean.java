@@ -33,6 +33,7 @@ public class TableCatringBean implements Serializable {
     public void setData(List<DataBean> data) {
         this.data = data;
     }
+
     public static class DataBean {
         /**
          * id : 0

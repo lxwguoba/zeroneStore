@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">新零售</string>
+    <string name="action_settings">设置</string>
+    <string name="action_add">添加</string>
+    <string name="action_number">会员</string>
+    <string name="action_like">喜欢</string>
+</resources>

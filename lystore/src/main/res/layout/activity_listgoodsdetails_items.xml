@@ -95,7 +95,6 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_marginTop="4dp"
-        android:layerType="software"
         android:background="@drawable/xu_line"
-        />
+        android:layerType="software" />
 </LinearLayout>

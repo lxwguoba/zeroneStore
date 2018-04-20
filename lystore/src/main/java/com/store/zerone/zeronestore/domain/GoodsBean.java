@@ -10,8 +10,8 @@ import java.util.List;
 
 public class GoodsBean implements Serializable {
 
-    private  int  gb_id;
-    private  int g_count;
+    private int gb_id;
+    private int g_count;
     private String id;
     private String title;
     private String marketprice;

@@ -6,5 +6,6 @@ package com.store.zerone.zeronestore.utils;
 
 public interface PrinterCallback {
     String getResult();
+
     void onReturnString(String result);
 }

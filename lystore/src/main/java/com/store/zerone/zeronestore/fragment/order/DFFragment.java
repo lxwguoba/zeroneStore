@@ -54,10 +54,10 @@ import java.util.Map;
 
 public class DFFragment extends Fragment {
 
+    List<DaiFuKuanOrderBean.DataBean.ListBean> getOrderList;
     private View view;
     private RecyclerView ordercycle;
     private OrderListCycleAdapter cycAdapter;
-    List<DaiFuKuanOrderBean.DataBean.ListBean> getOrderList;
     private ZLoadingDialog loading_dailog;
     private PopupWindow mPopupWindow;
     private View mContentView;
@@ -75,93 +75,16 @@ public class DFFragment extends Fragment {
     private EditText zhekou_edt;
     private TextView dingdanjine;
     private TextView seale_money;
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        if (view == null) {
-            view = inflater.inflate(R.layout.fragment_order_df, null);
-        }
-        listBeen = new ArrayList<>();
-        LoadingData();
-        initView();
-        recycleListenner();
-
-        return view;
-    }
-
-    private void recycleListenner() {
-        cycAdapter.setOnItemClickListener(new BranchSelectedAdapter.OnItemClickListener() {
-
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            public void onItemClick(View view, int position) {
-                //启动popwindow
-                loadingDetails = LoadingUtils.getDailog(getContext(), Color.RED, "获取订单详情中。。。。");
-                loadingDetails.show();
-                String id = getOrderList.get(position).getId();
-                Map<String, String> map = MapUtilsSetParam.getMap(getContext());
-                map.put("opp", "getorderdetail");
-                //获取分店id
-                map.put("branchid", Utils.getBranch(getContext()).getId());
-                map.put("orderid", id);
-                NetUtils.netWorkByMethodPost(getContext(), map, IpConfig.URL, handler, ContantData.GETORDERLISTDETAILS);
-                setPopWindow();
-            }
-        });
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void LoadingData() {
-        parentview = (LinearLayout)view.findViewById(R.id.parentview);
-        getOrderList = new ArrayList<>();
-        loading_dailog = LoadingUtils.getDailog(getContext(), Color.RED, "获取订单中。。。。");
-        loading_dailog.show();
-        //获取order的数据
-        Map<String, String> mapOrder = MapUtilsSetParam.getMap(getContext());
-        mapOrder.put("opp", "orderlist");
-//        mapOrder.put("branchid",  Utils.getBranch(getContext()).getId());
-        mapOrder.put("page", "1");
-        mapOrder.put("status", "0");
-        NetUtils.netWorkByMethodPost(getActivity(), mapOrder, IpConfig.URL, handler, ContantData.GETORDERLISTDF);
-    }
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void initView() {
-        ordercycle = (RecyclerView)view.findViewById(R.id.order_recycle);
-        GridLayoutManager manager = new GridLayoutManager(getContext(), 1);
-        ordercycle.setLayoutManager(manager);
-        cycAdapter = new OrderListCycleAdapter(getOrderList);
-        ordercycle.setAdapter(cycAdapter);
-        //------------------------------------pop---------------------------------
-        if(mContentView == null){
-            mContentView = LayoutInflater.from(getContext()).inflate(R.layout.activity_order_df_details_pop, null);
-        }
-        tablename = (TextView) mContentView.findViewById(R.id.tablename);
-        ordertime = (TextView) mContentView.findViewById(R.id.ordertime);
-        order_details_num = (TextView) mContentView.findViewById(R.id.order_details_num);
-        dingdanjine = (TextView)mContentView.findViewById(R.id.dingdanjine);
-        seale_money = (TextView)mContentView.findViewById(R.id.seale_money);
-        order_money = (TextView) mContentView.findViewById(R.id.order_money);
-        zhekou_money = (TextView) mContentView.findViewById(R.id.zhekou_money);
-        zhekou_edt = (EditText) mContentView.findViewById(R.id.zhekou_edt);
-        popListview = (ListView) mContentView.findViewById(R.id.order_details_list_goods);
-        popAdapter = new ListOrdeDetailsItemrAdapter(getContext(),listBeen);
-        popListview.setAdapter(popAdapter);
-        //------------------------------------pop---------------------------------
-    }
-
-
-    Handler handler  =  new Handler(){
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case ContantData.GETORDERLISTDF:
-                    String  orderJon= (String) msg.obj;
-                    Log.i("URL","=======================================================");
-                    Log.d("URL",orderJon);
-                    Log.i("URL","=======================================================");
+                    String orderJon = (String) msg.obj;
+                    Log.i("URL", "=======================================================");
+                    Log.d("URL", orderJon);
+                    Log.i("URL", "=======================================================");
                     String orderJson = (String) msg.obj;
 //                    DaiFuKuanOrderBean daiFuKuanOrderBean = JSON.parseObject(orderJson, DaiFuKuanOrderBean.class);
 //                    if (daiFuKuanOrderBean.getStatus() == 0) {
@@ -182,30 +105,30 @@ public class DFFragment extends Fragment {
                     String orderdetailsJson = (String) msg.obj;
                     Log.i("TAG", "orderjson7777=" + orderdetailsJson);
                     try {
-                        JSONObject    json = new JSONObject(orderdetailsJson);
+                        JSONObject json = new JSONObject(orderdetailsJson);
                         String userstr = json.getJSONObject("data").getJSONObject("item").getString("user");
                         String shrname = json.getJSONObject("data").getJSONObject("orderownner").getString("realname");
                         String ordersn = json.getJSONObject("data").getJSONObject("item").getString("ordersn");
                         String createTime = json.getJSONObject("data").getJSONObject("item").getString("createtime");
                         long time = Long.parseLong(createTime);
-                        ordertime.setText("下单时间："+ UtilsTime.getTime(time));
+                        ordertime.setText("下单时间：" + UtilsTime.getTime(time));
                         if ("1.00".equals(json.getJSONObject("data").getJSONObject("item").getString("sale"))) {
                             zhekou_edt.setText("未打折");
-                            zhekou_money.setText(json.getJSONObject("data").getJSONObject("item").getString("price")+"");
+                            zhekou_money.setText(json.getJSONObject("data").getJSONObject("item").getString("price") + "");
                             //订单总金额
-                            order_money.setText(json.getJSONObject("data").getJSONObject("item").getString("price")+"");
+                            order_money.setText(json.getJSONObject("data").getJSONObject("item").getString("price") + "");
                         } else {
                             double yhzk = Double.parseDouble(json.getJSONObject("data").getJSONObject("item").getString("sale")) * 10;
                             zhekou_edt.setText(yhzk + "折");
                             double ysje = Double.parseDouble(json.getJSONObject("data").getJSONObject("item").getString("price")) * Double.parseDouble(json.getJSONObject("data").getJSONObject("item").getString("sale"));
-                            zhekou_money.setText(ysje+"");
-                             order_money.setText(ysje+"");
+                            zhekou_money.setText(ysje + "");
+                            order_money.setText(ysje + "");
                         }
 
                         dingdanjine.setText("￥" + json.getJSONObject("data").getJSONObject("item").getString("goodsprice"));
                         order_details_num.setText(ordersn);
                         String jsonObject = json.getJSONObject("data").getString("sharemem");
-                        tablename.setText("桌子名称："+json.getJSONObject("data").getJSONObject("tableinfo").getString("tablename"));
+                        tablename.setText("桌子名称：" + json.getJSONObject("data").getJSONObject("tableinfo").getString("tablename"));
                         String datenum = json.getJSONObject("data").getJSONObject("tableinfo").getString("datenum");
 
                         seale_money.setText("￥" + json.getJSONObject("data").getJSONObject("item").getString("seat_fee"));
@@ -314,22 +237,97 @@ public class DFFragment extends Fragment {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                loadingDetails.dismiss();
+                    loadingDetails.dismiss();
                     break;
             }
         }
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        if (view == null) {
+            view = inflater.inflate(R.layout.fragment_order_df, null);
+        }
+        listBeen = new ArrayList<>();
+        LoadingData();
+        initView();
+        recycleListenner();
+
+        return view;
+    }
+
+    private void recycleListenner() {
+        cycAdapter.setOnItemClickListener(new BranchSelectedAdapter.OnItemClickListener() {
+
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onItemClick(View view, int position) {
+                //启动popwindow
+                loadingDetails = LoadingUtils.getDailog(getContext(), Color.RED, "获取订单详情中。。。。");
+                loadingDetails.show();
+                String id = getOrderList.get(position).getId();
+                Map<String, String> map = MapUtilsSetParam.getMap(getContext());
+                map.put("opp", "getorderdetail");
+                //获取分店id
+                map.put("branchid", Utils.getBranch(getContext()).getId());
+                map.put("orderid", id);
+                NetUtils.netWorkByMethodPost(getContext(), map, IpConfig.URL, handler, ContantData.GETORDERLISTDETAILS);
+                setPopWindow();
+            }
+        });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void LoadingData() {
+        parentview = (LinearLayout) view.findViewById(R.id.parentview);
+        getOrderList = new ArrayList<>();
+        loading_dailog = LoadingUtils.getDailog(getContext(), Color.RED, "获取订单中。。。。");
+        loading_dailog.show();
+        //获取order的数据
+        Map<String, String> mapOrder = MapUtilsSetParam.getMap(getContext());
+        mapOrder.put("opp", "orderlist");
+//        mapOrder.put("branchid",  Utils.getBranch(getContext()).getId());
+        mapOrder.put("page", "1");
+        mapOrder.put("status", "0");
+        NetUtils.netWorkByMethodPost(getActivity(), mapOrder, IpConfig.URL, handler, ContantData.GETORDERLISTDF);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void initView() {
+        ordercycle = (RecyclerView) view.findViewById(R.id.order_recycle);
+        GridLayoutManager manager = new GridLayoutManager(getContext(), 1);
+        ordercycle.setLayoutManager(manager);
+        cycAdapter = new OrderListCycleAdapter(getOrderList);
+        ordercycle.setAdapter(cycAdapter);
+        //------------------------------------pop---------------------------------
+        if (mContentView == null) {
+            mContentView = LayoutInflater.from(getContext()).inflate(R.layout.activity_order_df_details_pop, null);
+        }
+        tablename = (TextView) mContentView.findViewById(R.id.tablename);
+        ordertime = (TextView) mContentView.findViewById(R.id.ordertime);
+        order_details_num = (TextView) mContentView.findViewById(R.id.order_details_num);
+        dingdanjine = (TextView) mContentView.findViewById(R.id.dingdanjine);
+        seale_money = (TextView) mContentView.findViewById(R.id.seale_money);
+        order_money = (TextView) mContentView.findViewById(R.id.order_money);
+        zhekou_money = (TextView) mContentView.findViewById(R.id.zhekou_money);
+        zhekou_edt = (EditText) mContentView.findViewById(R.id.zhekou_edt);
+        popListview = (ListView) mContentView.findViewById(R.id.order_details_list_goods);
+        popAdapter = new ListOrdeDetailsItemrAdapter(getContext(), listBeen);
+        popListview.setAdapter(popAdapter);
+        //------------------------------------pop---------------------------------
+    }
 
     /**
      * popwindow的初始化
      */
-    public void setPopWindow(){
+    public void setPopWindow() {
 
         mPopupWindow = new PopupWindow(mContentView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
         mPopupWindow.setTouchable(true);
         mPopupWindow.setOutsideTouchable(false);
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
-        mPopupWindow.showAtLocation(parentview, Gravity.CENTER,0,0);
+        mPopupWindow.showAtLocation(parentview, Gravity.CENTER, 0, 0);
     }
 }

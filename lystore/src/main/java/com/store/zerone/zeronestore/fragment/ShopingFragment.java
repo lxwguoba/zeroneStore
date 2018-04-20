@@ -68,6 +68,7 @@ import static android.app.Activity.RESULT_OK;
  */
 
 public class ShopingFragment extends Fragment implements PersonAdapter.OnShopCartGoodsChangeListener, OnHeaderClickListener {
+    public static final Integer REQUEST_CODE = 520;
     //商品类别列表
     //商品类别列表
     private List<GoodsListBean.DataEntity.GoodscatrgoryEntity> goodscatrgoryEntities = new ArrayList<>();
@@ -102,152 +103,6 @@ public class ShopingFragment extends Fragment implements PersonAdapter.OnShopCar
     private LinearLayout parentview;
     private ListViewOptionTitle opAdapter;
     private PopupWindow mPopupWindow;
-    private TextView qrScan;
-
-    public  static   final  Integer REQUEST_CODE=520;
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (view == null) {
-            view = inflater.inflate(R.layout.fragment_order_dc, null);
-        }
-//-----------------------------测试--------------------------
-//        qrScan = (TextView) view.findViewById(R.id.qr_scan);
-//        qrScan.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(getContext(), ScanQR.class));
-//            }
-//        });
-        //-----------------------------测试--------------------------
-        //注册广播
-        if(!EventBus.getDefault().isRegistered(this)){//加上判断
-            EventBus.getDefault().register(this);//订阅
-        }
-
-        initView(view);
-        initListenner();
-        initLoadingData();
-        initOptopnsListenner();
-        return view;
-    }
-
-
-    /**
-     * 规格选择
-     */
-    private void initOptopnsListenner() {
-        oplist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                     //这个需要改动
-                    if (specs.length() > 0) {
-                        specs = specs + "_" + optionslist.get(position).getId();
-                    } else {
-                        specs = optionslist.get(position).getId();
-                    }
-                 String goodsid = optionslist.get(position).getGoodsid();
-
-                getMoney(specs,goodsid);
-            }
-        });
-
-        bsure.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            public void onClick(View v) {
-                JSONObject optionsbean = Utils.getACache(getContext()).getAsJSONObject("optionsbean");
-                String position_gg = Utils.getACache(getContext()).getAsString("position_gg");
-                 if (position_gg==null){
-                     position_gg="0";
-                 }
-                 Log.i("URLL",position_gg);
-                try {
-                    personAdapter.setListOptions(optionsbean,Integer.parseInt(position_gg));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                mPopupWindow.dismiss();
-            }
-        });
-    }
-
-    /**
-     * 网若获取数据
-     */
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void initLoadingData() {
-        /**
-         * profile_id ：用户id
-         * branchid：分店id
-         */
-        Map<String, String> map = MapUtilsSetParam.getMap(getContext());
-        try {
-            map.put("opp", "goodslist");
-            map.put("branchid","4");
-            map.put("profile_id", "-1");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        loading_dailog = LoadingUtils.getDailog(getContext(), Color.RED, "获取商品数据中。。。。");
-        loading_dailog.show();
-        NetUtils.netWorkByMethodPost(getContext(), map, IpConfig.URL, handler, ContantData.GETGOODSINFO);
-
-    }
-
-    private void initListenner() {
-
-    }
-
-    /**
-     * view的实力化
-     *
-     * @param view
-     */
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void initView(View view) {
-        parentview = (LinearLayout) view.findViewById(R.id.parentview);
-        optionslist =new ArrayList<>();
-        mGoodsCateGoryList = (RecyclerView) view.findViewById(R.id.goods_category_list);
-        recyclerView = (RecyclerView) view.findViewById(R.id.goods_recycleView);
-        //-----------------------------------opopwindow--------------------------------
-        if(moptions == null){
-            moptions = LayoutInflater.from(getContext()).inflate(R.layout.activity_options, null);
-        }
-            oplist = (ListView)moptions.findViewById(R.id.title);
-            //选择价格后需要改变
-            price = (TextView)moptions.findViewById(R.id.price);
-            bsure = (Button)moptions.findViewById(R.id.options_btn);
-            opAdapter = new ListViewOptionTitle(getContext(), optionslist, handler);
-            oplist.setAdapter(opAdapter);
-        //-----------------------------------opopwindow--------------------------------
-    }
-
-    /**
-     * 启动Activity的返回页面
-     *
-     * @param requestCode
-     * @param resultCode
-     * @param data
-     */
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ContantData.REQUESTCODE && resultCode == RESULT_OK) {
-            TableDBean.DataBean tableBean = (TableDBean.DataBean) data.getSerializableExtra("tableInfo");
-            String peoplecount = data.getStringExtra("peoplecount");
-            Utils.getACache(getContext()).put("peoplecount", peoplecount);
-            Utils.getACache(getContext()).put("tableBean", tableBean);
-            Message message = new Message();
-            message.what = 10;
-            message.obj = tableBean;
-            handler.sendMessage(message);
-        }
-    }
-
     Handler handler = new Handler() {
         @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
@@ -259,7 +114,7 @@ public class ShopingFragment extends Fragment implements PersonAdapter.OnShopCar
                     String[] arr = title_item.split("==");
                     Integer indexFu = Integer.parseInt(arr[0]);
                     Integer indexZi = Integer.parseInt(arr[1]);
-                    String goodsid  = optionslist.get(indexFu).getGoodsid();
+                    String goodsid = optionslist.get(indexFu).getGoodsid();
                     String title = optionslist.get(indexFu).getItems().get(indexZi).getTitle();
                     String id = optionslist.get(indexFu).getItems().get(indexZi).getId();
                     String[] sarr = specs.split("_");
@@ -278,7 +133,7 @@ public class ShopingFragment extends Fragment implements PersonAdapter.OnShopCar
                             }
                         }
                     }
-                    getMoney(specs,goodsid);
+                    getMoney(specs, goodsid);
                     break;
                 //获取到了桌子的数据和人数
                 case 10:
@@ -287,7 +142,7 @@ public class ShopingFragment extends Fragment implements PersonAdapter.OnShopCar
                     break;
                 case ContantData.GETGOODSINFO:
                     String goodsinfojson = (String) msg.obj;
-                    Log.i("BBB",goodsinfojson);
+                    Log.i("BBB", goodsinfojson);
                     try {
                         int f = 0;
                         int l = 0;
@@ -349,8 +204,8 @@ public class ShopingFragment extends Fragment implements PersonAdapter.OnShopCar
 
                 case 10000:
                     //打开选择规格页面
-                   int pos= (int) msg.obj;
-                    Utils.getACache(getContext()).put("position_gg",pos+"");
+                    int pos = (int) msg.obj;
+                    Utils.getACache(getContext()).put("position_gg", pos + "");
                     goodsitemEntities.get(pos).getHasoption();
                     //获取规格和规格项
                     Map<String, String> map = MapUtilsSetParam.getMap(getContext());
@@ -359,14 +214,14 @@ public class ShopingFragment extends Fragment implements PersonAdapter.OnShopCar
                     NetUtils.netWorkByMethodPost(getContext(), map, IpConfig.URL, handler, ContantData.GETOPTIONS);
                     break;
 
-                case  ContantData.GETOPTIONS:
+                case ContantData.GETOPTIONS:
                     String optionsJson = (String) msg.obj;
                     optionslist.clear();
-                    Log.d("OptionsActivity", "1106::::::::::::::"+optionsJson);
+                    Log.d("OptionsActivity", "1106::::::::::::::" + optionsJson);
                     try {
                         JSONObject jsonObject = new JSONObject(optionsJson);
                         JSONArray array = jsonObject.getJSONArray("data");
-                        specs="";
+                        specs = "";
                         for (int i = 0; i < array.length(); i++) {
                             OptionsBean opb = new OptionsBean();
                             opb.setId(array.getJSONObject(i).getString("id"));
@@ -405,21 +260,21 @@ public class ShopingFragment extends Fragment implements PersonAdapter.OnShopCar
                         }
                         opAdapter.notifyDataSetChanged();
                         setPopWindow();
-                        getMoney(specs,array.getJSONObject(0).getString("goodsid"));
+                        getMoney(specs, array.getJSONObject(0).getString("goodsid"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     break;
                 case ContantData.GETOPTIONSPRICE:
                     String moneyJson = (String) msg.obj;
-                    Log.i("CCC",moneyJson);
+                    Log.i("CCC", moneyJson);
                     try {
                         JSONObject jbt = new JSONObject(moneyJson);
                         int status = jbt.getInt("status");
                         if (status == 1) {
                             JSONObject data = jbt.getJSONObject("data");
                             price.setText(data.getString("marketprice"));
-                            Utils.getACache(getContext()).put("optionsbean",data);
+                            Utils.getACache(getContext()).put("optionsbean", data);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -428,17 +283,160 @@ public class ShopingFragment extends Fragment implements PersonAdapter.OnShopCar
             }
         }
     };
+    private TextView qrScan;
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (view == null) {
+            view = inflater.inflate(R.layout.fragment_order_dc, null);
+        }
+//-----------------------------测试--------------------------
+//        qrScan = (TextView) view.findViewById(R.id.qr_scan);
+//        qrScan.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(getContext(), ScanQR.class));
+//            }
+//        });
+        //-----------------------------测试--------------------------
+        //注册广播
+        if (!EventBus.getDefault().isRegistered(this)) {//加上判断
+            EventBus.getDefault().register(this);//订阅
+        }
+
+        initView(view);
+        initListenner();
+        initLoadingData();
+        initOptopnsListenner();
+        return view;
+    }
+
+    /**
+     * 规格选择
+     */
+    private void initOptopnsListenner() {
+        oplist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //这个需要改动
+                if (specs.length() > 0) {
+                    specs = specs + "_" + optionslist.get(position).getId();
+                } else {
+                    specs = optionslist.get(position).getId();
+                }
+                String goodsid = optionslist.get(position).getGoodsid();
+
+                getMoney(specs, goodsid);
+            }
+        });
+
+        bsure.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View v) {
+                JSONObject optionsbean = Utils.getACache(getContext()).getAsJSONObject("optionsbean");
+                String position_gg = Utils.getACache(getContext()).getAsString("position_gg");
+                if (position_gg == null) {
+                    position_gg = "0";
+                }
+                Log.i("URLL", position_gg);
+                try {
+                    personAdapter.setListOptions(optionsbean, Integer.parseInt(position_gg));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                mPopupWindow.dismiss();
+            }
+        });
+    }
+
+    /**
+     * 网若获取数据
+     */
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void initLoadingData() {
+        /**
+         * profile_id ：用户id
+         * branchid：分店id
+         */
+        Map<String, String> map = MapUtilsSetParam.getMap(getContext());
+        try {
+            map.put("opp", "goodslist");
+            map.put("branchid", "4");
+            map.put("profile_id", "-1");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        loading_dailog = LoadingUtils.getDailog(getContext(), Color.RED, "获取商品数据中。。。。");
+        loading_dailog.show();
+        NetUtils.netWorkByMethodPost(getContext(), map, IpConfig.URL, handler, ContantData.GETGOODSINFO);
+
+    }
+
+    private void initListenner() {
+
+    }
+
+    /**
+     * view的实力化
+     *
+     * @param view
+     */
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void initView(View view) {
+        parentview = (LinearLayout) view.findViewById(R.id.parentview);
+        optionslist = new ArrayList<>();
+        mGoodsCateGoryList = (RecyclerView) view.findViewById(R.id.goods_category_list);
+        recyclerView = (RecyclerView) view.findViewById(R.id.goods_recycleView);
+        //-----------------------------------opopwindow--------------------------------
+        if (moptions == null) {
+            moptions = LayoutInflater.from(getContext()).inflate(R.layout.activity_options, null);
+        }
+        oplist = (ListView) moptions.findViewById(R.id.title);
+        //选择价格后需要改变
+        price = (TextView) moptions.findViewById(R.id.price);
+        bsure = (Button) moptions.findViewById(R.id.options_btn);
+        opAdapter = new ListViewOptionTitle(getContext(), optionslist, handler);
+        oplist.setAdapter(opAdapter);
+        //-----------------------------------opopwindow--------------------------------
+    }
+
+    /**
+     * 启动Activity的返回页面
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ContantData.REQUESTCODE && resultCode == RESULT_OK) {
+            TableDBean.DataBean tableBean = (TableDBean.DataBean) data.getSerializableExtra("tableInfo");
+            String peoplecount = data.getStringExtra("peoplecount");
+            Utils.getACache(getContext()).put("peoplecount", peoplecount);
+            Utils.getACache(getContext()).put("tableBean", tableBean);
+            Message message = new Message();
+            message.what = 10;
+            message.obj = tableBean;
+            handler.sendMessage(message);
+        }
+    }
 
     //获取价格
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void getMoney(String specs, String goodsid) {
-        Log.i("FFF",specs);
-        String memberid ="";
+        Log.i("FFF", specs);
+        String memberid = "";
         Map<String, String> ma = MapUtilsSetParam.getMap(getContext());
         ma.put("opp", "getOptionPrice");
         ma.put("goodsid", goodsid);
-        if (memberid==null){
-            memberid="-1";
+        if (memberid == null) {
+            memberid = "-1";
         }
         ma.put("memberid", memberid);
         ma.put("specs", specs);
@@ -457,26 +455,6 @@ public class ShopingFragment extends Fragment implements PersonAdapter.OnShopCar
 
     }
 
-    /**
-     * 处理滑动 是两个ListView联动
-     * 需要改动
-     */
-    private class MyOnGoodsScrollListener implements AbsListView.OnScrollListener {
-        @Override
-        public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-        }
-
-        @Override
-        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            if (!(lastTitlePoi == goodsitemEntities.get(firstVisibleItem).getGb_id())) {
-                lastTitlePoi = goodsitemEntities.get(firstVisibleItem).getGb_id();
-                mGoodsCategoryListAdapter.setCheckPosition(goodsitemEntities.get(firstVisibleItem).getGb_id());
-                mGoodsCategoryListAdapter.notifyDataSetChanged();
-            }
-        }
-    }
-
     //这个是有用的需要改动
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void initData(List<GoodsListBean.DataEntity.GoodscatrgoryEntity> list) {
@@ -492,7 +470,7 @@ public class ShopingFragment extends Fragment implements PersonAdapter.OnShopCar
         });
         mLinearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(mLinearLayoutManager);
-        personAdapter = new PersonAdapter(getActivity(), goodsitemEntities, goodscatrgoryEntities,handler);
+        personAdapter = new PersonAdapter(getActivity(), goodsitemEntities, goodscatrgoryEntities, handler);
         personAdapter.setmActivity(getActivity());
         headerAdapter = new BigramHeaderAdapter(getActivity(), goodsitemEntities, goodscatrgoryEntities);
         top = new StickyHeadersBuilder()
@@ -538,8 +516,6 @@ public class ShopingFragment extends Fragment implements PersonAdapter.OnShopCar
         }
     }
 
-
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -548,8 +524,8 @@ public class ShopingFragment extends Fragment implements PersonAdapter.OnShopCar
     }
 
     /**
-     *
      * 清空数据
+     *
      * @param mess
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -562,16 +538,35 @@ public class ShopingFragment extends Fragment implements PersonAdapter.OnShopCar
         mGoodsCategoryListAdapter.changeData(goodscatrgoryEntities);
     }
 
-
     /**
      * popwindow的初始化
      */
-    public void setPopWindow(){
+    public void setPopWindow() {
         mPopupWindow = new PopupWindow(moptions, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
         mPopupWindow.setTouchable(true);
         mPopupWindow.setOutsideTouchable(false);
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
-        mPopupWindow.showAtLocation(parentview, Gravity.CENTER,0,0);
+        mPopupWindow.showAtLocation(parentview, Gravity.CENTER, 0, 0);
+    }
+
+    /**
+     * 处理滑动 是两个ListView联动
+     * 需要改动
+     */
+    private class MyOnGoodsScrollListener implements AbsListView.OnScrollListener {
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+        }
+
+        @Override
+        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            if (!(lastTitlePoi == goodsitemEntities.get(firstVisibleItem).getGb_id())) {
+                lastTitlePoi = goodsitemEntities.get(firstVisibleItem).getGb_id();
+                mGoodsCategoryListAdapter.setCheckPosition(goodsitemEntities.get(firstVisibleItem).getGb_id());
+                mGoodsCategoryListAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
     //--------------------扫码返回的结果------------------------

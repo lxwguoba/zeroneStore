@@ -7,7 +7,7 @@ import java.io.Serializable;
  * Author  LiuXingWen
  */
 
-public class ListGoods  implements Serializable {
+public class ListGoods implements Serializable {
 
 
 }

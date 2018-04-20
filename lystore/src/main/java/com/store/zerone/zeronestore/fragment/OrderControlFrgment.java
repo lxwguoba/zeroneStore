@@ -22,17 +22,18 @@ import com.store.zerone.zeronestore.fragment.order.YFFragment;
  * Author  LiuXingWen
  */
 
-public class OrderControlFrgment extends Fragment   implements View.OnClickListener {
+public class OrderControlFrgment extends Fragment implements View.OnClickListener {
     private View view;
     private LinearLayout ll_order_df, ll_order_yf, ll_order_yc;
-    private TextView order_df,order_yf, order_yc, tvCurrent;
+    private TextView order_df, order_yf, order_yc, tvCurrent;
     private FragmentManager fragmentManager;
     private FragmentTransaction beginTransaction;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        if (view==null){
-            view = inflater.inflate(R.layout.activity_order_main,null);
+        if (view == null) {
+            view = inflater.inflate(R.layout.activity_order_main, null);
         }
         initView();
         return view;
@@ -55,16 +56,16 @@ public class OrderControlFrgment extends Fragment   implements View.OnClickListe
         tvCurrent = order_df;
         fragmentManager = getFragmentManager();
         beginTransaction = fragmentManager.beginTransaction();
-        beginTransaction.replace(R.id.ll_order_main,new DFFragment());
+        beginTransaction.replace(R.id.ll_order_main, new DFFragment());
         beginTransaction.commit();
     }
 
 
     @Override
     public void onClick(View v) {
-      tvCurrent.setSelected(false);
-      FragmentManager fragmentManager = getFragmentManager();
-      FragmentTransaction beginTransaction = fragmentManager
+        tvCurrent.setSelected(false);
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction beginTransaction = fragmentManager
                 .beginTransaction();
         switch (v.getId()) {
             case R.id.ll_order_df:
@@ -77,7 +78,7 @@ public class OrderControlFrgment extends Fragment   implements View.OnClickListe
                 tvCurrent = order_df;
                 break;
             case R.id.ll_order_yf:
-                beginTransaction.replace(R.id.ll_order_main,new YFFragment());
+                beginTransaction.replace(R.id.ll_order_main, new YFFragment());
             case 1:
                 order_yf.setSelected(true);
                 order_df.setTextColor(Color.parseColor("#838383"));

@@ -1,10 +1,12 @@
 package com.store.zerone.zeronestore;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+
 /**
  * 结果接收者
  * Created by xurong on 2017/5/15.
@@ -70,7 +72,7 @@ public class ResultReceiver extends BroadcastReceiver {
             if (!TextUtils.isEmpty(merchantId)) {
                 resultInfo = resultInfo + "\nmerchantId:" + merchantId;
             }
-            if(!TextUtils.isEmpty(merchantName)){
+            if (!TextUtils.isEmpty(merchantName)) {
                 resultInfo = resultInfo + "\nmerchantName:" + merchantName;
             }
             if (paymentType != -2) {
@@ -114,7 +116,7 @@ public class ResultReceiver extends BroadcastReceiver {
                     myIntent.putExtra("resultInfo", resultInfo);
                     myIntent.putExtra("errorMsg", errorMsg);
                     myIntent.putExtra("errorCode", errorCode);
-                    myIntent.putExtra("money", amount+"");
+                    myIntent.putExtra("money", amount + "");
                     context.startActivity(myIntent);
                 }
             }, 500);

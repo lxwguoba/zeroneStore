@@ -26,10 +26,26 @@ import woyou.aidlservice.jiuiv5.IWoyouService;
 public class AidlUtil {
     private static final String SERVICE＿PACKAGE = "woyou.aidlservice.jiuiv5";
     private static final String SERVICE＿ACTION = "woyou.aidlservice.jiuiv5.IWoyouService";
-
-    private IWoyouService woyouService;
     private static AidlUtil mAidlUtil = new AidlUtil();
+    private IWoyouService woyouService;
     private Context context;
+    private ServiceConnection connService = new ServiceConnection() {
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            woyouService = null;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            woyouService = IWoyouService.Stub.asInterface(service);
+        }
+    };
+    /**
+     * 设置打印浓度
+     */
+    private int[] darkness = new int[]{0x0600, 0x0500, 0x0400, 0x0300, 0x0200, 0x0100, 0,
+            0xffff, 0xfeff, 0xfdff, 0xfcff, 0xfbff, 0xfaff};
 
     private AidlUtil() {
     }
@@ -68,22 +84,8 @@ public class AidlUtil {
         return woyouService != null;
     }
 
-    private ServiceConnection connService = new ServiceConnection() {
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            woyouService = null;
-        }
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            woyouService = IWoyouService.Stub.asInterface(service);
-        }
-    };
-
-    public ICallback generateCB(final PrinterCallback printerCallback){
-        return new ICallback.Stub(){
-
+    public ICallback generateCB(final PrinterCallback printerCallback) {
+        return new ICallback.Stub() {
 
             @Override
             public void onRunResult(boolean isSuccess) throws RemoteException {
@@ -106,12 +108,6 @@ public class AidlUtil {
             }
         };
     }
-
-    /**
-     * 设置打印浓度
-     */
-    private int[] darkness = new int[]{0x0600, 0x0500, 0x0400, 0x0300, 0x0200, 0x0100, 0,
-            0xffff, 0xfeff, 0xfdff, 0xfcff, 0xfbff, 0xfaff};
 
     public void setDarkness(int index) {
         if (woyouService == null) {
@@ -152,11 +148,12 @@ public class AidlUtil {
             PackageManager packageManager = context.getPackageManager();
             try {
                 PackageInfo packageInfo = packageManager.getPackageInfo(SERVICE＿PACKAGE, 0);
-                if(packageInfo != null){
+                if (packageInfo != null) {
                     info.add(packageInfo.versionName);
-                    info.add(packageInfo.versionCode+"");
-                }else{
-                    info.add("");info.add("");
+                    info.add(packageInfo.versionCode + "");
+                } else {
+                    info.add("");
+                    info.add("");
                 }
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
@@ -195,7 +192,7 @@ public class AidlUtil {
 
 
         try {
-			woyouService.setAlignment(1, null);
+            woyouService.setAlignment(1, null);
             woyouService.printQRCode(data, modulesize, errorlevel, null);
             woyouService.lineWrap(3, null);
         } catch (RemoteException e) {
@@ -242,7 +239,7 @@ public class AidlUtil {
             } else {
                 woyouService.sendRAWData(ESCUtil.underlineOff(), null);
             }
-            woyouService.setAlignment(0,null);
+            woyouService.setAlignment(0, null);
             woyouService.printTextWithFont(content, null, size, null);
             //空三行
             woyouService.lineWrap(2, null);
@@ -277,7 +274,7 @@ public class AidlUtil {
             woyouService.printTextWithFont(content, null, size, null);
             //空三行
             woyouService.lineWrap(1, null);
-            woyouService.setAlignment(1,null);
+            woyouService.setAlignment(1, null);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -304,21 +301,21 @@ public class AidlUtil {
 
 
     /**
-     *  打印图片和文字按照指定排列顺序
+     * 打印图片和文字按照指定排列顺序
      */
     public void printBitmap(Bitmap bitmap, int orientation) {
         if (woyouService == null) {
-            Toast.makeText(context,"服务已断开！", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "服务已断开！", Toast.LENGTH_LONG).show();
             return;
         }
 
         try {
-            if(orientation == 0){
+            if (orientation == 0) {
                 woyouService.printBitmap(bitmap, null);
                 woyouService.printText("横向排列\n", null);
                 woyouService.printBitmap(bitmap, null);
                 woyouService.printText("横向排列\n", null);
-            }else{
+            } else {
                 woyouService.printBitmap(bitmap, null);
                 woyouService.printText("\n纵向排列\n", null);
                 woyouService.printBitmap(bitmap, null);
@@ -333,9 +330,10 @@ public class AidlUtil {
 
     /**
      * 打印表格
-     * @param list table的是实体类
+     *
+     * @param list     table的是实体类
      * @param textsize 表格的数字大小
-     * @param   isBold  字体是否加粗
+     * @param isBold   字体是否加粗
      */
     public void printTable(LinkedList<TableItem> list, int textsize, boolean isBold) {
         if (woyouService == null) {
@@ -344,8 +342,8 @@ public class AidlUtil {
         }
         try {
             for (TableItem tableItem : list) {
-                Log.i("kaltin", "printTable: "+tableItem.getText()[0]+tableItem.getText()[1]+tableItem.getText()[2]);
-                woyouService.setFontSize(textsize,null);
+                Log.i("kaltin", "printTable: " + tableItem.getText()[0] + tableItem.getText()[1] + tableItem.getText()[2]);
+                woyouService.setFontSize(textsize, null);
                 if (isBold) {
                     woyouService.sendRAWData(ESCUtil.boldOn(), null);
                 } else {
@@ -369,7 +367,7 @@ public class AidlUtil {
 
         try {
             for (TableItem tableItem : list) {
-                Log.i("kaltin", "printTable: "+tableItem.getText()[0]+tableItem.getText()[1]+tableItem.getText()[2]);
+                Log.i("kaltin", "printTable: " + tableItem.getText()[0] + tableItem.getText()[1] + tableItem.getText()[2]);
                 woyouService.printColumnsString(tableItem.getText(), tableItem.getWidth(), tableItem.getAlign(), null);
             }
 
@@ -378,10 +376,11 @@ public class AidlUtil {
             e.printStackTrace();
         }
     }
+
     /*
     * 空打三行！
      */
-    public void print3Line(){
+    public void print3Line() {
         if (woyouService == null) {
             Toast.makeText(context, R.string.toast_2, Toast.LENGTH_LONG).show();
             return;
@@ -408,7 +407,7 @@ public class AidlUtil {
         }
     }
 
-    public void sendRawDatabyBuffer(byte[] data, ICallback iCallback){
+    public void sendRawDatabyBuffer(byte[] data, ICallback iCallback) {
         if (woyouService == null) {
             Toast.makeText(context, R.string.toast_2, Toast.LENGTH_LONG).show();
             return;

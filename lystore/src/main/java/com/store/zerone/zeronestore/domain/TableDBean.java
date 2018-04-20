@@ -15,19 +15,24 @@ public class TableDBean implements Serializable {
      */
     private int status;
     private List<DataBean> data;
+
     public int getStatus() {
         return status;
     }
+
     public void setStatus(int status) {
         this.status = status;
     }
+
     public List<DataBean> getData() {
         return data;
     }
+
     public void setData(List<DataBean> data) {
         this.data = data;
     }
-    public static class DataBean  implements Serializable{
+
+    public static class DataBean implements Serializable {
         /**
          * id : 93
          * weid : 1

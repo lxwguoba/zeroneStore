@@ -8,6 +8,18 @@ import java.io.Serializable;
  */
 
 public class GoodsBeanUp implements Serializable {
+    private int gb_id;
+    private int g_count;
+    private String id;
+    private String title;
+    private String marketprice;
+    private String thumb;
+    private String total;
+    private String hasoption;
+    private String yuanjia;
+    private int total_in_cart;
+    private OptionsBean options;
+
     @Override
     public String toString() {
         return "GoodsBeanUp{" +
@@ -24,18 +36,6 @@ public class GoodsBeanUp implements Serializable {
                 ", options=" + options +
                 '}';
     }
-
-    private  int  gb_id;
-    private  int g_count;
-    private String id;
-    private String title;
-    private String marketprice;
-    private String thumb;
-    private String total;
-    private String hasoption;
-    private String yuanjia;
-    private int total_in_cart;
-    private OptionsBean options;
 
     public int getG_count() {
         return g_count;
@@ -129,12 +129,11 @@ public class GoodsBeanUp implements Serializable {
         /**
          * optionid : 0
          * optionname : 无
-         *
          */
 
         private int optionid;
         private String optionname;
-        private  String goodsId;
+        private String goodsId;
 
         public String getGoodsId() {
             return goodsId;

@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:divider="@drawable/account_line"
-              android:background="@color/background"
-              android:dividerPadding="1dp"
-              android:orientation="vertical"
-              android:paddingLeft="16dp"
-              android:paddingRight="16dp"
-              android:showDividers="middle|end|beginning">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:divider="@drawable/account_line"
+    android:dividerPadding="1dp"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:showDividers="middle|end|beginning">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="54dp"
@@ -20,7 +21,7 @@
             android:layout_height="wrap_content"
             android:text="@string/printer_serial_num"
             android:textColor="@color/white"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/info1"
@@ -29,8 +30,9 @@
             android:gravity="end|center_vertical"
             android:text=""
             android:textColor="@color/gray"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="54dp"
@@ -42,7 +44,7 @@
             android:layout_height="wrap_content"
             android:text="@string/printer_model"
             android:textColor="@color/white"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/info2"
@@ -51,7 +53,7 @@
             android:gravity="end|center_vertical"
             android:text=""
             android:textColor="@color/gray"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -65,7 +67,7 @@
             android:layout_height="wrap_content"
             android:text="@string/printer_head"
             android:textColor="@color/white"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/info7"
@@ -74,7 +76,7 @@
             android:gravity="end|center_vertical"
             android:text=""
             android:textColor="@color/gray"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -88,7 +90,7 @@
             android:layout_height="wrap_content"
             android:text="@string/printer_firmware"
             android:textColor="@color/white"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/info3"
@@ -97,8 +99,9 @@
             android:gravity="end|center_vertical"
             android:text=""
             android:textColor="@color/gray"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="54dp"
@@ -110,7 +113,7 @@
             android:layout_height="wrap_content"
             android:text="@string/printer_head_size"
             android:textColor="@color/white"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/info4"
@@ -119,8 +122,9 @@
             android:gravity="end|center_vertical"
             android:text="58mm"
             android:textColor="@color/gray"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="54dp"
@@ -132,7 +136,7 @@
             android:layout_height="wrap_content"
             android:text="@string/printer_distance"
             android:textColor="@color/white"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/info5"
@@ -141,8 +145,9 @@
             android:gravity="end|center_vertical"
             android:text=""
             android:textColor="@color/gray"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="54dp"
@@ -154,7 +159,7 @@
             android:layout_height="wrap_content"
             android:text="@string/printer_version"
             android:textColor="@color/white"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/info6"
@@ -163,8 +168,9 @@
             android:gravity="end|center_vertical"
             android:text=""
             android:textColor="@color/gray"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="54dp"
@@ -176,7 +182,7 @@
             android:layout_height="wrap_content"
             android:text="@string/printer_dev_version"
             android:textColor="@color/white"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/info8"
@@ -185,7 +191,7 @@
             android:gravity="end|center_vertical"
             android:text=""
             android:textColor="@color/gray"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
     </LinearLayout>
 
 
@@ -200,7 +206,7 @@
             android:layout_height="wrap_content"
             android:text="打印助手版本"
             android:textColor="@color/white"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/info9"
@@ -209,7 +215,7 @@
             android:gravity="right|center_vertical"
             android:text=""
             android:textColor="@color/gray"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
     </LinearLayout>
 
 </LinearLayout>

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-
 import com.store.zerone.zeronestore.R;
 
 import java.io.IOException;
@@ -43,7 +42,7 @@ public class BluetoothUtil {
         BluetoothSocket socket;
         socket = device.createRfcommSocketToServiceRecord(PRINTER_UUID);
         socket.connect();
-        return  socket;
+        return socket;
     }
 
     /**

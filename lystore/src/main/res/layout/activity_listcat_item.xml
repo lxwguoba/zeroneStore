@@ -2,15 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:gravity="center_vertical"
-    >
+    android:gravity="center_vertical">
+
     <TextView
         android:id="@+id/tablecatname"
         android:layout_width="61dp"
-        android:textSize="16sp"
+        android:layout_height="47dp"
+        android:background="@mipmap/icon_goodscate_bg"
         android:gravity="center"
         android:textColor="#fff"
-        android:background="@mipmap/icon_goodscate_bg"
-        android:layout_height="47dp"
-        />
+        android:textSize="16sp" />
 </LinearLayout>

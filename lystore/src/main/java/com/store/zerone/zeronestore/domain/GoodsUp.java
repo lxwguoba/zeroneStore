@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 public class GoodsUp implements Serializable {
     // 商品id
-    private  String goodsid;
+    private String goodsid;
     // 规格id
     private String optionid;
     //数量

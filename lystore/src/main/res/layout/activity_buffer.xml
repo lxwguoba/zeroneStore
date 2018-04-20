@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/background"
-              android:divider="@drawable/account_line"
-              android:dividerPadding="1dp"
-              android:orientation="vertical"
-              android:paddingLeft="16dp"
-              android:paddingRight="16dp"
-              android:showDividers="middle|end|beginning">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:divider="@drawable/account_line"
+    android:dividerPadding="1dp"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:showDividers="middle|end|beginning">
 
     <TextView
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
         android:gravity="center_vertical"
         android:text="@string/buffer_info1"
         android:textColor="@color/white"
-        android:textSize="14sp"/>
+        android:textSize="14sp" />
 
     <TextView
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
         android:gravity="center_vertical"
         android:text="@string/buffer_info2"
         android:textColor="@color/white"
-        android:textSize="14sp"/>
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/buffer_info"
@@ -33,7 +33,7 @@
         android:gravity="center_vertical"
         android:text=""
         android:textColor="@color/white"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,7 +50,7 @@
             android:padding="10dp"
             android:text="@string/enter_work"
             android:textColor="@color/white"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/buffer_print"
@@ -62,6 +62,6 @@
             android:padding="10dp"
             android:text="@string/print_baidu_ticket"
             android:textColor="@color/white"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
     </LinearLayout>
 </LinearLayout>

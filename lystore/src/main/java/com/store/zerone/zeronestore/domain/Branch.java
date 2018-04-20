@@ -20,28 +20,28 @@ public class Branch implements Serializable {
     //分店id
     private String id;
 
-    public void setThumb(String thumb) {
-        this.thumb = thumb;
-    }
-
-    public void setZtdname(String ztdname) {
-        this.ztdname = ztdname;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getThumb() {
         return thumb;
+    }
+
+    public void setThumb(String thumb) {
+        this.thumb = thumb;
     }
 
     public String getZtdname() {
         return ztdname;
     }
 
+    public void setZtdname(String ztdname) {
+        this.ztdname = ztdname;
+    }
+
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override

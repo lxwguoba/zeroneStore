@@ -1,0 +1,1 @@
+include ':lystore', ':library', ':lynewretail', ':myapplication', ':shopingtime', ':app', ':SunmiScan'

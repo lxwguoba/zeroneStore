@@ -13,7 +13,6 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.StringRequest;
 import com.store.zerone.zeronestore.application.MyApplication;
 
-
 import java.io.File;
 import java.util.Map;
 

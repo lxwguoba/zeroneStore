@@ -16,16 +16,18 @@ public class BranchDao extends AbstractDao {
     public BranchDao(Context context) {
         super(context);
     }
+
     /**
      * 插入数据
-     * @param branch  分店实体类
+     *
+     * @param branch 分店实体类
      * @throws Exception
      */
     public void add(Branch branch) throws Exception {
         try {
             db = baseDao.getWritableDatabase();
             String sql = "insert into branch (id, ztdname,thumb) values (?, ?, ?)";
-            String[] param = new String[] { branch.getId(),branch.getZtdname(),branch.getThumb()};
+            String[] param = new String[]{branch.getId(), branch.getZtdname(), branch.getThumb()};
             db.execSQL(sql, param);
         } catch (Exception e) {
             throw new Exception("插入数据失败", e);
@@ -33,22 +35,23 @@ public class BranchDao extends AbstractDao {
             db.close();
         }
     }
+
     public Branch getBranch(String id) throws Exception {
         Cursor cur = null;
         try {
             db = baseDao.getReadableDatabase();
-            String[] field = new String[] { id };
-            cur = db.rawQuery("select * from branch where id="+field[0], null);
+            String[] field = new String[]{id};
+            cur = db.rawQuery("select * from branch where id=" + field[0], null);
             int count = cur.getCount();
-            if(count == 0){
+            if (count == 0) {
                 return null;
             }
             cur.moveToFirst();
-            Branch branch = new Branch ();
+            Branch branch = new Branch();
             branch.setId(cur.getString(cur.getColumnIndex("id")));
             branch.setZtdname(cur.getString(cur.getColumnIndex("ztdname")));
             branch.setThumb(cur.getString(cur.getColumnIndex("thumb")));
-            return  branch;
+            return branch;
         } catch (Exception e) {
             throw new Exception("获取失败", e);
         } finally {
@@ -59,9 +62,10 @@ public class BranchDao extends AbstractDao {
 
     /**
      * 清空表中数据
+     *
      * @throws Exception
      */
-    public void del() throws Exception{
+    public void del() throws Exception {
         try {
             db = baseDao.getWritableDatabase();
             String sql = "delete from branch";

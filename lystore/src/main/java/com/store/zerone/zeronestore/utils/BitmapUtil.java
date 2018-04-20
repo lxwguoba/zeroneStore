@@ -20,6 +20,7 @@ public class BitmapUtil {
 
     /**
      * 生成条码bitmap
+     *
      * @param content
      * @param format
      * @param width
@@ -27,10 +28,10 @@ public class BitmapUtil {
      * @return
      */
     public static Bitmap generateBitmap(String content, int format, int width, int height) {
-        if(content == null || content.equals(""))
+        if (content == null || content.equals(""))
             return null;
         BarcodeFormat barcodeFormat;
-        switch (format){
+        switch (format) {
             case 0:
                 barcodeFormat = BarcodeFormat.UPC_A;
                 break;
