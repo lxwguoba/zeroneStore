@@ -5,6 +5,7 @@ package com.zerone.shopingtimetest.Contants;
  * <p>
  * 用来保存域名 就是链接
  */
+asdfasdfasdf
 public class IpConfig {
     //登录接口
     public static final String URL_LOGIN = "http://develop.01nnt.com/api/androidSimpleApi/login";
