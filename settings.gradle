@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 include ':shopingtime', ':shopingtimetest'
+=======
+include ':lystore', ':library', ':lynewretail', ':myapplication', ':shopingtime', ':app', ':SunmiScan', ':shopingtimetest'
+>>>>>>> 4e22cce6e9d458c5bf0421e32a9d3a94a022817a
