@@ -1,5 +1,1 @@
-
 include ':shopingtime', ':shopingtimetest'
-
-include ':lystore', ':library', ':lynewretail', ':myapplication', ':shopingtime', ':app', ':SunmiScan', ':shopingtimetest'
-
