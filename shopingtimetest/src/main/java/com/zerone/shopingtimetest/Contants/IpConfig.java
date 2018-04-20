@@ -14,10 +14,6 @@ public class IpConfig {
     public static final String URL_SERACH = "http://develop.01nnt.com/api/androidSimpleApi/goodslist";
     //获取图片接口
     public static final String URL_GETPICTURE = "http://develop.01nnt.com/";
-<<<<<<< HEAD
-=======
-
->>>>>>> 4e22cce6e9d458c5bf0421e32a9d3a94a022817a
     public static final String URL_GOODSLIST = "http://develop.01nnt.com/api/androidSimpleApi/goodslist";
     //开启/关闭零库存开单接口
     public static final String URL_KQLKC = "http://develop.01nnt.com/api/androidSimpleApi/allow_zero_stock";
