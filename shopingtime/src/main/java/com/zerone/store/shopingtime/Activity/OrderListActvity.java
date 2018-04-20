@@ -112,6 +112,495 @@ public class OrderListActvity extends BaseAppActivity {
     private LinearLayout scan_btn;
     private LinearLayout search_head_btn;
     private TextView selectedgoodsmoney;
+
+    private LinearLayout jiesaun;
+    private OrderListActvity mContent;
+    private ImageView cart_logo;
+    private TextView textViewCheckstand;
+    private TextView textViewFh;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_orderlist);
+        mContent = OrderListActvity.this;
+        buycartshoplist = new ArrayList<>();
+        initView();
+        initGetUserInfo();
+        initGetData();
+        action();
+    }
+
+    private void action() {
+        showOrderList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //把商品放入到购物车的集合中
+                if (buyShoppingList.size() > 0) {
+                    setData();
+                    setPopWindow();
+                }
+            }
+        });
+        shopCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        f_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setPopWindowMenu();
+            }
+        });
+
+
+        ordermenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(OrderListActvity.this, TheOrderListActivity.class));
+                mPopupWindowMenu.dismiss();
+            }
+        });
+        systemset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(OrderListActvity.this, SystemSettingsActivity.class));
+                mPopupWindowMenu.dismiss();
+            }
+        });
+        quxiaoMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPopupWindowMenu.dismiss();
+            }
+        });
+        scan_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                //启动扫码
+                Intent intent = new Intent("com.summi.scan");
+                intent.setPackage("com.sunmi.sunmiqrcodescanner");
+                intent.putExtra("CURRENT_PPI", 0X0003);//当前分辨率
+                intent.putExtra("PLAY_SOUND", true);// 扫描完成声音提示  默认true
+                intent.putExtra("PLAY_VIBRATE", true);
+                //扫描完成震动,默认false，目前M1硬件支持震动可用该配置，V1不支持
+                intent.putExtra("IDENTIFY_INVERSE_QR_CODE", true);// 识别反色二维码，默认true
+                intent.putExtra("IDENTIFY_MORE_CODE", false);// 识别画面中多个二维码，默认false
+                intent.putExtra("IS_SHOW_SETTING", false);// 是否显示右上角设置按钮，默认true
+                intent.putExtra("IS_SHOW_ALBUM", false);// 是否显示从相册选择图片按钮，默认true
+                startActivityForResult(intent, 520);
+
+            }
+        });
+        search_head_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setData();
+                Message message = new Message();
+                message.what = 33;
+                handler.sendMessage(message);
+            }
+        });
+
+        jiesaun.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setCarData();
+                Message message = new Message();
+                message.what = 120;
+                handler.sendMessage(message);
+            }
+        });
+    }
+
+    private void setCarData() {
+        buycartshoplist.clear();
+        for (int i = 0; i < buyShoppingList.size(); i++) {
+            ShopMessageBean smb = new ShopMessageBean();
+            smb.setSp_check(true);
+            smb.setSp_discount(buyShoppingList.get(i).getDetails());
+            smb.setSp_price(buyShoppingList.get(i).getPrice());
+            smb.setSp_count(buyShoppingList.get(i).getShop_Count());
+            int scount = Integer.parseInt(buyShoppingList.get(i).getShop_Count());
+            double lmoney = Double.parseDouble(buyShoppingList.get(i).getPrice());
+            smb.setSp_picture_url(IpConfig.URL_GETPICTURE + buyShoppingList.get(i).getThumb().get(0).getThumb());
+            smb.setCategory_id(buyShoppingList.get(i).getCategory_id() + "");
+            smb.setSp_name(buyShoppingList.get(i).getName());
+            smb.setSp_id(buyShoppingList.get(i).getId() + "");
+            buycartshoplist.add(smb);
+        }
+    }
+
+    /**
+     * 数据的倒换
+     */
+    private void setData() {
+        //先清展示购物车的数据
+        buycartshoplist.clear();
+        double smoney = 0.00;
+        for (int i = 0; i < buyShoppingList.size(); i++) {
+            ShopMessageBean smb = new ShopMessageBean();
+            smb.setSp_check(true);
+            smb.setSp_discount(buyShoppingList.get(i).getDetails());
+            smb.setSp_price(buyShoppingList.get(i).getPrice());
+            smb.setSp_count(buyShoppingList.get(i).getShop_Count());
+            int scount = Integer.parseInt(buyShoppingList.get(i).getShop_Count());
+            double lmoney = Double.parseDouble(buyShoppingList.get(i).getPrice());
+            smoney += scount * lmoney;
+            smb.setSp_picture_url(IpConfig.URL_GETPICTURE + buyShoppingList.get(i).getThumb().get(0).getThumb());
+            smb.setCategory_id(buyShoppingList.get(i).getCategory_id() + "");
+            smb.setSp_name(buyShoppingList.get(i).getName());
+            smb.setSp_id(buyShoppingList.get(i).getId() + "");
+            buycartshoplist.add(smb);
+        }
+        //popwindow-》商品列表
+        if (shopview == null) {
+            shopview = LayoutInflater.from(OrderListActvity.this).inflate(R.layout.activity_shopping_cart_pop_, null);
+        }
+//        allcheck = (CheckBox) shopview.findViewById(R.id.allCheckGoods);
+        checkCount = (TextView) shopview.findViewById(R.id.checkCount);
+        if (buycartshoplist.size() > 0) {
+            checkCount.setText(buycartshoplist.size() + "件商品");
+        }
+        clear_cart = (LinearLayout) shopview.findViewById(R.id.clear_cart);
+        shoplistview = (ListView) shopview.findViewById(R.id.shoplistview);
+        pop_price = (TextView) shopview.findViewById(R.id.pop_price);
+        cart_logo = (ImageView) shopview.findViewById(R.id.cart_logo);
+        //结算
+        settlement = (LinearLayout) shopview.findViewById(R.id.settlement);
+
+        pop_price.setText("￥" + smoney);
+        if (buycartshoplist != null) {
+            listAdapter = new ListGoodsDetails_Adapter(OrderListActvity.this, buycartshoplist, handler);
+            shoplistview.setAdapter(listAdapter);
+        }
+
+        clear_cart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Message message = new Message();
+                message.what = 3;
+                handler.sendMessage(message);
+
+            }
+        });
+        cart_logo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPopupWindow.dismiss();
+            }
+        });
+
+//        allcheck.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Message message = new Message();
+//                message.what = 4;
+//                handler.sendMessage(message);
+//
+//            }
+//        });
+
+        settlement.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Message message = new Message();
+                message.what = 110;
+                handler.sendMessage(message);
+
+            }
+        });
+    }
+
+    private void initGetData() {
+        if (userInfo == null) {
+            return;
+        }
+        String timestamp = System.currentTimeMillis() + "";
+        String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
+        Map<String, String> loginMap = new HashMap<String, String>();
+        loginMap.put("organization_id", userInfo.getOrganization_id());
+        loginMap.put("account_id", userInfo.getAccount_id());
+        Log.i("URL", "token" + token);
+        loginMap.put("token", token);
+        loginMap.put("timestamp", timestamp);
+        Log.i("URL", "timestamp" + timestamp);
+        if (!NetworkUtil.isNetworkAvailable(mContent)) {
+            Toast.makeText(OrderListActvity.this, "网络不可用，请检查", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        loading_dailog = LoadingUtils.getDailog(mContent, Color.RED, "获取数据中。。。。");
+        loading_dailog.show();
+        NetUtils.netWorkByMethodPost(mContent, loginMap, IpConfig.URL_GOODSLIST, handler, 0);
+
+    }
+
+    /**
+     * 获取用户信息
+     */
+    private void initGetUserInfo() {
+        UserInfoImpl userInfoImpl = new UserInfoImpl(OrderListActvity.this);
+        try {
+            userInfo = userInfoImpl.getUserInfo("10");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * view的初始化
+     */
+    private void initView() {
+
+        search_head_btn = (LinearLayout) findViewById(R.id.search_head_btn);
+        jiesaun = (LinearLayout) findViewById(R.id.jiesaun);
+        scan_btn = (LinearLayout) findViewById(R.id.scan_btn);
+        showOrderList = (RelativeLayout) findViewById(R.id.showOrderList);
+        parentView = (LinearLayout) findViewById(R.id.shoppingcart);
+        f_menu = (LinearLayout) findViewById(R.id.f_menu);
+        shopCount = (TextView) findViewById(R.id.goodsCount);
+        mGoodsCateGoryList = (RecyclerView) findViewById(R.id.goods_category_list);
+        mGoodsInfoRecyclerView = (RecyclerView) findViewById(R.id.goods_recycleView);
+        selectedgoodsmoney = (TextView) findViewById(R.id.selectedgoodsmoney);
+        textViewCheckstand = (TextView) findViewById(R.id.TextViewCheckstand);
+        textViewFh = (TextView) findViewById(R.id.TextViewFh);
+
+        //获取自身的长宽高
+        parentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        popupHeight = parentView.getMeasuredHeight();
+        popupWidth = parentView.getMeasuredWidth();
+        //popwindow
+        //menuViewPopwindow
+        if (menuView == null) {
+            menuView = LayoutInflater.from(OrderListActvity.this).inflate(R.layout.activity_seting_menu, null);
+        }
+        systemset = (LinearLayout) menuView.findViewById(R.id.systemset);
+        ordermenu = (LinearLayout) menuView.findViewById(R.id.ordermenu);
+        quxiaoMenu = (TextView) menuView.findViewById(R.id.quxiao);
+        //menuViewPopwindow
+    }
+
+    //这个是有用的需要改动
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void initData(List<GoodsCategroyListBean.DataBean.CategorylistBean> list) {
+        mGoodsCategoryListAdapter = new RecycleGoodsCategoryListAdapter(catelist, OrderListActvity.this);
+        mGoodsCateGoryList.setLayoutManager(new LinearLayoutManager(OrderListActvity.this));
+        mGoodsCateGoryList.setAdapter(mGoodsCategoryListAdapter);
+        mGoodsCategoryListAdapter.setOnItemClickListener(new RecycleGoodsCategoryListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                mGoodsInfoRecyclerView.scrollToPosition(titlePois.get(position));
+                mGoodsCategoryListAdapter.setCheckPosition(position);
+            }
+        });
+
+        mLinearLayoutManager = new LinearLayoutManager(OrderListActvity.this, LinearLayoutManager.VERTICAL, false);
+        myLayoutManage = new MyLayoutManage(OrderListActvity.this, LinearLayoutManager.VERTICAL, false);
+        mGoodsInfoRecyclerView.setLayoutManager(mLinearLayoutManager);
+        personAdapter = new PersonAdapter(OrderListActvity.this, goodsitemlist, catelist, handler);
+        personAdapter.setmActivity(OrderListActvity.this);
+        mGoodsInfoRecyclerView.setAdapter(personAdapter);
+        mGoodsInfoRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                for (int i = 0; i < titlePois.size(); i++) {
+                    if (mLinearLayoutManager.findFirstVisibleItemPosition() >= titlePois.get(i)) {
+                        mGoodsCategoryListAdapter.setCheckPosition(i);
+                    }
+                }
+            }
+        });
+    }
+
+//    /**
+//     * 商品信息列表的标题点击事件
+//     *
+//     * @param header
+//     * @param headerId
+//     */
+//    @Override
+//    public void onHeaderClick(View header, long headerId) {
+//        TextView text = (TextView) header.findViewById(R.id.tvGoodsItemTitle);
+//        Toast.makeText(OrderListActvity.this, "Click on " + text.getText(), Toast.LENGTH_SHORT).show();
+//    }
+
+    /**
+     * 获取分类信息
+     */
+    public void getCategoryInfo() {
+
+        if (userInfo == null) {
+            return;
+        }
+        String timestamp = System.currentTimeMillis() + "";
+        String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
+        Map<String, String> loginMap = new HashMap<String, String>();
+        loginMap.put("organization_id", userInfo.getOrganization_id());
+        loginMap.put("account_id", userInfo.getAccount_id());
+
+        loginMap.put("token", token);
+        loginMap.put("timestamp", timestamp);
+        loading_dailog = LoadingUtils.getDailog(OrderListActvity.this, Color.RED, "获取数据中。。。。");
+        loading_dailog.show();
+        NetUtils.netWorkByMethodPost(OrderListActvity.this, loginMap, IpConfig.URL_CATEGORY, handler, 10);
+
+    }
+
+    public void setPopWindow() {
+
+        mPopupWindow = new PopupWindow(shopview, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
+        mPopupWindow.setTouchable(true);
+        mPopupWindow.setOutsideTouchable(true);
+        mPopupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
+        mPopupWindow.showAtLocation(parentView, Gravity.BOTTOM, 0, 0);
+    }
+
+    public void setPopWindowMenu() {
+        mPopupWindowMenu = new PopupWindow(menuView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
+        mPopupWindowMenu.setTouchable(true);
+        mPopupWindowMenu.setOutsideTouchable(false);
+        mPopupWindowMenu.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
+        mPopupWindowMenu.showAtLocation(parentView, Gravity.BOTTOM, 0, 0);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //处理扫描结果（在界面上显示）
+        if (requestCode == 520 && data != null) {
+                Bundle bundle = data.getExtras();
+            ArrayList<HashMap<String, String>> result = (ArrayList<HashMap<String, String>>) bundle.getSerializable("data");
+            Iterator<HashMap<String, String>> it = result.iterator();
+            while (it.hasNext()) {
+                HashMap<String, String> hashMap = it.next();
+                Log.w("URL", "扫描结果：：：" + hashMap.get("VALUE"));
+                intoSearchGoods(hashMap.get("VALUE"));
+                }
+            }
+    }
+
+    /**
+     * 这个是扫码后的结果
+     *
+     * @param result
+     */
+    private void intoSearchGoods(String result) {
+        Map<String, String> map = MapUtilsSetParam.getMap(OrderListActvity.this);
+        map.put("scan_code", result);
+        loading_dailog = LoadingUtils.getDailog(OrderListActvity.this, Color.RED, "搜索中。。。。");
+        loading_dailog.show();
+        NetUtils.netWorkByMethodPost(OrderListActvity.this, map, IpConfig.URL_SERACH, handler, 12);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                customDialog();
+                break;
+        }
+        return true;
+    }
+
+    /**
+     * 自定义对话框
+     */
+    private void customDialog() {
+        final Dialog dialog = new Dialog(this, R.style.NormalDialogStyle);
+        View view = View.inflate(this, R.layout.activity_dialog_out_view, null);
+        TextView cancel = (TextView) view.findViewById(R.id.cancel);
+        TextView confirm = (TextView) view.findViewById(R.id.confirm);
+        dialog.setContentView(view);
+        //使得点击对话框外部不消失对话框
+        dialog.setCanceledOnTouchOutside(true);
+        //设置对话框的大小
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OrderListActvity.this.finish();
+                System.exit(0);
+            }
+        });
+        dialog.show();
+    }
+
+    /**
+     * 处理滑动 是两个ListView联动
+     * 需要改动
+     */
+    private class MyOnGoodsScrollListener extends RecyclerView.OnScrollListener implements AbsListView.OnScrollListener {
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+
+        }
+
+        @Override
+        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            if (!(lastTitlePoi == goodsitemlist.get(firstVisibleItem).getId())) {
+                lastTitlePoi = goodsitemlist.get(firstVisibleItem).getId();
+                mGoodsCategoryListAdapter.setCheckPosition(goodsitemlist.get(firstVisibleItem).getId());
+                mGoodsCategoryListAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    class MyLayoutManage extends LinearLayoutManager {
+
+        public MyLayoutManage(Context context, int orientation, boolean reverseLayout) {
+            super(context, orientation, reverseLayout);
+        }
+
+        @Override
+        public void onMeasure(RecyclerView.Recycler recycler, RecyclerView.State state, int widthSpec, int heightSpec) {
+            if (getChildCount() > 0) {
+                View view = recycler.getViewForPosition(0);
+                if (view != null) {
+                    measureChild(view, widthSpec, heightSpec);
+                    int measuredWidth = View.MeasureSpec.getSize(widthSpec);
+                    int measuredHeight = view.getMeasuredHeight();
+                    setMeasuredDimension(measuredWidth, measuredHeight);
+                }
+            } else {
+                super.onMeasure(recycler, state, widthSpec, heightSpec);
+            }
+        }
+    }
+
+
+    /**
+     * 改变收银台颜色
+     * @param selecteColor true为灰，false为正常色
+     */
+    public void myCheckstandGray(boolean selecteColor) {
+        if (!selecteColor){
+            textViewCheckstand.setTextColor(Color.WHITE);
+            textViewFh.setTextColor(Color.parseColor("#383638"));
+//            selectedgoodsmoney.setTextColor(Color.GRAY);
+            jiesaun.setBackgroundColor(Color.parseColor("#999999"));
+
+        } else {
+//            selectedgoodsmoney.setTextColor(Color.RED);
+            textViewCheckstand.setTextColor(Color.parseColor("#383638"));
+            textViewFh.setTextColor(Color.parseColor("#000000"));
+            jiesaun.setBackgroundColor(Color.parseColor("#fedc42"));
+
+        }
+    }
     Handler handler = new Handler() {
         @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
@@ -176,9 +665,8 @@ public class OrderListActvity extends BaseAppActivity {
                             }
                             initData(catelist);
                         } else if (status == 0) {
-
+                            Toast.makeText(OrderListActvity.this,"该店没有商品分类",Toast.LENGTH_SHORT).show();
                         }
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -189,17 +677,10 @@ public class OrderListActvity extends BaseAppActivity {
                     for (int i = 0; i < goodsitemlist.size(); i++) {
                         goodsitemlist.get(i).setShop_Count("0");
                     }
-//                    for (int i=0;i<buycartshoplist.size();i++){
-//                         if (buycartshoplist.get(i).isSp_check()){
-//                              buycartshoplist.remove(i);
-//                         }
-//                    }
                     selectedgoodsmoney.setText("￥ 0");
                     buycartshoplist.clear();
                     buyShoppingList.clear();
-//                    allcheck.setChecked(false);
                     checkCount.setText("没有商品");
-//                    buycartshoplist.clear();
                     pop_price.setText("0.00");
                     listAdapter.notifyDataSetChanged();
                     showOrderList.setVisibility(View.GONE);
@@ -290,6 +771,7 @@ public class OrderListActvity extends BaseAppActivity {
                     }
                     selectedgoodsmoney.setText("" + DoubleUtils.setSSWRDouble(dmoney));
                     personAdapter.notifyDataSetChanged();
+                    myCheckstandGray(true);
                     break;
 
                 case 1110:
@@ -319,13 +801,16 @@ public class OrderListActvity extends BaseAppActivity {
                         if (buyNum == 0) {
                             showOrderList.setVisibility(View.GONE);
                             selectedgoodsmoney.setText("0.0");
+                            myCheckstandGray(false);
                         } else {
                             showOrderList.setVisibility(View.VISIBLE);
                             selectedgoodsmoney.setText(DoubleUtils.setSSWRDouble(dmone));
+                            myCheckstandGray(true);
                         }
                         shopCount.setText(buyNum + "");
                     } else {
                         showOrderList.setVisibility(View.GONE);
+                        myCheckstandGray(false);
                         selectedgoodsmoney.setText("0.0");
                         shopCount.setText("0");
                     }
@@ -581,466 +1066,4 @@ public class OrderListActvity extends BaseAppActivity {
             }
         }
     };
-    private LinearLayout jiesaun;
-    private OrderListActvity mContent;
-    private ImageView cart_logo;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_orderlist);
-        mContent = OrderListActvity.this;
-        buycartshoplist = new ArrayList<>();
-        initView();
-        initGetUserInfo();
-        initGetData();
-        action();
-    }
-
-    private void action() {
-        showOrderList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //把商品放入到购物车的集合中
-                if (buyShoppingList.size() > 0) {
-                    setData();
-                    setPopWindow();
-                }
-            }
-        });
-        shopCount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        f_menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setPopWindowMenu();
-            }
-        });
-
-
-        ordermenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(OrderListActvity.this, TheOrderListActivity.class));
-                mPopupWindowMenu.dismiss();
-            }
-        });
-        systemset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(OrderListActvity.this, SystemSettingsActivity.class));
-                mPopupWindowMenu.dismiss();
-            }
-        });
-        quxiaoMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPopupWindowMenu.dismiss();
-            }
-        });
-        scan_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                //启动扫码
-                Intent intent = new Intent("com.summi.scan");
-                intent.setPackage("com.sunmi.sunmiqrcodescanner");
-                intent.putExtra("CURRENT_PPI", 0X0003);//当前分辨率
-                intent.putExtra("PLAY_SOUND", true);// 扫描完成声音提示  默认true
-                intent.putExtra("PLAY_VIBRATE", true);
-                //扫描完成震动,默认false，目前M1硬件支持震动可用该配置，V1不支持
-                intent.putExtra("IDENTIFY_INVERSE_QR_CODE", true);// 识别反色二维码，默认true
-                intent.putExtra("IDENTIFY_MORE_CODE", false);// 识别画面中多个二维码，默认false
-                intent.putExtra("IS_SHOW_SETTING", false);// 是否显示右上角设置按钮，默认true
-                intent.putExtra("IS_SHOW_ALBUM", false);// 是否显示从相册选择图片按钮，默认true
-                startActivityForResult(intent, 520);
-
-            }
-        });
-        search_head_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setData();
-                Message message = new Message();
-                message.what = 33;
-                handler.sendMessage(message);
-            }
-        });
-
-        jiesaun.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setCarData();
-                Message message = new Message();
-                message.what = 120;
-                handler.sendMessage(message);
-            }
-        });
-    }
-
-    private void setCarData() {
-        buycartshoplist.clear();
-        for (int i = 0; i < buyShoppingList.size(); i++) {
-            ShopMessageBean smb = new ShopMessageBean();
-            smb.setSp_check(true);
-            smb.setSp_discount(buyShoppingList.get(i).getDetails());
-            smb.setSp_price(buyShoppingList.get(i).getPrice());
-            smb.setSp_count(buyShoppingList.get(i).getShop_Count());
-            int scount = Integer.parseInt(buyShoppingList.get(i).getShop_Count());
-            double lmoney = Double.parseDouble(buyShoppingList.get(i).getPrice());
-            smb.setSp_picture_url(IpConfig.URL_GETPICTURE + buyShoppingList.get(i).getThumb().get(0).getThumb());
-            smb.setCategory_id(buyShoppingList.get(i).getCategory_id() + "");
-            smb.setSp_name(buyShoppingList.get(i).getName());
-            smb.setSp_id(buyShoppingList.get(i).getId() + "");
-            buycartshoplist.add(smb);
-        }
-    }
-
-    /**
-     * 数据的倒换
-     */
-    private void setData() {
-        //先清展示购物车的数据
-        buycartshoplist.clear();
-        double smoney = 0.00;
-        for (int i = 0; i < buyShoppingList.size(); i++) {
-            ShopMessageBean smb = new ShopMessageBean();
-            smb.setSp_check(true);
-            smb.setSp_discount(buyShoppingList.get(i).getDetails());
-            smb.setSp_price(buyShoppingList.get(i).getPrice());
-            smb.setSp_count(buyShoppingList.get(i).getShop_Count());
-            int scount = Integer.parseInt(buyShoppingList.get(i).getShop_Count());
-            double lmoney = Double.parseDouble(buyShoppingList.get(i).getPrice());
-            smoney += scount * lmoney;
-            smb.setSp_picture_url(IpConfig.URL_GETPICTURE + buyShoppingList.get(i).getThumb().get(0).getThumb());
-            smb.setCategory_id(buyShoppingList.get(i).getCategory_id() + "");
-            smb.setSp_name(buyShoppingList.get(i).getName());
-            smb.setSp_id(buyShoppingList.get(i).getId() + "");
-            buycartshoplist.add(smb);
-        }
-        //popwindow-》商品列表
-        if (shopview == null) {
-            shopview = LayoutInflater.from(OrderListActvity.this).inflate(R.layout.activity_shopping_cart_pop_, null);
-        }
-//        allcheck = (CheckBox) shopview.findViewById(R.id.allCheckGoods);
-        checkCount = (TextView) shopview.findViewById(R.id.checkCount);
-        if (buycartshoplist.size() > 0) {
-            checkCount.setText(buycartshoplist.size() + "件商品");
-        }
-        clear_cart = (LinearLayout) shopview.findViewById(R.id.clear_cart);
-        shoplistview = (ListView) shopview.findViewById(R.id.shoplistview);
-        pop_price = (TextView) shopview.findViewById(R.id.pop_price);
-        cart_logo = (ImageView) shopview.findViewById(R.id.cart_logo);
-        //结算
-        settlement = (LinearLayout) shopview.findViewById(R.id.settlement);
-
-        pop_price.setText("￥" + smoney);
-        if (buycartshoplist != null) {
-            listAdapter = new ListGoodsDetails_Adapter(OrderListActvity.this, buycartshoplist, handler);
-            shoplistview.setAdapter(listAdapter);
-        }
-
-        clear_cart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Message message = new Message();
-                message.what = 3;
-                handler.sendMessage(message);
-
-            }
-        });
-        cart_logo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPopupWindow.dismiss();
-            }
-        });
-
-//        allcheck.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Message message = new Message();
-//                message.what = 4;
-//                handler.sendMessage(message);
-//
-//            }
-//        });
-
-        settlement.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Message message = new Message();
-                message.what = 110;
-                handler.sendMessage(message);
-
-            }
-        });
-    }
-
-    private void initGetData() {
-        if (userInfo == null) {
-            return;
-        }
-        String timestamp = System.currentTimeMillis() + "";
-        String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
-        Map<String, String> loginMap = new HashMap<String, String>();
-        loginMap.put("organization_id", userInfo.getOrganization_id());
-        loginMap.put("account_id", userInfo.getAccount_id());
-        Log.i("URL", "token" + token);
-        loginMap.put("token", token);
-        loginMap.put("timestamp", timestamp);
-        Log.i("URL", "timestamp" + timestamp);
-        if (!NetworkUtil.isNetworkAvailable(mContent)) {
-            Toast.makeText(OrderListActvity.this, "网络不可用，请检查", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        loading_dailog = LoadingUtils.getDailog(mContent, Color.RED, "获取数据中。。。。");
-        loading_dailog.show();
-        NetUtils.netWorkByMethodPost(mContent, loginMap, IpConfig.URL_GOODSLIST, handler, 0);
-
-    }
-
-    /**
-     * 获取用户信息
-     */
-    private void initGetUserInfo() {
-        UserInfoImpl userInfoImpl = new UserInfoImpl(OrderListActvity.this);
-        try {
-            userInfo = userInfoImpl.getUserInfo("10");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * view的初始化
-     */
-    private void initView() {
-
-        search_head_btn = (LinearLayout) findViewById(R.id.search_head_btn);
-        jiesaun = (LinearLayout) findViewById(R.id.jiesaun);
-        scan_btn = (LinearLayout) findViewById(R.id.scan_btn);
-        showOrderList = (RelativeLayout) findViewById(R.id.showOrderList);
-        parentView = (LinearLayout) findViewById(R.id.shoppingcart);
-        f_menu = (LinearLayout) findViewById(R.id.f_menu);
-        shopCount = (TextView) findViewById(R.id.goodsCount);
-        mGoodsCateGoryList = (RecyclerView) findViewById(R.id.goods_category_list);
-        mGoodsInfoRecyclerView = (RecyclerView) findViewById(R.id.goods_recycleView);
-        selectedgoodsmoney = (TextView) findViewById(R.id.selectedgoodsmoney);
-        //获取自身的长宽高
-        parentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        popupHeight = parentView.getMeasuredHeight();
-        popupWidth = parentView.getMeasuredWidth();
-        //popwindow
-        //menuViewPopwindow
-        if (menuView == null) {
-            menuView = LayoutInflater.from(OrderListActvity.this).inflate(R.layout.activity_seting_menu, null);
-        }
-        systemset = (LinearLayout) menuView.findViewById(R.id.systemset);
-        ordermenu = (LinearLayout) menuView.findViewById(R.id.ordermenu);
-        quxiaoMenu = (TextView) menuView.findViewById(R.id.quxiao);
-        //menuViewPopwindow
-    }
-
-    //这个是有用的需要改动
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void initData(List<GoodsCategroyListBean.DataBean.CategorylistBean> list) {
-        mGoodsCategoryListAdapter = new RecycleGoodsCategoryListAdapter(catelist, OrderListActvity.this);
-        mGoodsCateGoryList.setLayoutManager(new LinearLayoutManager(OrderListActvity.this));
-        mGoodsCateGoryList.setAdapter(mGoodsCategoryListAdapter);
-        mGoodsCategoryListAdapter.setOnItemClickListener(new RecycleGoodsCategoryListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                mGoodsInfoRecyclerView.scrollToPosition(titlePois.get(position));
-                mGoodsCategoryListAdapter.setCheckPosition(position);
-            }
-        });
-
-        mLinearLayoutManager = new LinearLayoutManager(OrderListActvity.this, LinearLayoutManager.VERTICAL, false);
-        myLayoutManage = new MyLayoutManage(OrderListActvity.this, LinearLayoutManager.VERTICAL, false);
-        mGoodsInfoRecyclerView.setLayoutManager(mLinearLayoutManager);
-        personAdapter = new PersonAdapter(OrderListActvity.this, goodsitemlist, catelist, handler);
-        personAdapter.setmActivity(OrderListActvity.this);
-        mGoodsInfoRecyclerView.setAdapter(personAdapter);
-        mGoodsInfoRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                for (int i = 0; i < titlePois.size(); i++) {
-                    if (mLinearLayoutManager.findFirstVisibleItemPosition() >= titlePois.get(i)) {
-                        mGoodsCategoryListAdapter.setCheckPosition(i);
-                    }
-                }
-            }
-        });
-    }
-
-//    /**
-//     * 商品信息列表的标题点击事件
-//     *
-//     * @param header
-//     * @param headerId
-//     */
-//    @Override
-//    public void onHeaderClick(View header, long headerId) {
-//        TextView text = (TextView) header.findViewById(R.id.tvGoodsItemTitle);
-//        Toast.makeText(OrderListActvity.this, "Click on " + text.getText(), Toast.LENGTH_SHORT).show();
-//    }
-
-    /**
-     * 获取分类信息
-     */
-    public void getCategoryInfo() {
-
-        if (userInfo == null) {
-            return;
-        }
-        String timestamp = System.currentTimeMillis() + "";
-        String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
-        Map<String, String> loginMap = new HashMap<String, String>();
-        loginMap.put("organization_id", userInfo.getOrganization_id());
-        loginMap.put("account_id", userInfo.getAccount_id());
-
-        loginMap.put("token", token);
-        loginMap.put("timestamp", timestamp);
-        loading_dailog = LoadingUtils.getDailog(OrderListActvity.this, Color.RED, "获取数据中。。。。");
-        loading_dailog.show();
-        NetUtils.netWorkByMethodPost(OrderListActvity.this, loginMap, IpConfig.URL_CATEGORY, handler, 10);
-
-    }
-
-    public void setPopWindow() {
-
-        mPopupWindow = new PopupWindow(shopview, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
-        mPopupWindow.setTouchable(true);
-        mPopupWindow.setOutsideTouchable(true);
-        mPopupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
-        mPopupWindow.showAtLocation(parentView, Gravity.BOTTOM, 0, 0);
-    }
-
-    public void setPopWindowMenu() {
-        mPopupWindowMenu = new PopupWindow(menuView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
-        mPopupWindowMenu.setTouchable(true);
-        mPopupWindowMenu.setOutsideTouchable(false);
-        mPopupWindowMenu.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
-        mPopupWindowMenu.showAtLocation(parentView, Gravity.BOTTOM, 0, 0);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        //处理扫描结果（在界面上显示）
-        if (requestCode == 520 && data != null) {
-                Bundle bundle = data.getExtras();
-            ArrayList<HashMap<String, String>> result = (ArrayList<HashMap<String, String>>) bundle.getSerializable("data");
-            Iterator<HashMap<String, String>> it = result.iterator();
-            while (it.hasNext()) {
-                HashMap<String, String> hashMap = it.next();
-                Log.w("URL", "扫描结果：：：" + hashMap.get("VALUE"));
-                intoSearchGoods(hashMap.get("VALUE"));
-                }
-            }
-    }
-
-    /**
-     * 这个是扫码后的结果
-     *
-     * @param result
-     */
-    private void intoSearchGoods(String result) {
-        Map<String, String> map = MapUtilsSetParam.getMap(OrderListActvity.this);
-        map.put("scan_code", result);
-        loading_dailog = LoadingUtils.getDailog(OrderListActvity.this, Color.RED, "搜索中。。。。");
-        loading_dailog.show();
-        NetUtils.netWorkByMethodPost(OrderListActvity.this, map, IpConfig.URL_SERACH, handler, 12);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK:
-                customDialog();
-                break;
-        }
-        return true;
-    }
-
-    /**
-     * 自定义对话框
-     */
-    private void customDialog() {
-        final Dialog dialog = new Dialog(this, R.style.NormalDialogStyle);
-        View view = View.inflate(this, R.layout.activity_dialog_out_view, null);
-        TextView cancel = (TextView) view.findViewById(R.id.cancel);
-        TextView confirm = (TextView) view.findViewById(R.id.confirm);
-        dialog.setContentView(view);
-        //使得点击对话框外部不消失对话框
-        dialog.setCanceledOnTouchOutside(true);
-        //设置对话框的大小
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                OrderListActvity.this.finish();
-                System.exit(0);
-            }
-        });
-        dialog.show();
-    }
-
-    /**
-     * 处理滑动 是两个ListView联动
-     * 需要改动
-     */
-    private class MyOnGoodsScrollListener extends RecyclerView.OnScrollListener implements AbsListView.OnScrollListener {
-        @Override
-        public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-
-        }
-
-        @Override
-        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            if (!(lastTitlePoi == goodsitemlist.get(firstVisibleItem).getId())) {
-                lastTitlePoi = goodsitemlist.get(firstVisibleItem).getId();
-                mGoodsCategoryListAdapter.setCheckPosition(goodsitemlist.get(firstVisibleItem).getId());
-                mGoodsCategoryListAdapter.notifyDataSetChanged();
-            }
-        }
-    }
-
-    class MyLayoutManage extends LinearLayoutManager {
-
-        public MyLayoutManage(Context context, int orientation, boolean reverseLayout) {
-            super(context, orientation, reverseLayout);
-        }
-
-        @Override
-        public void onMeasure(RecyclerView.Recycler recycler, RecyclerView.State state, int widthSpec, int heightSpec) {
-            if (getChildCount() > 0) {
-                View view = recycler.getViewForPosition(0);
-                if (view != null) {
-                    measureChild(view, widthSpec, heightSpec);
-                    int measuredWidth = View.MeasureSpec.getSize(widthSpec);
-                    int measuredHeight = view.getMeasuredHeight();
-                    setMeasuredDimension(measuredWidth, measuredHeight);
-                }
-            } else {
-                super.onMeasure(recycler, state, widthSpec, heightSpec);
-            }
-        }
-    }
 }

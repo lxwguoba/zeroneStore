@@ -99,6 +99,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
                             MakeSureTheOrderActivity.this.finish();
                         } else if (status == 0) {
                             //订单提交失败  提示用户失败的原因
+                            Toast.makeText(MakeSureTheOrderActivity.this, "错误返回："+jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

@@ -185,14 +185,13 @@
                     android:orientation="horizontal">
                     <!--android:fontFamily=""-->
                     <TextView
+                        android:id="@+id/TextViewFh"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="小可爱的收银台："
                         android:textColor="#383638"
                         android:textSize="14sp"
-                        android:textStyle="bold"
-
-                        />
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -217,12 +216,13 @@
             <LinearLayout
                 android:id="@+id/jiesaun"
                 android:layout_width="0dp"
-                android:layout_height="49dp"
+                android:layout_height="50dp"
                 android:layout_gravity="bottom"
                 android:layout_weight="1.2"
                 android:gravity="center">
 
                 <TextView
+                    android:id="@+id/TextViewCheckstand"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="结算"
