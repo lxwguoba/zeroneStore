@@ -5,10 +5,11 @@ package com.zerone.shopingtimetest.Contants;
  * <p>
  * 用来保存域名 就是链接
  */
-//dkdada
 public class IpConfig {
     //登录接口
     public static final String URL_LOGIN = "http://develop.01nnt.com/api/androidSimpleApi/login";
+
+    //sasas
     //分类接口
     public static final String URL_CATEGORY = "http://develop.01nnt.com/api/androidSimpleApi/goodscategory";
     // 商品查询接口
