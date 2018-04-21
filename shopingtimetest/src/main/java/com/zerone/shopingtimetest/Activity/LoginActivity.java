@@ -77,6 +77,7 @@ public class LoginActivity extends BaseAppActivity {
                             userInfo.setOrganization_id(data.getString("organization_id"));
                             userInfo.setAccount_id(data.getString("account_id"));
                             userInfo.setAccount(data.getString("account"));
+                            userInfo.setRealName(data.getString("realname"));
                             userInfo.setOrganization_name(data.getString("organization_name"));
                             saveUserInfo(userInfo);
                             //记住用账号

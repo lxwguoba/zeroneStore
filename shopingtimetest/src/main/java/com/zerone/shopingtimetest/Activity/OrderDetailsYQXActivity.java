@@ -100,7 +100,7 @@ public class OrderDetailsYQXActivity extends AppCompatActivity {
 //                            }
                             xiaofeizhe.setText("散客");
                             ordertime.setText(otime);
-                            jiedaiy.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("operator_account"));
+                            jiedaiy.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("realname"));
                             ordersn.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("ordersn"));
                             beizhu.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("remarks"));
                         } else if (status == 0) {

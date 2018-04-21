@@ -239,11 +239,11 @@ public class SearchActivity extends BaseAppActivity {
                     if (listBuy.size() > 0) {
                         checkCount.setText("已选商品" + listBuy.size() + "件");
                     }
+                    setTextColor(listBuy.size());
                     listAdapter.notifyDataSetChanged();
                     break;
                 case 201:
                     //减少
-                    //添加
                     int aIndex = (int) msg.obj;
                     //同一个商品数量加一
                     //
@@ -267,10 +267,11 @@ public class SearchActivity extends BaseAppActivity {
                     pop_price.setText("￥" + DoubleUtils.setSSWRDouble(d));
                     if (listBuy.size() > 0) {
                         checkCount.setText("已选商品" + listBuy.size() + "件");
+
                     } else {
                         checkCount.setText("亲，没有商品了哦");
                     }
-
+                    setTextColor(listBuy.size());
                     listAdapter.notifyDataSetChanged();
                     break;
 
@@ -292,6 +293,10 @@ public class SearchActivity extends BaseAppActivity {
     private LinearLayout shoppingcart;
     private Intent intent;
     private List<ShopMessageBean> listObj;
+    private LinearLayout search_btn_layout;
+    private TextView sure_btn;
+    private TextView cashier;
+    private ImageView cart_logo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -332,6 +337,7 @@ public class SearchActivity extends BaseAppActivity {
      * 初始view
      */
     private void initView() {
+        search_btn_layout = (LinearLayout) findViewById(R.id.search_btn_layout);
         search_message = (EditText) findViewById(R.id.search_message);
         search_img_btn = (ImageView) findViewById(R.id.search_btn);
         showOrderList = (RelativeLayout) findViewById(R.id.showOrderList);
@@ -349,19 +355,33 @@ public class SearchActivity extends BaseAppActivity {
         }
         parentView = (LinearLayout) findViewById(R.id.shoppingcart);
         shoppingcart = (LinearLayout) findViewById(R.id.shoppingcart);
-
         goods_recycleView = (RecyclerView) findViewById(R.id.goods_recycleView);
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         goods_recycleView.setLayoutManager(mLayoutManager);
         mAdapter = new MyAdapter(list, SearchActivity.this);
         goods_recycleView.setAdapter(mAdapter);
+
+        sure_btn = (TextView) findViewById(R.id.sure_btn);
+        cashier = (TextView) findViewById(R.id.cashier);
+        setTextColor(lists.size());
+
+    }
+
+    public void setTextColor(int i){
+        if (i>0) {
+            sure_btn.setTextColor(Color.parseColor("#000000"));
+            cashier.setTextColor(Color.parseColor("#383638"));
+        } else {
+            sure_btn.setTextColor(Color.parseColor("#cecece"));
+            cashier.setTextColor(Color.parseColor("#cecece"));
+        }
     }
 
     /**
      * 控件的点击事件
      */
     private void action() {
-        search_img_btn.setOnClickListener(new View.OnClickListener() {
+        search_btn_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String msg = search_message.getText().toString().trim();
@@ -421,6 +441,7 @@ public class SearchActivity extends BaseAppActivity {
         pop_price = shopview.findViewById(R.id.pop_price);
         //结算
         settlement = shopview.findViewById(R.id.settlement);
+        cart_logo = (ImageView) shopview.findViewById(R.id.cart_logo);
         if (listBuy != null) {
             int dmoney = 0;
             for (int i = 0; i < listBuy.size(); i++) {
@@ -454,6 +475,12 @@ public class SearchActivity extends BaseAppActivity {
                 mPopupWindow.dismiss();
                 listBuy.clear();
                 SearchActivity.this.finish();
+            }
+        });
+        cart_logo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPopupWindow.dismiss();
             }
         });
 

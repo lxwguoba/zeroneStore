@@ -194,8 +194,6 @@ public class OrderListActvity extends BaseAppActivity {
                                 }
                                 REFRESH_CODE = 0;
                             }
-
-
                         } else if (status == 0) {
                             Toast.makeText(OrderListActvity.this, "该店没有商品分类", Toast.LENGTH_SHORT).show();
                         }
@@ -249,15 +247,15 @@ public class OrderListActvity extends BaseAppActivity {
                         intent.putExtra("listobj", (Serializable) buyShoppingList);
                     }
                     startActivityForResult(intent, 1100);
-                      /*清空购物车*/
-                    for (int i = 0; i < goodsitemlist.size(); i++) {
-                        goodsitemlist.get(i).setShop_Count("0");
-                    }
-                    selectedgoodsmoney.setText("0");
-                    buycartshoplist.clear();
-                    buyShoppingList.clear();
-                    shopCount.setText("0");
-                    showOrderList.setVisibility(View.GONE);
+//                      /*清空购物车*/
+//                    for (int i = 0; i < goodsitemlist.size(); i++) {
+//                        goodsitemlist.get(i).setShop_Count("0");
+//                    }
+//                    selectedgoodsmoney.setText("0");
+//                    buycartshoplist.clear();
+//                    buyShoppingList.clear();
+//                    shopCount.setText("0");
+//                    showOrderList.setVisibility(View.GONE);
                     personAdapter.notifyDataSetChanged();
                     break;
 
@@ -578,7 +576,9 @@ public class OrderListActvity extends BaseAppActivity {
                     listAdapter.notifyDataSetChanged();
                     break;
                 case 511:
-                    Toast.makeText(OrderListActvity.this, "网络超时，请重试", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(OrderListActvity.this, "网络超时，请重试", Toast.LENGTH_SHORT).show();
+                  String error= (String) msg.obj;
+                    Log.i("URL","error====================="+error);
                     loading_dailog.dismiss();
                     break;
                 case 100000:
@@ -592,6 +592,7 @@ public class OrderListActvity extends BaseAppActivity {
                     selectedgoodsmoney.setText("0.00");
                     settlement_.setTextColor(Color.parseColor("#cecece"));
                     myCheckstandGray(false);
+                    initGetData();
                     personAdapter.notifyDataSetChanged();
                     break;
             }
@@ -1089,7 +1090,6 @@ public class OrderListActvity extends BaseAppActivity {
     private class MyOnGoodsScrollListener extends RecyclerView.OnScrollListener implements AbsListView.OnScrollListener {
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
-
 
         }
 

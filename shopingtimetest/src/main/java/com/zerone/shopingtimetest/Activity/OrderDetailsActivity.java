@@ -83,7 +83,6 @@ public class OrderDetailsActivity extends BaseAppActivity {
                     loading_dailog.dismiss();
                     printBean = new PrintBean();
                     printItemList = new ArrayList<>();
-
                     try {
                         JSONObject jsonObject = new JSONObject(dykJSon);
                         int status = jsonObject.getInt("status");
@@ -134,7 +133,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
 
                             ordertime.setText(otime);
                             ordersn.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("ordersn"));
-                            jiedaiyuan.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("operator_account"));
+                            jiedaiyuan.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("realname"));
                             beizhu.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("remarks"));
                         } else if (status == 0) {
 

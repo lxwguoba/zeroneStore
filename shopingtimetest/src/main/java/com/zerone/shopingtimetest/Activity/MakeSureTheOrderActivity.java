@@ -77,10 +77,13 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
                 case 0:
                     loading.dismiss();
                     String subJSon = (String) msg.obj;
+
+
                     try {
                         JSONObject jsonObject = new JSONObject(subJSon);
                         int status = jsonObject.getInt("status");
                         if (status == 1) {
+                            Log.i("URL","****************7777****************"+subJSon);
                             //订单提交成功  获取商品数据 打印小票，吊起支付。
                             String orderid = jsonObject.getJSONObject("data").getString("order_id");
                             //订单提交成功 跳转到 订单详情
@@ -91,6 +94,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
                             MakeSureTheOrderActivity.this.finish();
                             EventBus.getDefault().post(new RefreshBean("清空购物车的类", ContantData.REFRESH_ONE));
                         } else if (status == 0) {
+                            Log.i("URL","****************8888****************"+subJSon);
                             //订单提交失败  提示用户失败的原因
                             Toast.makeText(MakeSureTheOrderActivity.this, "错误返回：" + jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                         }
@@ -116,6 +120,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
     };
     private LinearLayout actionremark;
     private LinearLayout writeoff;
+    private TextView jiedaiyuan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,6 +169,10 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
         remark = (TextView) findViewById(R.id.remark);
         actionremark = (LinearLayout) findViewById(R.id.actionremark);
         writeoff = (LinearLayout) findViewById(R.id.writeoff);
+        jiedaiyuan = (TextView) findViewById(R.id.jiedaiyuan);
+        if (userInfo!=null){
+            jiedaiyuan.setText(userInfo.getRealName());
+        }
     }
 
     /**

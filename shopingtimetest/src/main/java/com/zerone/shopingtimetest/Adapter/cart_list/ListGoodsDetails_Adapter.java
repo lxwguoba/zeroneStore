@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.zerone.shopingtimetest.Bean.shoplistbean.ShopMessageBean;
+import com.zerone.shopingtimetest.Contants.IpConfig;
 import com.zerone.shopingtimetest.R;
 
 import java.util.List;
@@ -84,7 +85,7 @@ public class ListGoodsDetails_Adapter extends BaseAdapter {
         holder.shopdiscount.setText(list.get(position).getSp_discount());
         holder.shop_price.setText(list.get(position).getSp_price());
         holder.shop_count.setText(list.get(position).getSp_count());
-        Glide.with(mContext).load(list.get(position).getSp_picture_url()).centerCrop().placeholder(R.mipmap.app_logo).crossFade().into(holder.shop_img);
+        Glide.with(mContext).load(IpConfig.URL_GETPICTURE+list.get(position).getSp_picture_url()).centerCrop().placeholder(R.mipmap.app_logo).crossFade().into(holder.shop_img);
 
         /**
          *
