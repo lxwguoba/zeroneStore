@@ -24,7 +24,9 @@ import com.zerone.shopingtimetest.BaseActivity.BaseAppActivity;
 import com.zerone.shopingtimetest.Bean.UserInfo;
 import com.zerone.shopingtimetest.Bean.order.SubmitDataBean;
 import com.zerone.shopingtimetest.Bean.order.SubmitShopBean;
+import com.zerone.shopingtimetest.Bean.refresh.RefreshBean;
 import com.zerone.shopingtimetest.Bean.shoplistbean.ShopMessageBean;
+import com.zerone.shopingtimetest.Contants.ContantData;
 import com.zerone.shopingtimetest.Contants.IpConfig;
 import com.zerone.shopingtimetest.DB.impl.UserInfoImpl;
 import com.zerone.shopingtimetest.R;
@@ -34,6 +36,7 @@ import com.zerone.shopingtimetest.Utils.LoadingUtils;
 import com.zerone.shopingtimetest.Utils.NetUtils;
 import com.zyao89.view.zloading.ZLoadingDialog;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -73,17 +76,6 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
             switch (msg.what) {
                 case 0:
                     loading.dismiss();
-                    /**
-                     *
-                     * {
-                     status: "1",
-                     msg: "提交订单成功",
-                     data: {
-                     order_id: 35
-                     }
-                     }
-                     *
-                     */
                     String subJSon = (String) msg.obj;
                     try {
                         JSONObject jsonObject = new JSONObject(subJSon);
@@ -97,6 +89,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
                             startActivity(intent);
                             AppSharePreferenceMgr.put(MakeSureTheOrderActivity.this, "orderid", orderid);
                             MakeSureTheOrderActivity.this.finish();
+                            EventBus.getDefault().post(new RefreshBean("清空购物车的类", ContantData.REFRESH_ONE));
                         } else if (status == 0) {
                             //订单提交失败  提示用户失败的原因
                             Toast.makeText(MakeSureTheOrderActivity.this, "错误返回：" + jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();

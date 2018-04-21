@@ -51,4 +51,10 @@ public class ContantData implements Serializable {
 
     //扫码返回的结果
     public static final int SCANQRCODE = 21;
+
+    //=====================广播refresh的int值列表===========================
+    //刷新商品列表的购车并清空
+    public static final int  REFRESH_ONE= 1;
+
+
 }
