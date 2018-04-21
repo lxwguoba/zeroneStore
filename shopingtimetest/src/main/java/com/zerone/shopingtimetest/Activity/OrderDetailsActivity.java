@@ -137,6 +137,8 @@ public class OrderDetailsActivity extends BaseAppActivity {
                             jiedaiyuan.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("operator_account"));
                             beizhu.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("remarks"));
                         } else if (status == 0) {
+
+
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
