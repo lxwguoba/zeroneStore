@@ -29,7 +29,6 @@ import com.zerone.shopingtimetest.DB.impl.UserInfoImpl;
 import com.zerone.shopingtimetest.R;
 import com.zerone.shopingtimetest.Utils.LoadingUtils;
 import com.zerone.shopingtimetest.Utils.NetUtils;
-import com.zerone.shopingtimetest.Utils.UtilsTime;
 import com.zerone.shopingtimetest.Utils.payutils.PayUtils;
 import com.zerone.shopingtimetest.Utils.printutils.PrintUtils;
 import com.zyao89.view.zloading.ZLoadingDialog;
@@ -38,7 +37,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,10 +89,13 @@ public class OrderDetailsActivity extends BaseAppActivity {
                         int status = jsonObject.getInt("status");
                         if (status == 1) {
                             //封装打印类 的数据
-                            long aLong = jsonObject.getJSONObject("data").getJSONObject("orderdata").getLong("created_at");
+//                            long created_at = Long.parseLong(orderbean.getString("created_at")) * 1000;
+                            long aLong = jsonObject.getJSONObject("data").getJSONObject("orderdata").getLong("created_at") * 1000;
                             //下单时间
-                            String otime = UtilsTime.getTime(aLong);
-                            printBean.setCreateTime(otime);
+                            Date d = new Date(aLong);
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//
+                            printBean.setCreateTime(sdf.format(d));
                             printBean.setOrdersn(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("ordersn"));
                             int payStatus = jsonObject.getJSONObject("data").getJSONObject("orderdata").getInt("status");
                             if (payStatus == -1) {
@@ -131,13 +135,11 @@ public class OrderDetailsActivity extends BaseAppActivity {
                                 list.add(gb);
                             }
 
-                            ordertime.setText(otime);
+                            ordertime.setText(sdf.format(d));
                             ordersn.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("ordersn"));
                             jiedaiyuan.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("realname"));
                             beizhu.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("remarks"));
                         } else if (status == 0) {
-
-
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

@@ -10,6 +10,7 @@ import java.util.Date;
 
 public class UtilsTime {
     public static String getTime(Long longtime) {
+        //下单时间
         long l = longtime * 1000;
         Date nowTime = new Date(l);
         SimpleDateFormat sdFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

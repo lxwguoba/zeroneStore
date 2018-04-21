@@ -23,14 +23,15 @@ import com.zerone.shopingtimetest.DB.impl.UserInfoImpl;
 import com.zerone.shopingtimetest.R;
 import com.zerone.shopingtimetest.Utils.LoadingUtils;
 import com.zerone.shopingtimetest.Utils.NetUtils;
-import com.zerone.shopingtimetest.Utils.UtilsTime;
 import com.zyao89.view.zloading.ZLoadingDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,9 +71,11 @@ public class OrderDetailsYFKActivity extends AppCompatActivity {
                         int status = jsonObject.getInt("status");
 
                         if (status == 1) {
-                            long aLong = jsonObject.getJSONObject("data").getJSONObject("orderdata").getLong("created_at");
+                            long aLong = jsonObject.getJSONObject("data").getJSONObject("orderdata").getLong("created_at") * 1000;
                             //下单时间
-                            String otime = UtilsTime.getTime(aLong);
+                            Date d = new Date(aLong);
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//
                             JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("ordergoods");
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 GoodsBean gb = new GoodsBean();
@@ -100,7 +103,7 @@ public class OrderDetailsYFKActivity extends AppCompatActivity {
                                 zhifufangshi.setText("微信二维码");
                             }
                             xiaofeizhe.setText("散客");
-                            ordertime.setText(otime);
+                            ordertime.setText(sdf.format(d));
                             jiedaiy.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("realname"));
                             ordersn.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("ordersn"));
                             beizhu.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("remarks"));
