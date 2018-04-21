@@ -1,10 +1,12 @@
 package com.zerone.shopingtimetest.Activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -62,60 +64,16 @@ public class TheOrderListActivity extends AppCompatActivity {
     private ZLoadingDialog loading_dailog;
     private TextView orderTotal;
     private TextView orderTotalPrice;
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 0:
-                    list.clear();
-                    String orderListJSon = (String) msg.obj;
-                    Log.i("URL", orderListJSon);
-                    loading_dailog.dismiss();
-                    try {
-                        JSONObject jsonObject = new JSONObject(orderListJSon);
-                        int status = jsonObject.getInt("status");
-                        if (status == 1) {
-                            JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("orderlist");
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject orderbean = jsonArray.getJSONObject(i);
-                                OrderBean ob = new OrderBean();
-                                ob.setId(orderbean.getString("id"));
-                                ob.setStatus(orderbean.getString("status"));
-                                ob.setOrder_price(orderbean.getString("order_price"));
-                                ob.setOrdersn(orderbean.getString("ordersn"));
-                                long created_at = Long.parseLong(orderbean.getString("created_at")) * 1000;
-                                Date d = new Date(created_at);
-                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                ob.setCreated_at(sdf.format(d));
-                                list.add(ob);
-                            }
-                            orderTotal.setText(jsonObject.getJSONObject("data").getString("total_num"));
-                            orderTotalPrice.setText(DoubleUtils.setSSWRDouble(Double.parseDouble(jsonObject.getJSONObject("data").getString("total_amount"))));
-                        } else if (status == 0) {
-                            //获取失败
-                        }
-                    } catch (JSONException e) {
-                    } finally {
-                        orderListItemAdapter.notifyDataSetChanged();
-                    }
 
-                    break;
-                case 511:
-                    Toast.makeText(TheOrderListActivity.this, "网络超时，请重试", Toast.LENGTH_SHORT).show();
-                    loading_dailog.dismiss();
-                    break;
-                case 20000:
-                    int postion = (int) msg.obj;
-                    Intent intent = new Intent(TheOrderListActivity.this, OrderDetailsActivity.class);
-                    intent.putExtra("orderid", list.get(postion).getId());
-                    startActivityForResult(intent, 1220);
-                    break;
-            }
-        }
-    };
     private ImageView back;
+    //这个是用来结账后判断是全部订单还是待付款订单按钮触发的  0为全部订单  1为待付款订单
     private int post;
+    private SwipeRefreshLayout mSwipeLayout;
+
+    //这个是 判断当前页面是那个订单转态，"" 空字符串是全部订单、 "'0'" 这个是待付款订单 、"1"是已完成订单、"-1"是已取消订单
+    private String orderState = "";
+    private Dialog dialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +97,8 @@ public class TheOrderListActivity extends AppCompatActivity {
      * 初始化数据
      */
     private void initView() {
+        //刷新按钮
+        mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_ly);
         orderTotal = (TextView) findViewById(R.id.orderTotal);
         orderTotalPrice = (TextView) findViewById(R.id.orderTotalPrice);
         //导航按钮============================
@@ -175,6 +135,7 @@ public class TheOrderListActivity extends AppCompatActivity {
                 alltvywc_line.setVisibility(View.GONE);
                 alltvyqx_line.setVisibility(View.GONE);
                 initGetDataOrderList("");
+                orderState = "";
             }
         });
         //待付款
@@ -191,6 +152,7 @@ public class TheOrderListActivity extends AppCompatActivity {
                 alltvywc_line.setVisibility(View.GONE);
                 alltvyqx_line.setVisibility(View.GONE);
                 initGetDataOrderList("'0'");
+                orderState = "'0'";
 
             }
         });
@@ -207,6 +169,7 @@ public class TheOrderListActivity extends AppCompatActivity {
                 alltvywc_line.setVisibility(View.VISIBLE);
                 alltvyqx_line.setVisibility(View.GONE);
                 initGetDataOrderList("1");
+                orderState = "1";
             }
         });
         //已取消
@@ -222,12 +185,25 @@ public class TheOrderListActivity extends AppCompatActivity {
                 alltvywc_line.setVisibility(View.GONE);
                 alltvyqx_line.setVisibility(View.VISIBLE);
                 initGetDataOrderList("-1");
+                orderState = "-1";
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TheOrderListActivity.this.finish();
+            }
+        });
+
+        /**
+         * 这个是下拉刷新的组件的点击事件
+         */
+        mSwipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //这里可以做一下下拉刷新的操作
+                Log.i("BBBB", "订单转态值：" + orderState);
+                initGetDataOrderList(orderState);
             }
         });
     }
@@ -286,5 +262,105 @@ public class TheOrderListActivity extends AppCompatActivity {
                 break;
         }
 
+    }
+
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 0:
+                    list.clear();
+                    String orderListJSon = (String) msg.obj;
+                    Log.i("URL", orderListJSon);
+                    loading_dailog.dismiss();
+                    try {
+                        JSONObject jsonObject = new JSONObject(orderListJSon);
+                        int status = jsonObject.getInt("status");
+                        if (status == 1) {
+                            JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("orderlist");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject orderbean = jsonArray.getJSONObject(i);
+                                OrderBean ob = new OrderBean();
+                                ob.setId(orderbean.getString("id"));
+                                ob.setStatus(orderbean.getString("status"));
+                                ob.setOrder_price(orderbean.getString("order_price"));
+                                ob.setOrdersn(orderbean.getString("ordersn"));
+                                long created_at = Long.parseLong(orderbean.getString("created_at")) * 1000;
+                                Date d = new Date(created_at);
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                ob.setCreated_at(sdf.format(d));
+                                list.add(ob);
+                            }
+                            orderTotal.setText(jsonObject.getJSONObject("data").getString("total_num"));
+                            orderTotalPrice.setText(DoubleUtils.setSSWRDouble(Double.parseDouble(jsonObject.getJSONObject("data").getString("total_amount"))));
+                        } else if (status == 0) {
+                            //获取失败
+                            customDialog("获取订单数据失败，请重新点击按钮！");
+                        }
+                    } catch (JSONException e) {
+                    } finally {
+                        if (mSwipeLayout != null) {
+                            if (mSwipeLayout.isRefreshing()) {
+                                //关闭刷新动画
+                                mSwipeLayout.setRefreshing(false);
+                            }
+                        }
+                        orderListItemAdapter.notifyDataSetChanged();
+                    }
+
+                    break;
+                case 511:
+                    Toast.makeText(TheOrderListActivity.this, "网络超时，请重试", Toast.LENGTH_SHORT).show();
+                    loading_dailog.dismiss();
+                    break;
+                case 20000:
+                    int postion = (int) msg.obj;
+                    Intent intent = new Intent(TheOrderListActivity.this, OrderDetailsActivity.class);
+                    intent.putExtra("orderid", list.get(postion).getId());
+                    startActivityForResult(intent, 1220);
+                    break;
+            }
+        }
+    };
+
+
+    /**
+     *
+     * 定时器
+     */
+    private Handler mHandler = new Handler() {
+        public void handleMessage(android.os.Message msg) {
+            switch (msg.what) {
+                case 20:
+                    //关闭提示信息的对话框
+                    dialog.dismiss();
+                    break;
+            }
+        }
+
+        ;
+    };
+
+
+    /**
+     *
+     * 弹框提示
+     * @param msg 提示消息
+     */
+    private void customDialog(String msg) {
+        dialog = new Dialog(this, R.style.NormalDialogStyle);
+        View view = View.inflate(this, R.layout.activity_dialog_view, null);
+        TextView cancel = view.findViewById(R.id.cancel);
+        TextView confirm = view.findViewById(R.id.confirm);
+        TextView errormsg = view.findViewById(R.id.errormsg);
+        errormsg.setText(msg);
+        dialog.setContentView(view);
+        //使得点击对话框外部不消失对话框
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+        //第二个参数是几秒后关闭
+        mHandler.sendEmptyMessageDelayed(20, 3000);
     }
 }
