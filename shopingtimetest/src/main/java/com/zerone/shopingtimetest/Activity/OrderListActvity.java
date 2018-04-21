@@ -66,6 +66,8 @@ import java.util.Map;
 
 public class OrderListActvity extends BaseAppActivity {
     private static final String TAG = "OrderListActvity";
+    //0为初始化状态就是不刷新 若是1是点击了菜单兰里的刷新按钮 刷新成功后重置
+    private static int REFRESH_CODE = 0;
     //商品类别列表
     private List<GoodsCategroyListBean.DataBean.CategorylistBean> catelist = new ArrayList<>();
     //存储含有标题的第一个含有商品类别名称的条目的下表
@@ -95,7 +97,6 @@ public class OrderListActvity extends BaseAppActivity {
     private TextView shopCount;
     private LinearLayout parentView;
     private ListGoodsDetails_Adapter listAdapter;
-
     private int popupWidth;
     private int popupHeight;
     private TextView pop_price;
@@ -112,7 +113,6 @@ public class OrderListActvity extends BaseAppActivity {
     private LinearLayout scan_btn;
     private LinearLayout search_head_btn;
     private TextView selectedgoodsmoney;
-
     private LinearLayout jiesaun;
     private OrderListActvity mContent;
     private ImageView cart_logo;
@@ -126,8 +126,8 @@ public class OrderListActvity extends BaseAppActivity {
             switch (msg.what) {
                 case 0:
                     String shoplistJson = (String) msg.obj;
-                    Log.w("URL", "000000000000==" + shoplistJson);
                     loading_dailog.dismiss();
+                    goodsitemlist.clear();
                     try {
                         JSONObject jsonshoplist = new JSONObject(shoplistJson);
                         int status = jsonshoplist.getInt("status");
@@ -164,8 +164,8 @@ public class OrderListActvity extends BaseAppActivity {
 
                 case 10:
                     String cateJson = (String) msg.obj;
-                    Log.i("URL", "111111111111==" + cateJson);
                     loading_dailog.dismiss();
+                    catelist.clear();
                     try {
                         JSONObject jsonObject = new JSONObject(cateJson);
                         int status = jsonObject.getInt("status");
@@ -181,6 +181,14 @@ public class OrderListActvity extends BaseAppActivity {
                                 titlePois.add(i);
                             }
                             initData(catelist);
+                            if (REFRESH_CODE == 1) {
+                                if (mPopupWindowMenu != null) {
+                                    mPopupWindowMenu.dismiss();
+                                }
+                                REFRESH_CODE = 0;
+                            }
+
+
                         } else if (status == 0) {
                             Toast.makeText(OrderListActvity.this, "该店没有商品分类", Toast.LENGTH_SHORT).show();
                         }
@@ -562,6 +570,9 @@ public class OrderListActvity extends BaseAppActivity {
                     }
                     if (buyShoppingList.size() == 0) {
                         showOrderList.setVisibility(View.GONE);
+                        if (mPopupWindow != null) {
+                            mPopupWindow.dismiss();
+                        }
                     }
                     personAdapter.notifyDataSetChanged();
                     listAdapter.notifyDataSetChanged();
@@ -583,6 +594,7 @@ public class OrderListActvity extends BaseAppActivity {
             }
         }
     };
+    private LinearLayout refresh_layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -678,6 +690,35 @@ public class OrderListActvity extends BaseAppActivity {
                 handler.sendMessage(message);
             }
         });
+
+        if (refresh_layout != null) {
+            refresh_layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (userInfo == null) {
+                        return;
+                    }
+                    REFRESH_CODE = 1;
+                    String timestamp = System.currentTimeMillis() + "";
+                    String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
+                    Map<String, String> loginMap = new HashMap<String, String>();
+                    loginMap.put("organization_id", userInfo.getOrganization_id());
+                    loginMap.put("account_id", userInfo.getAccount_id());
+                    Log.i("URL", "token" + token);
+                    loginMap.put("token", token);
+                    loginMap.put("timestamp", timestamp);
+                    Log.i("URL", "timestamp" + timestamp);
+                    if (!NetworkUtil.isNetworkAvailable(mContent)) {
+                        Toast.makeText(OrderListActvity.this, "网络不可用，请检查", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    loading_dailog = LoadingUtils.getDailog(mContent, Color.RED, "刷新数据中。。。。");
+                    loading_dailog.show();
+                    NetUtils.netWorkByMethodPost(mContent, loginMap, IpConfig.URL_GOODSLIST, handler, 0);
+                }
+            });
+        }
     }
 
     private void setCarData() {
@@ -758,16 +799,6 @@ public class OrderListActvity extends BaseAppActivity {
             }
         });
 
-//        allcheck.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Message message = new Message();
-//                message.what = 4;
-//                handler.sendMessage(message);
-//
-//            }
-//        });
-
         settlement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -841,23 +872,12 @@ public class OrderListActvity extends BaseAppActivity {
         if (menuView == null) {
             menuView = LayoutInflater.from(OrderListActvity.this).inflate(R.layout.activity_seting_menu, null);
         }
+        refresh_layout = menuView.findViewById(R.id.refresh_layout);
         systemset = menuView.findViewById(R.id.systemset);
         ordermenu = menuView.findViewById(R.id.ordermenu);
         quxiaoMenu = menuView.findViewById(R.id.quxiao);
         //menuViewPopwindow
     }
-
-//    /**
-//     * 商品信息列表的标题点击事件
-//     *
-//     * @param header
-//     * @param headerId
-//     */
-//    @Override
-//    public void onHeaderClick(View header, long headerId) {
-//        TextView text = (TextView) header.findViewById(R.id.tvGoodsItemTitle);
-//        Toast.makeText(OrderListActvity.this, "Click on " + text.getText(), Toast.LENGTH_SHORT).show();
-//    }
 
     //这个是有用的需要改动
     @RequiresApi(api = Build.VERSION_CODES.M)
