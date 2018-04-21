@@ -1125,5 +1125,3 @@ public class OrderListActvity extends BaseAppActivity {
         }
     }
 }
-
-
