@@ -116,8 +116,11 @@ public class OrderListActvity extends BaseAppActivity {
     private LinearLayout jiesaun;
     private OrderListActvity mContent;
     private ImageView cart_logo;
+    //收银台显示文字 TextView
     private TextView textViewCheckstand;
-    private TextView textViewFh;
+
+    private TextView textViewFh; //￥号 TextView
+
     Handler handler = new Handler() {
         @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
@@ -876,6 +879,7 @@ public class OrderListActvity extends BaseAppActivity {
         systemset = menuView.findViewById(R.id.systemset);
         ordermenu = menuView.findViewById(R.id.ordermenu);
         quxiaoMenu = menuView.findViewById(R.id.quxiao);
+        myCheckstandGray(false);
         //menuViewPopwindow
     }
 
@@ -1032,11 +1036,12 @@ public class OrderListActvity extends BaseAppActivity {
         if (!selecteColor) {
             textViewCheckstand.setTextColor(Color.WHITE);
             textViewFh.setTextColor(Color.parseColor("#383638"));
-//            selectedgoodsmoney.setTextColor(Color.GRAY);
+           selectedgoodsmoney.setTextColor(Color.GRAY);
             jiesaun.setBackgroundColor(Color.parseColor("#999999"));
+            selectedgoodsmoney.setText("");
 
         } else {
-//            selectedgoodsmoney.setTextColor(Color.RED);
+            selectedgoodsmoney.setTextColor(Color.RED);
             textViewCheckstand.setTextColor(Color.parseColor("#383638"));
             textViewFh.setTextColor(Color.parseColor("#000000"));
             jiesaun.setBackgroundColor(Color.parseColor("#fedc42"));
