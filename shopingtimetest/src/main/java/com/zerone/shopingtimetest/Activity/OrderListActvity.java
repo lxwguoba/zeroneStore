@@ -226,6 +226,7 @@ public class OrderListActvity extends BaseAppActivity {
                     /**
                      * 全选和全不选
                      */
+
                     String money = "";
                     double v = 0.00;
                     if (allcheck.isChecked()) {
