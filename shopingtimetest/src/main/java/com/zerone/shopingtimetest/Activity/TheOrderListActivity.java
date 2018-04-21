@@ -362,5 +362,6 @@ public class TheOrderListActivity extends AppCompatActivity {
         dialog.show();
         //第二个参数是几秒后关闭
         mHandler.sendEmptyMessageDelayed(20, 3000);
+
     }
 }
