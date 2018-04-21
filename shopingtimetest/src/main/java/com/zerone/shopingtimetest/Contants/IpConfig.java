@@ -2,14 +2,12 @@ package com.zerone.shopingtimetest.Contants;
 
 /**
  * Created by Administrator on 2017/10/10 0010.
- * <p>
+ * <p>.`1   q去
  * 用来保存域名 就是链接
  */
 public class IpConfig {
     //登录接口
     public static final String URL_LOGIN = "http://develop.01nnt.com/api/androidSimpleApi/login";
-
-    //sasas
     //分类接口
     public static final String URL_CATEGORY = "http://develop.01nnt.com/api/androidSimpleApi/goodscategory";
     // 商品查询接口
