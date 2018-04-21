@@ -62,6 +62,7 @@ import java.util.Map;
  * Created by on 2018/3/31 0031 09 51.
  * Author  LiuXingWen
  * OnHeaderClickListener
+ * 商铺产品ACTVITY
  */
 
 public class OrderListActvity extends BaseAppActivity {
@@ -974,6 +975,7 @@ public class OrderListActvity extends BaseAppActivity {
                 intoSearchGoods(hashMap.get("VALUE"));
             }
         }
+
     }
 
     /**
