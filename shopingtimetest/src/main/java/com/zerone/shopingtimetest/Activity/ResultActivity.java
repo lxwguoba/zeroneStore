@@ -142,7 +142,10 @@ public class ResultActivity extends AppCompatActivity {
         pay_complete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //这里需要更新下收银台颜色
+
                 ResultActivity.this.finish();
+
             }
         });
     }
