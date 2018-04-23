@@ -76,6 +76,12 @@ public class SearchActivity extends BaseAppActivity {
     private PopupWindow mPopupWindow;
     private LinearLayout parentView;
     private double money = 0.0;
+    private LinearLayout shoppingcart;
+    private Intent intent;
+    private List<ShopMessageBean> listObj;
+    private LinearLayout search_btn_layout;
+    private TextView sure_btn;
+    private TextView cashier;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -237,7 +243,7 @@ public class SearchActivity extends BaseAppActivity {
                     pop_price.setText("￥" + DoubleUtils.setSSWRDouble(dm));
                     search_money.setText("￥" + DoubleUtils.setSSWRDouble(dm));
                     if (listBuy.size() > 0) {
-                        checkCount.setText("已选商品" + listBuy.size() + "件");
+                        checkCount.setText("已选商品" + listBuy.size() + "种");
                     }
                     setTextColor(listBuy.size());
                     listAdapter.notifyDataSetChanged();
@@ -266,7 +272,7 @@ public class SearchActivity extends BaseAppActivity {
                     goodsCount.setText("" + count);
                     pop_price.setText("￥" + DoubleUtils.setSSWRDouble(d));
                     if (listBuy.size() > 0) {
-                        checkCount.setText("已选商品" + listBuy.size() + "件");
+                        checkCount.setText("已选商品" + listBuy.size() + "种");
 
                     } else {
                         checkCount.setText("亲，没有商品了哦");
@@ -290,13 +296,8 @@ public class SearchActivity extends BaseAppActivity {
             }
         }
     };
-    private LinearLayout shoppingcart;
-    private Intent intent;
-    private List<ShopMessageBean> listObj;
-    private LinearLayout search_btn_layout;
-    private TextView sure_btn;
-    private TextView cashier;
     private ImageView cart_logo;
+    private ImageView back;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -330,13 +331,13 @@ public class SearchActivity extends BaseAppActivity {
                 listBuy.add(smb);
             }
         }
-
     }
 
     /**
      * 初始view
      */
     private void initView() {
+        back = (ImageView) findViewById(R.id.back);
         search_btn_layout = (LinearLayout) findViewById(R.id.search_btn_layout);
         search_message = (EditText) findViewById(R.id.search_message);
         search_img_btn = (ImageView) findViewById(R.id.search_btn);
@@ -413,6 +414,13 @@ public class SearchActivity extends BaseAppActivity {
                 }
             }
         });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SearchActivity.this.finish();
+            }
+        });
     }
 
     /**
@@ -435,15 +443,15 @@ public class SearchActivity extends BaseAppActivity {
             shopview = LayoutInflater.from(SearchActivity.this).inflate(R.layout.activity_shopping_cart_pop_, null);
         }
         checkCount = shopview.findViewById(R.id.checkCount);
-        checkCount.setText(listBuy.size() + "件商品");
+        checkCount.setText(listBuy.size() + "种商品");
         clear_cart = shopview.findViewById(R.id.clear_cart);
         shoplistview = shopview.findViewById(R.id.shoplistview);
         pop_price = shopview.findViewById(R.id.pop_price);
         //结算
         settlement = shopview.findViewById(R.id.settlement);
-        cart_logo = (ImageView) shopview.findViewById(R.id.cart_logo);
+        cart_logo = shopview.findViewById(R.id.cart_logo);
         if (listBuy != null) {
-            int dmoney = 0;
+            double dmoney = 0;
             for (int i = 0; i < listBuy.size(); i++) {
                 dmoney += Integer.parseInt(listBuy.get(i).getSp_count()) * Double.parseDouble(listBuy.get(i).getSp_price());
             }

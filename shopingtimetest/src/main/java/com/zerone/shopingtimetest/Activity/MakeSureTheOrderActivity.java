@@ -162,7 +162,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
         goodslist.setAdapter(mAdapter);
         subMoney = (TextView) findViewById(R.id.subMoney);
         sureOrderMoney = (TextView) findViewById(R.id.sureOrderMoney);
-        sureOrderMoney.setText("￥" + dSOMoney);
+        sureOrderMoney.setText("￥" + DoubleUtils.setSSWRDouble(dSOMoney));
         subMoney.setText("￥" + DoubleUtils.setSSWRDouble(dSOMoney));
         submitbtn = (RelativeLayout) findViewById(R.id.submitbtn);
         back = (ImageView) findViewById(R.id.back);
@@ -265,7 +265,6 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
         loading = LoadingUtils.getDailog(MakeSureTheOrderActivity.this, Color.RED, "提交订单中。。。。");
         loading.show();
         NetUtils.netWorkByMethodPost(MakeSureTheOrderActivity.this, subMap, IpConfig.URL_SUBMITORDER, handler, 0);
-
     }
 
     /**

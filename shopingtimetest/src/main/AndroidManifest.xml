@@ -47,7 +47,6 @@
                 <action android:name="sunmi.payment.L3.RESULT" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>

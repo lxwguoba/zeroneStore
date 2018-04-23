@@ -72,6 +72,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
     private TextView beizhu;
     private ImageView back;
     private Dialog dialog;
+    private Dialog dialog1;
     Handler handler = new Handler() {
 
         @Override
@@ -184,6 +185,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
                      }
                      }
                      */
+
                     String cashJSon = (String) msg.obj;
                     Log.i("URL", "cashJSon=" + cashJSon);
                     try {
@@ -210,6 +212,9 @@ public class OrderDetailsActivity extends BaseAppActivity {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    } finally {
+                        loading_dailog.dismiss();
+                        dialog1.dismiss();
                     }
                     break;
 
@@ -220,6 +225,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
             }
         }
     };
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -314,26 +320,26 @@ public class OrderDetailsActivity extends BaseAppActivity {
      * 自定义对话框
      */
     private void payDialog() {
-        final Dialog dialog = new Dialog(this, R.style.NormalDialogStyle);
+        dialog1 = new Dialog(this, R.style.NormalDialogStyle);
         View view = View.inflate(this, R.layout.activity_dialog_pay_view, null);
         TextView cancel = view.findViewById(R.id.cancel);
         TextView confirm = view.findViewById(R.id.confirm);
         RelativeLayout cashPay = view.findViewById(R.id.cashPay);
         RelativeLayout otherPay = view.findViewById(R.id.otherPay);
-        dialog.setContentView(view);
+        dialog1.setContentView(view);
         //使得点击对话框外部不消失对话框
-        dialog.setCanceledOnTouchOutside(false);
+        dialog1.setCanceledOnTouchOutside(false);
         //设置对话框的大小
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
+                dialog1.dismiss();
             }
         });
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
+                dialog1.dismiss();
             }
         });
         cashPay.setOnClickListener(new View.OnClickListener() {
@@ -351,14 +357,14 @@ public class OrderDetailsActivity extends BaseAppActivity {
                 //吊起支付
                 if (money != null) {
                     PayUtils.LiftThePayment(money, OrderDetailsActivity.this);
-                    dialog.dismiss();
+                    dialog1.dismiss();
                     OrderDetailsActivity.this.finish();
                 }
 
             }
         });
 
-        dialog.show();
+        dialog1.show();
     }
 
 

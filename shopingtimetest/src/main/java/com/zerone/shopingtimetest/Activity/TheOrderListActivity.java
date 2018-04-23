@@ -73,7 +73,79 @@ public class TheOrderListActivity extends AppCompatActivity {
     //这个是 判断当前页面是那个订单转态，"" 空字符串是全部订单、 "'0'" 这个是待付款订单 、"1"是已完成订单、"-1"是已取消订单
     private String orderState = "";
     private Dialog dialog;
+    /**
+     * 定时器
+     */
+    private Handler mHandler = new Handler() {
+        public void handleMessage(android.os.Message msg) {
+            switch (msg.what) {
+                case 20:
+                    //关闭提示信息的对话框
+                    dialog.dismiss();
+                    break;
+            }
+        }
 
+    };
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 0:
+                    list.clear();
+                    String orderListJSon = (String) msg.obj;
+                    Log.i("URL", orderListJSon);
+                    loading_dailog.dismiss();
+                    try {
+                        JSONObject jsonObject = new JSONObject(orderListJSon);
+                        int status = jsonObject.getInt("status");
+                        if (status == 1) {
+                            JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("orderlist");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject orderbean = jsonArray.getJSONObject(i);
+                                OrderBean ob = new OrderBean();
+                                ob.setId(orderbean.getString("id"));
+                                ob.setStatus(orderbean.getString("status"));
+                                ob.setOrder_price(orderbean.getString("order_price"));
+                                ob.setOrdersn(orderbean.getString("ordersn"));
+                                long created_at = Long.parseLong(orderbean.getString("created_at")) * 1000;
+                                Date d = new Date(created_at);
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                ob.setCreated_at(sdf.format(d));
+                                list.add(ob);
+                            }
+                            orderTotal.setText(jsonObject.getJSONObject("data").getString("total_num"));
+                            orderTotalPrice.setText(DoubleUtils.setSSWRDouble(Double.parseDouble(jsonObject.getJSONObject("data").getString("total_amount"))));
+                        } else if (status == 0) {
+                            //获取失败
+                            customDialog(jsonObject.getString("msg"));
+                        }
+                    } catch (JSONException e) {
+                    } finally {
+                        if (mSwipeLayout != null) {
+                            if (mSwipeLayout.isRefreshing()) {
+                                //关闭刷新动画
+                                mSwipeLayout.setRefreshing(false);
+                            }
+                        }
+                        orderListItemAdapter.notifyDataSetChanged();
+                    }
+
+                    break;
+                case 511:
+                    Toast.makeText(TheOrderListActivity.this, "网络超时，请重试", Toast.LENGTH_SHORT).show();
+                    loading_dailog.dismiss();
+                    break;
+                case 20000:
+                    int postion = (int) msg.obj;
+                    Intent intent = new Intent(TheOrderListActivity.this, OrderDetailsActivity.class);
+                    intent.putExtra("orderid", list.get(postion).getId());
+                    startActivityForResult(intent, 1220);
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -263,86 +335,6 @@ public class TheOrderListActivity extends AppCompatActivity {
         }
 
     }
-
-
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 0:
-                    list.clear();
-                    String orderListJSon = (String) msg.obj;
-                    Log.i("URL", orderListJSon);
-                    loading_dailog.dismiss();
-                    try {
-                        JSONObject jsonObject = new JSONObject(orderListJSon);
-                        int status = jsonObject.getInt("status");
-                        if (status == 1) {
-                            JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("orderlist");
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject orderbean = jsonArray.getJSONObject(i);
-                                OrderBean ob = new OrderBean();
-                                ob.setId(orderbean.getString("id"));
-                                ob.setStatus(orderbean.getString("status"));
-                                ob.setOrder_price(orderbean.getString("order_price"));
-                                ob.setOrdersn(orderbean.getString("ordersn"));
-                                long created_at = Long.parseLong(orderbean.getString("created_at")) * 1000;
-                                Date d = new Date(created_at);
-                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                ob.setCreated_at(sdf.format(d));
-                                list.add(ob);
-                            }
-                            orderTotal.setText(jsonObject.getJSONObject("data").getString("total_num"));
-                            orderTotalPrice.setText(DoubleUtils.setSSWRDouble(Double.parseDouble(jsonObject.getJSONObject("data").getString("total_amount"))));
-                        } else if (status == 0) {
-                            //获取失败
-                            customDialog("获取订单数据失败，请重新点击按钮！");
-                        }
-                    } catch (JSONException e) {
-                    } finally {
-                        if (mSwipeLayout != null) {
-                            if (mSwipeLayout.isRefreshing()) {
-                                //关闭刷新动画
-                                mSwipeLayout.setRefreshing(false);
-                            }
-                        }
-                        orderListItemAdapter.notifyDataSetChanged();
-                    }
-
-                    break;
-                case 511:
-                    Toast.makeText(TheOrderListActivity.this, "网络超时，请重试", Toast.LENGTH_SHORT).show();
-                    loading_dailog.dismiss();
-                    break;
-                case 20000:
-                    int postion = (int) msg.obj;
-                    Intent intent = new Intent(TheOrderListActivity.this, OrderDetailsActivity.class);
-                    intent.putExtra("orderid", list.get(postion).getId());
-                    startActivityForResult(intent, 1220);
-                    break;
-            }
-        }
-    };
-
-
-    /**
-     *
-     * 定时器
-     */
-    private Handler mHandler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
-            switch (msg.what) {
-                case 20:
-                    //关闭提示信息的对话框
-                    dialog.dismiss();
-                    break;
-            }
-        }
-
-        ;
-    };
-
 
     /**
      *

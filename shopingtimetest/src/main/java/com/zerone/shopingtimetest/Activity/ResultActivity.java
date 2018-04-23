@@ -233,7 +233,7 @@ public class ResultActivity extends AppCompatActivity {
             loginMap.put("order_id", orderid);
         }
         Log.i("URL", "paymentType=" + paymentType);
-        loginMap.put("paytype", paymentType + "");
+        loginMap.put("paytype", "5");
         loginMap.put("timestamp", timestamp);
         loginMap.put("payment_company", "盛付通支付");
         loading_dailog = LoadingUtils.getDailog(ResultActivity.this, Color.RED, "整理数据中。。。");
