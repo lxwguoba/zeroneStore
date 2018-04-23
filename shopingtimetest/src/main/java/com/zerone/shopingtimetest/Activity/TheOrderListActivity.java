@@ -119,7 +119,8 @@ public class TheOrderListActivity extends AppCompatActivity {
                             orderTotalPrice.setText(DoubleUtils.setSSWRDouble(Double.parseDouble(jsonObject.getJSONObject("data").getString("total_amount"))));
                         } else if (status == 0) {
                             //获取失败
-                            customDialog(jsonObject.getString("msg"));
+                            customDialog(jsonObject.getString("msg") + "，2秒后自动关闭");
+
                         }
                     } catch (JSONException e) {
                     } finally {
@@ -353,7 +354,7 @@ public class TheOrderListActivity extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
         //第二个参数是几秒后关闭
-        mHandler.sendEmptyMessageDelayed(20, 3000);
+        mHandler.sendEmptyMessageDelayed(20, 2000);
 
     }
 }
