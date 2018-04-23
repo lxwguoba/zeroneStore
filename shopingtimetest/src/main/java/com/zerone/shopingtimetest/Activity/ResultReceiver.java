@@ -51,6 +51,7 @@ public class ResultReceiver extends BroadcastReceiver {
                 answerCode = intent.getStringExtra("answerCode");
                 String merchantNameEn = intent.getStringExtra("merchantNameEn");
                 paymentType = intent.getIntExtra("paymentType", -2);
+                Log.i("URL", "paymentType=" + paymentType);
                 String transTime = intent.getStringExtra("transTime");
                 errorCode = intent.getIntExtra("errorCode", 0);
                 final String errorMsg = intent.getStringExtra("errorMsg");

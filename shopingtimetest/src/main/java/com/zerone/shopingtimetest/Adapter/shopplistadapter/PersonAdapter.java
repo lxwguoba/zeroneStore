@@ -304,9 +304,9 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
         public final TextView shop_name;
         public final TextView shop_shopdiscount;
         public final TextView shopprice;
-        public final TextView decrease_shop;
+        public final LinearLayout decrease_shop;
         public final TextView shopCount;
-        public final TextView add_shop;
+        public final LinearLayout add_shop;
         public final LinearLayout showTextCount;
         public final View root;
 

@@ -251,7 +251,6 @@
                 android:layout_alignParentRight="true"
                 android:background="@mipmap/message_bg"
                 android:gravity="center"
-                android:text="90"
                 android:textColor="#ffffff"
                 android:textSize="14sp" />
         </RelativeLayout>

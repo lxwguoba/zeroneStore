@@ -17,6 +17,7 @@ import java.util.Map;
 /**
  * Created by on 2018/4/8 0008 15 57.
  * Author  LiuXingWen
+ * 这个是文件缓存
  */
 
 public class AppSharePreferenceMgr {

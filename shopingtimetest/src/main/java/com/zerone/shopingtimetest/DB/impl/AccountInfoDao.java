@@ -1,5 +1,6 @@
 package com.zerone.shopingtimetest.DB.impl;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
@@ -80,6 +81,28 @@ public class AccountInfoDao extends AbstractDao {
             db.execSQL(sql);
         } catch (Exception e) {
             throw new Exception("清空失败", e);
+        } finally {
+            db.close();
+        }
+    }
+
+    /**
+     * 修改表中的数据 update
+     *
+     * @param account 这个是账号实体类
+     * @throws Exception
+     */
+    public void update(Account account) throws Exception {
+        try {
+            db = baseDao.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put("account_name", account.getAccount_name());
+            values.put("account_pwd", account.getAccount_pwd());
+            int count = db.update("account", values, "a_id = ?", new String[]{"10"});
+            values.clear();
+            Log.i("BBBB", "修改登录时的数据时的方式:::=" + count);
+        } catch (Exception e) {
+            throw new Exception("修改数据失败", e);
         } finally {
             db.close();
         }

@@ -1,5 +1,6 @@
 package com.zerone.shopingtimetest.DB.impl;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
@@ -136,6 +137,25 @@ public class UserInfoImpl extends AbstractDao {
             cur.close();
             db.close();
         }
+    }
+
+    /**
+     * 修改登录后的用户信息
+     *
+     * @param userInfo 用户信息实体类
+     */
+    public void upDateUserInfo(UserInfo userInfo) {
+        db = baseDao.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("account_id", userInfo.getAccount_id());
+        values.put("account", userInfo.getAccount());
+        values.put("u_orgid", userInfo.getOrganization_id());
+        values.put("u_uuid", userInfo.getUuid());
+        values.put("organization_name", userInfo.getOrganization_name());
+        values.put("realname", userInfo.getRealName());
+        int count = db.update("customer", values, "u_id = ?", new String[]{"10"});
+        values.clear();
+        Log.i("BBBB", "修改UserInfo的数据时的方式:::=" + count);
     }
 
 }

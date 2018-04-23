@@ -32,7 +32,7 @@ public class PayUtils {
         intent.putExtra("transType", 0);
         AppSharePreferenceMgr.put(context, "transType", "0");
 //        用户自选 这里可以让用户选择  默认的是让用户自己选
-        intent.putExtra("paymentType", "1");
+        intent.putExtra("paymentType", "2");
         try {
             intent.putExtra("amount", mone);
         } catch (Exception e) {

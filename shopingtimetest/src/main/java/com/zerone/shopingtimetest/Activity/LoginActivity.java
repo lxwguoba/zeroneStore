@@ -51,8 +51,6 @@ public class LoginActivity extends BaseAppActivity {
     private boolean checkboolen = false;
     private ImageView showpassword;
     private boolean showBoolean = false;
-    private TextView agreement;
-    private ImageView closeactivity;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -108,6 +106,9 @@ public class LoginActivity extends BaseAppActivity {
             }
         }
     };
+    private TextView agreement;
+    private ImageView closeactivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -229,7 +230,13 @@ public class LoginActivity extends BaseAppActivity {
      */
     private void saveAccountIntoTable(Account account) {
         try {
-            accountInfoDao.saveAccount(account);
+            Account ac = accountInfoDao.getAccount("10");
+            if (ac != null) {
+                accountInfoDao.update(account);
+            } else {
+                accountInfoDao.saveAccount(account);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -252,8 +259,12 @@ public class LoginActivity extends BaseAppActivity {
     private void saveUserInfo(UserInfo userInfo) {
         UserInfoImpl userimpl = new UserInfoImpl(LoginActivity.this);
         try {
-            userimpl.deltable();
-            userimpl.saveUserInfo(userInfo);
+            UserInfo user = userimpl.getUserInfo("10");
+            if (user == null) {
+                userimpl.saveUserInfo(userInfo);
+            } else {
+                userimpl.upDateUserInfo(userInfo);
+            }
             Intent intent = new Intent(LoginActivity.this, OrderListActvity.class);
             startActivity(intent);
             LoginActivity.this.finish();

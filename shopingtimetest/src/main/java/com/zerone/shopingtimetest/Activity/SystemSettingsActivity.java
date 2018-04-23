@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import com.zerone.shopingtimetest.Bean.UserInfo;
 import com.zerone.shopingtimetest.Contants.IpConfig;
 import com.zerone.shopingtimetest.DB.impl.UserInfoImpl;
 import com.zerone.shopingtimetest.R;
+import com.zerone.shopingtimetest.Utils.AppSharePreferenceMgr;
 import com.zerone.shopingtimetest.Utils.LoadingUtils;
 import com.zerone.shopingtimetest.Utils.NetUtils;
 import com.zyao89.view.zloading.ZLoadingDialog;
@@ -164,6 +166,7 @@ public class SystemSettingsActivity extends BaseAppActivity {
     private UserInfo userInfo;
     private ImageView system_back;
     private Button systemout;
+    private boolean remberChecked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,6 +174,7 @@ public class SystemSettingsActivity extends BaseAppActivity {
         setContentView(R.layout.activity_systemsettings);
         StatusBarCompat.setStatusBarColor(this, Color.parseColor("#ffffff"));
         mContext = SystemSettingsActivity.this;
+        remberChecked = (boolean) AppSharePreferenceMgr.get(mContext, "remberChecked", false);
         initGetUserInfo();
         initView();
         aciton();
@@ -223,7 +227,10 @@ public class SystemSettingsActivity extends BaseAppActivity {
      * view的初始
      */
     private void initView() {
+//        .put(SystemSettingsActivity.this,"remberChecked",isChecked);
+
         system_login_rember_account = (CheckBox) findViewById(R.id.system_login_rember_account);
+        system_login_rember_account.setChecked(remberChecked);
         system_kaidan = (CheckBox) findViewById(R.id.system_kaidan);
         system_fkjkc = (CheckBox) findViewById(R.id.system_fkjkc);
         system_xdjkc = (CheckBox) findViewById(R.id.system_xdjkc);
@@ -305,6 +312,13 @@ public class SystemSettingsActivity extends BaseAppActivity {
                 loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "修改中。。。。");
                 loading_dailog.show();
                 NetUtils.netWorkByMethodPost(mContext, kdMap, IpConfig.URL_FKJKC, handler, 3);
+            }
+        });
+
+        system_login_rember_account.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                AppSharePreferenceMgr.put(mContext, "remberChecked", isChecked);
             }
         });
     }

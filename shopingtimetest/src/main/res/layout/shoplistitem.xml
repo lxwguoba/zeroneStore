@@ -96,15 +96,23 @@
                             android:background="#fff"
                             android:orientation="horizontal">
 
-                            <TextView
+
+                            <LinearLayout
                                 android:id="@+id/decrease_shop"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
                                 android:background="@drawable/shape_shop_decrease"
                                 android:gravity="center"
-                                android:text="—"
-                                android:textColor="#999999"
-                                android:textSize="16sp" />
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:paddingLeft="5dp"
+                                    android:paddingRight="5dp"
+                                    android:src="@mipmap/jian_" />
+
+                            </LinearLayout>
 
                             <LinearLayout
                                 android:id="@+id/showTextCount"
@@ -119,18 +127,26 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
                                     android:gravity="center"
-                                    android:text="100"
-                                    android:textSize="13sp" />
+                                    android:textSize="14sp" />
                             </LinearLayout>
 
-                            <TextView
+
+                            <LinearLayout
                                 android:id="@+id/add_shop"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
                                 android:background="@drawable/shape_shop_decrease"
                                 android:gravity="center"
-                                android:text="+"
-                                android:textSize="16sp" />
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:padding="4dp"
+                                    android:src="@mipmap/add_" />
+                            </LinearLayout>
+
+
                         </LinearLayout>
 
                     </RelativeLayout>
