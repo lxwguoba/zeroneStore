@@ -507,7 +507,7 @@ public class OrderListActvity extends BaseAppActivity {
                         mprice += Double.parseDouble(buycartshoplist.get(m).getSp_price()) * Integer.parseInt(buycartshoplist.get(m).getSp_count());
                     }
                     shopCount.setText("" + mcount);
-                    checkCount.setText("已选" + buycartshoplist.size() + "件商品");
+                    checkCount.setText("已选" + buycartshoplist.size() + "种商品");
                     selectedgoodsmoney.setText(DoubleUtils.setSSWRDouble(mprice));
                     pop_price.setText(DoubleUtils.setSSWRDouble(mprice));
                     personAdapter.notifyDataSetChanged();
@@ -553,7 +553,7 @@ public class OrderListActvity extends BaseAppActivity {
                     }
                     shopCount.setText(mcoun + "");
                     if (buycartshoplist != null && buycartshoplist.size() > 0) {
-                        checkCount.setText("商品" + buycartshoplist.size() + "件");
+                        checkCount.setText("商品" + buycartshoplist.size() + "种");
                     } else {
                         checkCount.setText("请选择商品");
                     }
@@ -774,7 +774,7 @@ public class OrderListActvity extends BaseAppActivity {
 //        allcheck = (CheckBox) shopview.findViewById(R.id.allCheckGoods);
         checkCount = shopview.findViewById(R.id.checkCount);
         if (buycartshoplist.size() > 0) {
-            checkCount.setText(buycartshoplist.size() + "件商品");
+            checkCount.setText(buycartshoplist.size() + "种商品");
         }
         clear_cart = shopview.findViewById(R.id.clear_cart);
         shoplistview = shopview.findViewById(R.id.shoplistview);
@@ -783,7 +783,7 @@ public class OrderListActvity extends BaseAppActivity {
         //结算
         settlement = shopview.findViewById(R.id.settlement);
 
-        pop_price.setText("￥" + smoney);
+        pop_price.setText("￥" + DoubleUtils.setSSWRDouble(smoney));
         if (buycartshoplist != null) {
             listAdapter = new ListGoodsDetails_Adapter(OrderListActvity.this, buycartshoplist, handler);
             shoplistview.setAdapter(listAdapter);

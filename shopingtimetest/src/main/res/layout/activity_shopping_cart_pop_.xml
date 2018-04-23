@@ -103,7 +103,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
                 android:fontFamily="SourceHansCN-Medium"
-                android:text="(已选2件)"
+                android:text="(已选2种)"
                 android:textColor="#000000"
                 android:textSize="16sp" />
 
