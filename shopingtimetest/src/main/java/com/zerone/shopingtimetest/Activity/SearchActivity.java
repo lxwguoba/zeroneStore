@@ -122,6 +122,7 @@ public class SearchActivity extends BaseAppActivity {
                             mAdapter.notifyDataSetChanged();
                         } else if (status == 0) {
                             Toast.makeText(SearchActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
