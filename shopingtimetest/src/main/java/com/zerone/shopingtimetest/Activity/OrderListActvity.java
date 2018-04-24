@@ -247,15 +247,6 @@ public class OrderListActvity extends BaseAppActivity {
                         intent.putExtra("listobj", (Serializable) buyShoppingList);
                     }
                     startActivityForResult(intent, 1100);
-//                      /*清空购物车*/
-//                    for (int i = 0; i < goodsitemlist.size(); i++) {
-//                        goodsitemlist.get(i).setShop_Count("0");
-//                    }
-//                    selectedgoodsmoney.setText("0");
-//                    buycartshoplist.clear();
-//                    buyShoppingList.clear();
-//                    shopCount.setText("0");
-//                    showOrderList.setVisibility(View.GONE);
                     if (personAdapter != null) {
                         personAdapter.notifyDataSetChanged();
                     }
@@ -685,16 +676,11 @@ public class OrderListActvity extends BaseAppActivity {
             public void onClick(View v) {
                 //把商品放入到购物车的集合中
                 if (buyShoppingList.size() > 0) {
-                    Log.i("AAA", "展示popwindown时的数据：：：" + buyShoppingList.toString());
                     setData();
                     setPopWindow();
+                } else {
+                    Toast.makeText(OrderListActvity.this, "没有商品，请选择", Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
-        shopCount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
             }
         });
         f_menu.setOnClickListener(new View.OnClickListener() {
