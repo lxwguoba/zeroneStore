@@ -36,6 +36,7 @@ import com.zerone.shopingtimetest.BaseActivity.BaseAppActivity;
 import com.zerone.shopingtimetest.Bean.ShopBean;
 import com.zerone.shopingtimetest.Bean.UserInfo;
 import com.zerone.shopingtimetest.Bean.refresh.RefreshBean;
+import com.zerone.shopingtimetest.Bean.refresh.SetDataGoodsOrder;
 import com.zerone.shopingtimetest.Bean.shoplistbean.GoodsCategroyListBean;
 import com.zerone.shopingtimetest.Bean.shoplistbean.ShopMessageBean;
 import com.zerone.shopingtimetest.Contants.ContantData;
@@ -200,7 +201,6 @@ public class OrderListActvity extends BaseAppActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
                     break;
                 case 3:
                     /*清空购物车*/
@@ -256,7 +256,9 @@ public class OrderListActvity extends BaseAppActivity {
 //                    buyShoppingList.clear();
 //                    shopCount.setText("0");
 //                    showOrderList.setVisibility(View.GONE);
-                    personAdapter.notifyDataSetChanged();
+                    if (personAdapter != null) {
+                        personAdapter.notifyDataSetChanged();
+                    }
                     break;
 
                 case 1000:
@@ -350,6 +352,60 @@ public class OrderListActvity extends BaseAppActivity {
                         shopCount.setText("0");
                     }
                     personAdapter.notifyDataSetChanged();
+                    break;
+                case 207:
+                    //搜索款返回来的数据
+                    ShopBean shopBean = (ShopBean) msg.obj;
+                    for (int i = 0; i < goodsitemlist.size(); i++) {
+                        if (shopBean.getId() == goodsitemlist.get(i).getId()) {
+                            int counts = Integer.parseInt(goodsitemlist.get(i).getShop_Count());
+                            counts++;
+                            goodsitemlist.get(i).setShop_Count(counts + "");
+                            break;
+                        }
+                    }
+                    //按了添加商品这个按钮
+                    boolean sameSopboolean = false;
+                    Integer sameindex = null;
+                    //给购物车添加商品
+                    if (buyShoppingList.size() > 0) {
+                        // 1、购物车已有商品
+                        for (int i = 0; i < buyShoppingList.size(); i++) {
+                            //判断是否是同一个商品
+                            if (shopBean.getId() == buyShoppingList.get(i).getId()) {
+                                sameSopboolean = true;
+                                sameindex = i;
+                                break;
+                            }
+                        }
+                        if (sameSopboolean) {
+                            //相同商品 数量加一
+                            if (sameindex != null) {
+                                //把这个商品从新设置一下
+                                buyShoppingList.set(sameindex, goodsitemlist.get(sameindex));
+                            }
+                        } else {
+                            //不同商品
+                            buyShoppingList.add(goodsitemlist.get(sameindex));
+                        }
+                    } else {
+                        //2、购物车没有商品
+                        buyShoppingList.add(goodsitemlist.get(sameindex));
+                    }
+                    double dmone = 0.00;
+                    if (buyShoppingList.size() > 0) {
+                        showOrderList.setVisibility(View.VISIBLE);
+                        int buyNum = 0;
+                        for (int i = 0; i < buyShoppingList.size(); i++) {
+                            dmone += Double.parseDouble(buyShoppingList.get(i).getPrice()) * Integer.parseInt(buyShoppingList.get(i).getShop_Count());
+                            buyNum += Integer.parseInt(buyShoppingList.get(i).getShop_Count());
+                            Log.i("URL", "{" + buyNum + "}");
+                        }
+                        shopCount.setText(buyNum + "");
+                    }
+                    selectedgoodsmoney.setText("" + DoubleUtils.setSSWRDouble(dmone));
+                    personAdapter.notifyDataSetChanged();
+                    myCheckstandGray(true);
                     break;
 
                 case 12:
@@ -1045,14 +1101,29 @@ public class OrderListActvity extends BaseAppActivity {
             handler.sendMessage(message);
 
         }
-
         refresh_layout = menuView.findViewById(R.id.refresh_layout);
         systemset = menuView.findViewById(R.id.systemset);
         ordermenu = menuView.findViewById(R.id.ordermenu);
         quxiaoMenu = menuView.findViewById(R.id.quxiao);
         myCheckstandGray(false);
-
     }
+
+    /**
+     * 接收搜索框的添加数据的商品信息
+     *
+     * @param goodsOrder
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void freshBuy(SetDataGoodsOrder goodsOrder) {
+        //接收到清空购车的信息了
+        if (goodsOrder.getCode() == 0) {
+            Message message = new Message();
+            message.what = 207;
+            message.obj = goodsOrder.getShopBean();
+            handler.sendMessage(message);
+        }
+    }
+
 
     /**
      * 改变收银台颜色
@@ -1063,13 +1134,9 @@ public class OrderListActvity extends BaseAppActivity {
         if (!selecteColor) {
             settlement_.setTextColor(Color.parseColor("#cecece"));
             cashier.setTextColor(Color.parseColor("#cecece"));
-
-
         } else {
-
             settlement_.setTextColor(Color.parseColor("#000000"));
             cashier.setTextColor(Color.parseColor("#383638"));
-
         }
     }
 

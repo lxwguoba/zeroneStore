@@ -27,6 +27,7 @@ import com.zerone.shopingtimetest.Adapter.MyAdapter;
 import com.zerone.shopingtimetest.Adapter.cart_list.ListGoodsDetails_Adapter;
 import com.zerone.shopingtimetest.BaseActivity.BaseAppActivity;
 import com.zerone.shopingtimetest.Bean.ShopBean;
+import com.zerone.shopingtimetest.Bean.refresh.SetDataGoodsOrder;
 import com.zerone.shopingtimetest.Bean.shoplistbean.ShopMessageBean;
 import com.zerone.shopingtimetest.Contants.IpConfig;
 import com.zerone.shopingtimetest.R;
@@ -36,6 +37,7 @@ import com.zerone.shopingtimetest.Utils.MapUtilsSetParam;
 import com.zerone.shopingtimetest.Utils.NetUtils;
 import com.zyao89.view.zloading.ZLoadingDialog;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -128,6 +130,8 @@ public class SearchActivity extends BaseAppActivity {
                 case 10:
                     //点击了条目
                     int index = (int) msg.obj;
+                    //发送广播到商城首页 进行数量的加减
+                    EventBus.getDefault().post(new SetDataGoodsOrder(list.get(index), 0));
                     if (listBuy.size() > 0) {
                         //1.0设置一个int值来记录通一个商品的下标 , 用一个Boolean 来判断是否是同一个商品 默认是不同一个商品
                         boolean thesamelean = false;
@@ -361,7 +365,6 @@ public class SearchActivity extends BaseAppActivity {
         goods_recycleView.setLayoutManager(mLayoutManager);
         mAdapter = new MyAdapter(list, SearchActivity.this);
         goods_recycleView.setAdapter(mAdapter);
-
         sure_btn = (TextView) findViewById(R.id.sure_btn);
         cashier = (TextView) findViewById(R.id.cashier);
         setTextColor(lists.size());

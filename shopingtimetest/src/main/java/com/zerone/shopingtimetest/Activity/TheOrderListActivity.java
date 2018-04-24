@@ -120,7 +120,6 @@ public class TheOrderListActivity extends AppCompatActivity {
                         } else if (status == 0) {
                             //获取失败
                             customDialog(jsonObject.getString("msg") + "，2秒后自动关闭");
-
                         }
                     } catch (JSONException e) {
                     } finally {
