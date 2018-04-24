@@ -81,15 +81,18 @@ public class SystemSettingsActivity extends BaseAppActivity {
                         if (status == 1) {
                             JSONObject data = jfk.getJSONObject("data");
                             if ("1".equals(data.getString("vfg_value"))) {
-                                system_kaidan.setChecked(true);
                                 system_fkjkc.setChecked(true);
                                 system_xdjkc.setChecked(false);
                             } else if ("2".equals(data.getString("vfg_value"))) {
                                 system_fkjkc.setChecked(false);
                                 system_xdjkc.setChecked(true);
                             }
+                        } else {
+                            system_fkjkc.setChecked(system_fkjkc.isChecked());
+                            Toast.makeText(SystemSettingsActivity.this, jfk.getString("msg"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                     break;
                 case 3:
@@ -107,8 +110,12 @@ public class SystemSettingsActivity extends BaseAppActivity {
                                 system_fkjkc.setChecked(false);
                                 system_xdjkc.setChecked(true);
                             }
+                        } else {
+                            system_xdjkc.setChecked(system_xdjkc.isChecked());
+                            Toast.makeText(SystemSettingsActivity.this, jfk.getString("msg"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
+                        e.printStackTrace();
                     }
 
                     break;
@@ -228,7 +235,6 @@ public class SystemSettingsActivity extends BaseAppActivity {
      */
     private void initView() {
 //        .put(SystemSettingsActivity.this,"remberChecked",isChecked);
-
         system_login_rember_account = (CheckBox) findViewById(R.id.system_login_rember_account);
         system_login_rember_account.setChecked(remberChecked);
         system_kaidan = (CheckBox) findViewById(R.id.system_kaidan);
@@ -266,6 +272,15 @@ public class SystemSettingsActivity extends BaseAppActivity {
             }
         });
 
+        system_fkjkc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    system_fkjkc.setClickable(false);
+                    system_xdjkc.setClickable(true);
+                }
+            }
+        });
         system_fkjkc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -276,18 +291,21 @@ public class SystemSettingsActivity extends BaseAppActivity {
                 kdMap.put("account_id", userInfo.getAccount_id());
                 kdMap.put("organization_id", userInfo.getOrganization_id());
                 kdMap.put("cfg_value", "1");
-//                if (system_kaidan.isChecked()){
-//                    //付款后减库存   值为  1
-//                    kdMap.put("cfg_value","1");
-//                }else {
-//                    //下单后减库存  值为  2
-//                    kdMap.put("cfg_value","2");
-//                }
                 kdMap.put("token", token);
                 kdMap.put("timestamp", timestamp);
                 loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "修改中。。。。");
                 loading_dailog.show();
                 NetUtils.netWorkByMethodPost(mContext, kdMap, IpConfig.URL_FKJKC, handler, 2);
+            }
+        });
+
+        system_xdjkc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    system_xdjkc.setClickable(false);
+                    system_fkjkc.setClickable(true);
+                }
             }
         });
         system_xdjkc.setOnClickListener(new View.OnClickListener() {
@@ -299,13 +317,6 @@ public class SystemSettingsActivity extends BaseAppActivity {
                 Map<String, String> kdMap = new HashMap<String, String>();
                 kdMap.put("account_id", userInfo.getAccount_id());
                 kdMap.put("organization_id", userInfo.getOrganization_id());
-//                if (system_kaidan.isChecked()){
-//                    //付款后减库存   值为  1
-//                    kdMap.put("cfg_value","1");
-//                }else {
-//                    //下单后减库存  值为  2
-//                    kdMap.put("cfg_value","2");
-//                }
                 kdMap.put("cfg_value", "2");
                 kdMap.put("token", token);
                 kdMap.put("timestamp", timestamp);
