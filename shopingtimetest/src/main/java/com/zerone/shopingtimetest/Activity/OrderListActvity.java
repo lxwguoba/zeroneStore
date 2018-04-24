@@ -196,7 +196,7 @@ public class OrderListActvity extends BaseAppActivity {
                                 REFRESH_CODE = 0;
                             }
                         } else if (status == 0) {
-                            Toast.makeText(OrderListActvity.this, "该店没有商品分类", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(OrderListActvity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -381,16 +381,22 @@ public class OrderListActvity extends BaseAppActivity {
                         if (sameSopboolean) {
                             //相同商品 数量加一
                             if (sameindex != null) {
+                                Log.i("URL", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
                                 //把这个商品从新设置一下
-                                buyShoppingList.set(sameindex, goodsitemlist.get(sameindex));
+                                int coun = Integer.parseInt(buyShoppingList.get(sameindex).getShop_Count());
+//                                coun++;
+//                                buyShoppingList.get(sameindex).setShop_Count(coun+"");
+//                                buyShoppingList.set(sameindex,buyShoppingList.get(sameindex));
                             }
                         } else {
                             //不同商品
-                            buyShoppingList.add(goodsitemlist.get(sameindex));
+                            Log.i("URL", "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+                            buyShoppingList.add(shopBean);
                         }
                     } else {
                         //2、购物车没有商品
-                        buyShoppingList.add(goodsitemlist.get(sameindex));
+                        Log.i("URL", "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCc");
+                        buyShoppingList.add(shopBean);
                     }
                     double dmone = 0.00;
                     if (buyShoppingList.size() > 0) {
@@ -412,6 +418,7 @@ public class OrderListActvity extends BaseAppActivity {
                     //扫描结果获取服务器获取商品的处理
                     loading_dailog.dismiss();
                     String scanJson = (String) msg.obj;
+                    Log.i("URL", "扫码服务器结果:::" + scanJson);
                     try {
                         JSONObject jsonObject = new JSONObject(scanJson);
                         int status = jsonObject.getInt("status");
@@ -508,7 +515,7 @@ public class OrderListActvity extends BaseAppActivity {
                             selectedgoodsmoney.setText(mone + "");
                             personAdapter.notifyDataSetChanged();
                         } else if (status == 0) {
-                            Toast.makeText(OrderListActvity.this, "没有该商品", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(OrderListActvity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -676,6 +683,7 @@ public class OrderListActvity extends BaseAppActivity {
             public void onClick(View v) {
                 //把商品放入到购物车的集合中
                 if (buyShoppingList.size() > 0) {
+                    Log.i("AAA", "展示popwindown时的数据：：：" + buyShoppingList.toString());
                     setData();
                     setPopWindow();
                 }
@@ -793,7 +801,9 @@ public class OrderListActvity extends BaseAppActivity {
             smb.setSp_count(buyShoppingList.get(i).getShop_Count());
             int scount = Integer.parseInt(buyShoppingList.get(i).getShop_Count());
             double lmoney = Double.parseDouble(buyShoppingList.get(i).getPrice());
-            smb.setSp_picture_url(IpConfig.URL_GETPICTURE + buyShoppingList.get(i).getThumb().get(0).getThumb());
+            if (buyShoppingList.get(i).getThumb() != null && buyShoppingList.get(i).getThumb().size() > 0) {
+                smb.setSp_picture_url(IpConfig.URL_GETPICTURE + buyShoppingList.get(i).getThumb().get(0).getThumb());
+            }
             smb.setCategory_id(buyShoppingList.get(i).getCategory_id() + "");
             smb.setSp_name(buyShoppingList.get(i).getName());
             smb.setSp_id(buyShoppingList.get(i).getId() + "");
@@ -1041,6 +1051,7 @@ public class OrderListActvity extends BaseAppActivity {
      */
     private void intoSearchGoods(String result) {
         Map<String, String> map = MapUtilsSetParam.getMap(OrderListActvity.this);
+        Log.i("URL", "扫码的值：：：" + result);
         map.put("scan_code", result);
         loading_dailog = LoadingUtils.getDailog(OrderListActvity.this, Color.RED, "搜索中。。。。");
         loading_dailog.show();
