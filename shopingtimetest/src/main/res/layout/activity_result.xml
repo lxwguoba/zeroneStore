@@ -7,13 +7,16 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:background="#fedc42">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:fontFamily="SourceHanSansCN-Medium"
             android:gravity="center"
             android:text="支付结果"
+            android:textColor="#000000"
             android:textSize="18sp" />
 
         <TextView
@@ -23,7 +26,9 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
+            android:fontFamily="SourceHanSansCN-Medium"
             android:text="完成"
+            android:textColor="#383638"
             android:textSize="16sp" />
     </RelativeLayout>
 
@@ -48,7 +53,6 @@
                 android:layout_height="30dp"
                 android:layout_marginLeft="20dp"
                 android:src="@mipmap/icon_login_check_selected_btn" />
-
             <TextView
                 android:id="@+id/result_info"
                 android:layout_width="wrap_content"
@@ -57,10 +61,8 @@
                 android:text="交易成功"
                 android:textColor="@color/btn_img_color"
                 android:textSize="18sp" />
-
         </LinearLayout>
     </LinearLayout>
-
     <TextView
         android:id="@+id/result_tv"
         android:layout_width="match_parent"

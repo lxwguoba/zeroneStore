@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,6 +12,7 @@ import android.widget.Toast;
 
 import com.android.qzs.voiceannouncementlibrary.VoiceUtils;
 import com.zerone.shopingtimetest.Base64AndMD5.CreateToken;
+import com.zerone.shopingtimetest.BaseActivity.BaseAppActivity;
 import com.zerone.shopingtimetest.Bean.UserInfo;
 import com.zerone.shopingtimetest.Bean.print.PrintBean;
 import com.zerone.shopingtimetest.Bean.print.PrintItem;
@@ -39,7 +39,7 @@ import java.util.Map;
  * @author xurong on 2017/5/15.
  */
 
-public class ResultActivity extends AppCompatActivity {
+public class ResultActivity extends BaseAppActivity {
 
     private static final String TAG = "ResultActivity";
 
@@ -143,9 +143,7 @@ public class ResultActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //这里需要更新下收银台颜色
-
                 ResultActivity.this.finish();
-
             }
         });
     }
@@ -170,20 +168,21 @@ public class ResultActivity extends AppCompatActivity {
             VoiceUtils.with(this).Play(dmoney + "", true);
             //打印小票  获取订单详情
             orderid = (String) AppSharePreferenceMgr.get(ResultActivity.this, "orderid", "");
-            gotoPrint(orderid);
+            if (orderid != null && orderid.length() > 0) {
+                gotoPrint(orderid);
+            }
         } else if (resultCode == -1) {
             // 交易失败
             Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
             Log.e(TAG, errorMsg);
-            result_info.setText("支付失败！");
             result_info.setTextColor(Color.parseColor("#ff0000"));
             result_iv.setImageResource(R.mipmap.pay_fails);
             if (errorCode == 401) {
-                result_tv.setText("交易失败");
+                result_info.setText("交易失败");
             } else if (errorCode == 418) {
-                result_tv.setText("支付取消");
+                result_info.setText("支付已被取消");
             } else {
-                result_tv.setText("支付失败！！！！");
+                result_info.setText("支付失败！！！！");
             }
             result_tv.setText("Result:" + resultInfo);
         }
@@ -227,9 +226,7 @@ public class ResultActivity extends AppCompatActivity {
         loginMap.put("account_id", userInfo.getAccount_id());
         loginMap.put("token", token);
         String orderid = (String) AppSharePreferenceMgr.get(ResultActivity.this, "orderid", "");
-        Log.i("URL", "orderid==" + orderid);
         if (orderid != null && orderid.length() > 0) {
-            Log.i("URL", "orderid=========" + orderid);
             loginMap.put("order_id", orderid);
         }
         Log.i("URL", "paymentType=" + paymentType);

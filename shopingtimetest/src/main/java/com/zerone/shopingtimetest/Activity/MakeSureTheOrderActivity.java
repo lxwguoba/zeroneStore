@@ -64,7 +64,9 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
     private ListView goodslist;
     private MakeOrderDetialsListItemAdapter mAdapter;
     private TextView sureOrderMoney;
-
+    private LinearLayout actionremark;
+    private LinearLayout writeoff;
+    private TextView jiedaiyuan;
     private double dSOMoney = 0.00;
     private TextView subMoney;
     private ImageView back;
@@ -77,8 +79,6 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
                 case 0:
                     loading.dismiss();
                     String subJSon = (String) msg.obj;
-
-
                     try {
                         JSONObject jsonObject = new JSONObject(subJSon);
                         int status = jsonObject.getInt("status");
@@ -118,9 +118,6 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
             }
         }
     };
-    private LinearLayout actionremark;
-    private LinearLayout writeoff;
-    private TextView jiedaiyuan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
