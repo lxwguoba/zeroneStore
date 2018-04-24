@@ -100,7 +100,7 @@ public class SearchActivity extends BaseAppActivity {
                             JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("goodslist");
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 ShopBean shopBean = new ShopBean();
-                                shopBean.setShop_Count("10");
+                                shopBean.setShop_Count("1");
                                 shopBean.setName(jsonArray.getJSONObject(i).getString("name"));
                                 shopBean.setCategory_id(jsonArray.getJSONObject(i).getInt("category_id"));
                                 shopBean.setCategory_name(jsonArray.getJSONObject(i).getString("category_name"));

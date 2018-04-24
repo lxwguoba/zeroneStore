@@ -356,6 +356,7 @@ public class OrderListActvity extends BaseAppActivity {
                 case 207:
                     //搜索款返回来的数据
                     ShopBean shopBean = (ShopBean) msg.obj;
+                    Log.i("URL", "BBBBBBBBBBBB==============" + shopBean);
                     for (int i = 0; i < goodsitemlist.size(); i++) {
                         if (shopBean.getId() == goodsitemlist.get(i).getId()) {
                             int counts = Integer.parseInt(goodsitemlist.get(i).getShop_Count());
@@ -381,12 +382,12 @@ public class OrderListActvity extends BaseAppActivity {
                         if (sameSopboolean) {
                             //相同商品 数量加一
                             if (sameindex != null) {
-                                Log.i("URL", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
+
                                 //把这个商品从新设置一下
                                 int coun = Integer.parseInt(buyShoppingList.get(sameindex).getShop_Count());
-//                                coun++;
-//                                buyShoppingList.get(sameindex).setShop_Count(coun+"");
-//                                buyShoppingList.set(sameindex,buyShoppingList.get(sameindex));
+                                coun++;
+                                buyShoppingList.get(sameindex).setShop_Count(coun + "");
+                                buyShoppingList.set(sameindex, buyShoppingList.get(sameindex));
                             }
                         } else {
                             //不同商品
@@ -400,6 +401,7 @@ public class OrderListActvity extends BaseAppActivity {
                     }
                     double dmone = 0.00;
                     if (buyShoppingList.size() > 0) {
+                        Log.i("URL", "DDDDDDDDDDDDDDd===" + buyShoppingList.toString());
                         showOrderList.setVisibility(View.VISIBLE);
                         int buyNum = 0;
                         for (int i = 0; i < buyShoppingList.size(); i++) {
@@ -827,7 +829,11 @@ public class OrderListActvity extends BaseAppActivity {
             int scount = Integer.parseInt(buyShoppingList.get(i).getShop_Count());
             double lmoney = Double.parseDouble(buyShoppingList.get(i).getPrice());
             smoney += scount * lmoney;
-            smb.setSp_picture_url(IpConfig.URL_GETPICTURE + buyShoppingList.get(i).getThumb().get(0).getThumb());
+            if (buyShoppingList.get(i).getThumb().size() > 0) {
+                smb.setSp_picture_url(IpConfig.URL_GETPICTURE + buyShoppingList.get(i).getThumb().get(0).getThumb());
+            } else {
+                smb.setSp_picture_url("");
+            }
             smb.setCategory_id(buyShoppingList.get(i).getCategory_id() + "");
             smb.setSp_name(buyShoppingList.get(i).getName());
             smb.setSp_id(buyShoppingList.get(i).getId() + "");

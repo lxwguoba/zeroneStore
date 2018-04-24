@@ -9,18 +9,6 @@ import java.util.List;
  */
 
 public class ShopBean implements Serializable {
-
-    /**
-     * id : 2
-     * name : 茄子豆角
-     * category_id : 8
-     * details : 茄子豆角茄子豆角茄子豆角茄子豆角茄子豆角茄子豆角
-     * price : 12.00
-     * stock : 986
-     * category_name : 盖浇饭
-     * thumb : [{"thumb":"uploads/catering/20180317025956983.jpg"}]
-     */
-
     private int id;
     private String name;
     private int category_id;
