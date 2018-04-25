@@ -64,12 +64,10 @@ public class TheOrderListActivity extends AppCompatActivity {
     private ZLoadingDialog loading_dailog;
     private TextView orderTotal;
     private TextView orderTotalPrice;
-
     private ImageView back;
     //这个是用来结账后判断是全部订单还是待付款订单按钮触发的  0为全部订单  1为待付款订单
     private int post;
     private SwipeRefreshLayout mSwipeLayout;
-
     //这个是 判断当前页面是那个订单转态，"" 空字符串是全部订单、 "'0'" 这个是待付款订单 、"1"是已完成订单、"-1"是已取消订单
     private String orderState = "";
     private Dialog dialog;

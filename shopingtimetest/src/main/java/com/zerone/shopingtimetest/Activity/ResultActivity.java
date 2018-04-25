@@ -177,16 +177,17 @@ public class ResultActivity extends BaseAppActivity {
             Log.e(TAG, errorMsg);
             result_info.setTextColor(Color.parseColor("#ff0000"));
             result_iv.setImageResource(R.mipmap.pay_fails);
-            if (errorCode == 401) {
-                result_info.setText("交易失败");
-            } else if (errorCode == 418) {
-                result_info.setText("支付已被取消");
-            } else if (errorCode == 413) {
-                result_info.setText("支付交易超时");
-            } else {
-                result_info.setText("支付失败！！！");
-            }
-            result_tv.setText("Result:" + resultInfo);
+//            if (errorCode == 401) {
+//                result_info.setText("交易失败");
+//            } else if (errorCode == 418) {
+//                result_info.setText("支付已被取消");
+//            } else if (errorCode == 413) {
+//                result_info.setText("支付交易超时");
+//            } else {
+            result_info.setText(errorMsg);
+//            }
+            Log.i("BBB", "resultInfo=" + resultInfo);
+//            result_tv.setText("Result:" + resultInfo);
         }
     }
 

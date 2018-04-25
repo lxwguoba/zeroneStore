@@ -51,7 +51,7 @@
                     android:fontFamily="SourceHansCN-Medium"
                     android:lines="1"
                     android:text="新品/8折"
-                    android:textColor="#666666"
+                    android:textColor="@color/C999999"
                     android:textSize="12sp" />
 
                 <LinearLayout
