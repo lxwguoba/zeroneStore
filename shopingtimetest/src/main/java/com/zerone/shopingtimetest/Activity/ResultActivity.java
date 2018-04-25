@@ -181,8 +181,10 @@ public class ResultActivity extends BaseAppActivity {
                 result_info.setText("交易失败");
             } else if (errorCode == 418) {
                 result_info.setText("支付已被取消");
+            } else if (errorCode == 413) {
+                result_info.setText("支付交易超时");
             } else {
-                result_info.setText("支付失败！！！！");
+                result_info.setText("支付失败！！！");
             }
             result_tv.setText("Result:" + resultInfo);
         }
