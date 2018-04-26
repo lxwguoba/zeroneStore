@@ -27,6 +27,7 @@ import com.zerone.shopingtimetest.R;
 import com.zerone.shopingtimetest.Utils.DoubleUtils;
 import com.zerone.shopingtimetest.Utils.LoadingUtils;
 import com.zerone.shopingtimetest.Utils.NetUtils;
+import com.zerone.shopingtimetest.view.refreshlayout.SwipeRefreshView;
 import com.zyao89.view.zloading.ZLoadingDialog;
 
 import org.json.JSONArray;
@@ -67,7 +68,7 @@ public class TheOrderListActivity extends AppCompatActivity {
     private ImageView back;
     //这个是用来结账后判断是全部订单还是待付款订单按钮触发的  0为全部订单  1为待付款订单
     private int post;
-    private SwipeRefreshLayout mSwipeLayout;
+    private SwipeRefreshView mSwipeLayout;
     //这个是 判断当前页面是那个订单转态，"" 空字符串是全部订单、 "'0'" 这个是待付款订单 、"1"是已完成订单、"-1"是已取消订单
     private String orderState = "";
     private Dialog dialog;
@@ -131,6 +132,44 @@ public class TheOrderListActivity extends AppCompatActivity {
                     }
 
                     break;
+
+                case 1:
+                    String orderListJSo = (String) msg.obj;
+                    Log.i("URL", orderListJSo);
+                    loading_dailog.dismiss();
+                    try {
+                        JSONObject jsonObject = new JSONObject(orderListJSo);
+                        int status = jsonObject.getInt("status");
+                        if (status == 1) {
+                            JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("orderlist");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject orderbean = jsonArray.getJSONObject(i);
+                                OrderBean ob = new OrderBean();
+                                ob.setId(orderbean.getString("id"));
+                                ob.setStatus(orderbean.getString("status"));
+                                ob.setOrder_price(orderbean.getString("order_price"));
+                                ob.setOrdersn(orderbean.getString("ordersn"));
+                                long created_at = Long.parseLong(orderbean.getString("created_at")) * 1000;
+                                Date d = new Date(created_at);
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                ob.setCreated_at(sdf.format(d));
+                                list.add(ob);
+                            }
+                            orderTotal.setText(jsonObject.getJSONObject("data").getString("total_num"));
+                            orderTotalPrice.setText(DoubleUtils.setSSWRDouble(Double.parseDouble(jsonObject.getJSONObject("data").getString("total_amount"))));
+                        } else if (status == 0) {
+                            //获取失败
+                            customDialog(jsonObject.getString("msg") + "，2秒后自动关闭");
+                        }
+                    } catch (JSONException e) {
+                    } finally {
+                        if (mSwipeLayout != null) {
+                            //关闭刷新动画
+                            mSwipeLayout.setLoading(false);
+                        }
+                        orderListItemAdapter.notifyDataSetChanged();
+                    }
+                    break;
                 case 511:
                     Toast.makeText(TheOrderListActivity.this, "网络超时，请重试", Toast.LENGTH_SHORT).show();
                     loading_dailog.dismiss();
@@ -168,7 +207,7 @@ public class TheOrderListActivity extends AppCompatActivity {
      */
     private void initView() {
         //刷新按钮
-        mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_ly);
+        mSwipeLayout = (SwipeRefreshView) findViewById(R.id.swipe_ly);
         orderTotal = (TextView) findViewById(R.id.orderTotal);
         orderTotalPrice = (TextView) findViewById(R.id.orderTotalPrice);
         //导航按钮============================
@@ -268,6 +307,7 @@ public class TheOrderListActivity extends AppCompatActivity {
         /**
          * 这个是下拉刷新的组件的点击事件
          */
+
         mSwipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -276,6 +316,20 @@ public class TheOrderListActivity extends AppCompatActivity {
                 initGetDataOrderList(orderState);
             }
         });
+
+        /**
+         * 上拉加载更多
+         *
+         */
+        mSwipeLayout.setOnLoadMoreListener(new SwipeRefreshView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+//                mSwipeLayout.setLoading(true);
+                Log.i("URL", "还在上拉中5555555555555555555555555555555555");
+                refreshpushdown(orderState);
+            }
+        });
+
     }
 
     /**
@@ -294,6 +348,24 @@ public class TheOrderListActivity extends AppCompatActivity {
         loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取订单列表。。。。");
         loading_dailog.show();
         NetUtils.netWorkByMethodPost(mContext, getOrderDetails, IpConfig.URL_ORDERLIST, handler, 0);
+    }
+
+    /**
+     * 获取订单列表数据
+     */
+    private void refreshpushdown(String status) {
+        //默认是没有开启的
+        String timestamp = System.currentTimeMillis() + "";
+        String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
+        Map<String, String> getOrderDetails = new HashMap<String, String>();
+        getOrderDetails.put("account_id", userInfo.getAccount_id());
+        getOrderDetails.put("organization_id", userInfo.getOrganization_id());
+        getOrderDetails.put("status", status);
+        getOrderDetails.put("token", token);
+        getOrderDetails.put("timestamp", timestamp);
+        loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取订单列表。。。。");
+        loading_dailog.show();
+        NetUtils.netWorkByMethodPost(mContext, getOrderDetails, IpConfig.URL_ORDERLIST, handler, 1);
     }
 
     /**

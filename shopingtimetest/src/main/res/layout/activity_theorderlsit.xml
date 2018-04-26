@@ -258,7 +258,7 @@
 
         >
 
-        <android.support.v4.widget.SwipeRefreshLayout
+        <com.zerone.shopingtimetest.view.refreshlayout.SwipeRefreshView
              android:id="@+id/swipe_ly"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -272,7 +272,7 @@
             android:paddingBottom="10dp"
             android:scrollbars="none"/>
 
-        </android.support.v4.widget.SwipeRefreshLayout>
+        </com.zerone.shopingtimetest.view.refreshlayout.SwipeRefreshView>
     </LinearLayout>
 
 
