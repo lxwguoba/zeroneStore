@@ -118,6 +118,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
             }
         }
     };
+    private RelativeLayout relative_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +163,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
         sureOrderMoney.setText("￥" + DoubleUtils.setSSWRDouble(dSOMoney));
         subMoney.setText("￥" + DoubleUtils.setSSWRDouble(dSOMoney));
         submitbtn = (RelativeLayout) findViewById(R.id.submitbtn);
+        relative_back = (RelativeLayout) findViewById(R.id.relative_back);
         back = (ImageView) findViewById(R.id.back);
         remark = (TextView) findViewById(R.id.remark);
         actionremark = (LinearLayout) findViewById(R.id.actionremark);
@@ -182,7 +184,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
                 gotoSubmit();
             }
         });
-        back.setOnClickListener(new View.OnClickListener() {
+        relative_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MakeSureTheOrderActivity.this.finish();

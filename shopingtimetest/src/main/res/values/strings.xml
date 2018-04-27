@@ -6,7 +6,7 @@
     <string name="input_password">请输入密码</string>
     <string name="loginString">立即登录</string>
     <string name="remberaccount">记住账号</string>
-    <string name="prompt">提示</string>
+    <string name="prompt">温馨提示</string>
     <string name="scan_string">扫码</string>
     <string name="login_error">登录遇到问题？</string>
     <string name="xiyi"><b>登录代表您已同意</b></string>
@@ -22,4 +22,7 @@
     <string name="toast_7"> Only a single Qr code is printed for the AIDL mode</string>
     <string name="toast_8">Now QrCode size must be less than 7!</string>
     <string name="paytype">支付方式</string>
+    <string name="out_activity">您确定要退出吗？</string>
+    <string name="quxiao">取消</string>
+    <string name="confirm">确定</string>
 </resources>

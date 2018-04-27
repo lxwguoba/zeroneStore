@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -174,6 +175,7 @@ public class SystemSettingsActivity extends BaseAppActivity {
     private ImageView system_back;
     private Button systemout;
     private boolean remberChecked;
+    private LinearLayout layout_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,7 +192,7 @@ public class SystemSettingsActivity extends BaseAppActivity {
     }
 
     private void aciton() {
-        system_back.setOnClickListener(new View.OnClickListener() {
+        layout_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SystemSettingsActivity.this.finish();
@@ -235,6 +237,8 @@ public class SystemSettingsActivity extends BaseAppActivity {
      */
     private void initView() {
 //        .put(SystemSettingsActivity.this,"remberChecked",isChecked);
+
+        layout_back = (LinearLayout) findViewById(R.id.layout_back);
         system_login_rember_account = (CheckBox) findViewById(R.id.system_login_rember_account);
         system_login_rember_account.setChecked(remberChecked);
         system_kaidan = (CheckBox) findViewById(R.id.system_kaidan);

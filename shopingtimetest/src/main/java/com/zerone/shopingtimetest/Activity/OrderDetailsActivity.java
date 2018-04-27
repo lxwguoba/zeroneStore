@@ -59,7 +59,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
     private OrderDetialsListItemAdapter odlia;
     private LinearLayout qxorder;
     private TextView ordermoney;
-    private LinearLayout subSurePay;
+    private RelativeLayout subSurePay;
     private List<PrintItem> printItemList;
     private PrintBean printBean;
     private String money;
@@ -208,6 +208,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
             }
         }
     };
+    private RelativeLayout relative_back;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -220,7 +221,6 @@ public class OrderDetailsActivity extends BaseAppActivity {
         initView();
         initCheckBoxStates();
         intiAction();
-
     }
 
     private void intiAction() {
@@ -237,22 +237,20 @@ public class OrderDetailsActivity extends BaseAppActivity {
                 payDialog();
             }
         });
-
-        back.setOnClickListener(new View.OnClickListener() {
+        relative_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 OrderDetailsActivity.this.finish();
             }
         });
     }
-
     /**
      * 初始化view
      */
     private void initView() {
         listOrderMoney = (TextView) findViewById(R.id.listOrderMoney);
         //确认订单按钮
-        subSurePay = (LinearLayout) findViewById(R.id.subSurePay);
+        subSurePay = (RelativeLayout) findViewById(R.id.subSurePay);
         //确认订单的按钮 显示的价格
         ordermoney = (TextView) findViewById(R.id.ordermoney);
         qxorder = (LinearLayout) findViewById(R.id.qxorder);
@@ -265,10 +263,8 @@ public class OrderDetailsActivity extends BaseAppActivity {
         ordersn = (TextView) findViewById(R.id.ordersn);
         jiedaiyuan = (TextView) findViewById(R.id.jiedaiyuan);
         beizhu = (TextView) findViewById(R.id.beizhu);
-
+        relative_back = (RelativeLayout) findViewById(R.id.relative_back);
         back = (ImageView) findViewById(R.id.back);
-
-
     }
 
     /**
@@ -337,7 +333,6 @@ public class OrderDetailsActivity extends BaseAppActivity {
             public void onClick(View v) {
                 //调起其他支付方式  盛付通支付
                 //吊起支付
-                Log.i("URL", "money===" + money);
                 if (money != null) {
                     PayUtils.LiftThePayment(money, OrderDetailsActivity.this);
                     dialog1.dismiss();

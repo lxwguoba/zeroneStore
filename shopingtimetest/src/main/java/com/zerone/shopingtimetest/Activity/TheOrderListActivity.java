@@ -13,7 +13,9 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -254,6 +256,11 @@ public class TheOrderListActivity extends AppCompatActivity {
             }
         }
     };
+    private RelativeLayout allrelative_qx;
+    private RelativeLayout allrelative;
+    private RelativeLayout allrelative_dfk;
+    private RelativeLayout allrelative_wc;
+    private LinearLayout layout_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -282,6 +289,14 @@ public class TheOrderListActivity extends AppCompatActivity {
         orderTotal = (TextView) findViewById(R.id.orderTotal);
         orderTotalPrice = (TextView) findViewById(R.id.orderTotalPrice);
         //导航按钮============================
+        allrelative = (RelativeLayout) findViewById(R.id.allrelative);
+
+        allrelative_dfk = (RelativeLayout) findViewById(R.id.allrelative_dfk);
+
+        allrelative_wc = (RelativeLayout) findViewById(R.id.allrelative_wc);
+
+        allrelative_qx = (RelativeLayout) findViewById(R.id.allrelative_qx);
+
         alltvorder = (TextView) findViewById(R.id.alltvorder);
         alltvdfk = (TextView) findViewById(R.id.alltvdfk);
         alltvywc = (TextView) findViewById(R.id.alltvywc);
@@ -295,6 +310,7 @@ public class TheOrderListActivity extends AppCompatActivity {
         orderListItemAdapter = new OrderListItemAdapter(this, list, handler);
         orderlistview.setAdapter(orderListItemAdapter);
         back = (ImageView) findViewById(R.id.back);
+        layout_back = (LinearLayout) findViewById(R.id.layout_back);
     }
 
     /**
@@ -302,7 +318,7 @@ public class TheOrderListActivity extends AppCompatActivity {
      */
     private void action() {
         //所有订单
-        alltvorder.setOnClickListener(new View.OnClickListener() {
+        allrelative.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 post = 0;
@@ -319,7 +335,7 @@ public class TheOrderListActivity extends AppCompatActivity {
             }
         });
         //待付款
-        alltvdfk.setOnClickListener(new View.OnClickListener() {
+        allrelative_dfk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 post = 1;
@@ -337,7 +353,7 @@ public class TheOrderListActivity extends AppCompatActivity {
             }
         });
         //已完成
-        alltvywc.setOnClickListener(new View.OnClickListener() {
+        allrelative_wc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alltvdfk.setTextColor(Color.parseColor("#7c7c7c"));
@@ -353,7 +369,7 @@ public class TheOrderListActivity extends AppCompatActivity {
             }
         });
         //已取消
-        alltvyqx.setOnClickListener(new View.OnClickListener() {
+        allrelative_qx.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alltvdfk.setTextColor(Color.parseColor("#7c7c7c"));
@@ -368,7 +384,8 @@ public class TheOrderListActivity extends AppCompatActivity {
                 orderState = "-1";
             }
         });
-        back.setOnClickListener(new View.OnClickListener() {
+
+        layout_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TheOrderListActivity.this.finish();

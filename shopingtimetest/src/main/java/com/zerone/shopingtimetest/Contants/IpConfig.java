@@ -12,7 +12,7 @@ public class IpConfig {
     //测试版
     public static final String URL_CS = "http://develop.01nnt.com/api/androidSimpleApi/";
     //通用的接口
-    public static final String URL = "http://develop.01nnt.com/api/androidSimpleApi/";
+    public static final String URL = "http://o2o.01nnt.com/api/androidSimpleApi/";
     //登录接口
     public static final String URL_LOGIN = URL + "login";
     //分类接口
@@ -20,7 +20,7 @@ public class IpConfig {
     // 商品查询接口
     public static final String URL_SERACH = URL + "goodslist";
     //获取图片接口
-    public static final String URL_GETPICTURE = "http://develop.01nnt.com/";
+    public static final String URL_GETPICTURE = "http://o2o.01nnt.com/";
     public static final String URL_GOODSLIST = URL + "goodslist";
     //开启/关闭零库存开单接口
     public static final String URL_KQLKC = URL + "allow_zero_stock";

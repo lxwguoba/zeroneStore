@@ -17,12 +17,19 @@
             android:layout_marginLeft="23dp"
             android:layout_marginRight="23dp">
 
-            <ImageView
-                android:id="@+id/back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:src="@mipmap/order_list_reture" />
+            <LinearLayout
+                android:id="@+id/layout_back"
+                android:layout_width="70dp"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:src="@mipmap/order_list_reture" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -70,10 +77,11 @@
 
                     <TextView
                         android:id="@+id/orderTotalPrice"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="17dp"
                         android:fontFamily="Roboto-Medium"
+                        android:gravity="left"
                         android:text="0"
                         android:textColor="#ffffff"
                         android:textSize="20sp" />
@@ -112,7 +120,7 @@
 
                     <TextView
                         android:id="@+id/orderTotal"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="17dp"
                         android:fontFamily="Roboto-Medium"
@@ -142,17 +150,19 @@
         android:orientation="horizontal">
 
         <RelativeLayout
+            android:id="@+id/allrelative"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
 
             <TextView
                 android:id="@+id/alltvorder"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:fontFamily="SourceHanSansCN-Medium"
+                android:gravity="center_horizontal"
                 android:text="全部订单"
                 android:textColor="#000000"
                 android:textSize="16sp" />
@@ -169,16 +179,18 @@
 
 
         <RelativeLayout
+            android:id="@+id/allrelative_dfk"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
 
             <TextView
                 android:id="@+id/alltvdfk"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:fontFamily="SourceHanSansCN-Medium"
+                android:gravity="center_horizontal"
                 android:text="待付款"
                 android:textColor="#7c7c7c"
                 android:textSize="16sp" />
@@ -195,16 +207,18 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/allrelative_wc"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
 
             <TextView
                 android:id="@+id/alltvywc"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:fontFamily="SourceHanSansCN-Medium"
+                android:gravity="center_horizontal"
                 android:text="已完成"
                 android:textColor="#7c7c7c"
                 android:textSize="16sp" />
@@ -221,16 +235,18 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/allrelative_qx"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
 
             <TextView
                 android:id="@+id/alltvyqx"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:fontFamily="SourceHanSansCN-Medium"
+                android:gravity="center_horizontal"
                 android:text="已取消"
                 android:textColor="#7c7c7c"
                 android:textSize="16sp" />

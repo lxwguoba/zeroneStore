@@ -12,30 +12,37 @@
         android:paddingLeft="17dp"
         android:paddingRight="17dp">
 
-        <ImageView
-            android:id="@+id/system_back"
+        <LinearLayout
+            android:id="@+id/layout_back"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/syste_reture" />
+            android:layout_height="match_parent"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@id/system_back"
-            android:fontFamily="SourceHanSansCN-Medium"
-            android:text="系统设置"
-            android:textColor="#383638"
-            android:textSize="18sp" />
+            <ImageView
+                android:id="@+id/system_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/syste_reture" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/pull_down_menu_b" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@id/system_back"
+                android:fontFamily="SourceHanSansCN-Medium"
+                android:text="系统设置"
+                android:textColor="#383638"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <!--<ImageView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:src="@mipmap/pull_down_menu_b" />-->
 
     </RelativeLayout>
 
