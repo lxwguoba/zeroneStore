@@ -24,6 +24,7 @@ import com.zerone.shopingtimetest.Bean.order.OrderBean;
 import com.zerone.shopingtimetest.Contants.IpConfig;
 import com.zerone.shopingtimetest.DB.impl.UserInfoImpl;
 import com.zerone.shopingtimetest.R;
+import com.zerone.shopingtimetest.Utils.AppSharePreferenceMgr;
 import com.zerone.shopingtimetest.Utils.DoubleUtils;
 import com.zerone.shopingtimetest.Utils.LoadingUtils;
 import com.zerone.shopingtimetest.Utils.NetUtils;
@@ -91,6 +92,47 @@ public class TheOrderListActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
+//                case 0:
+//                    list.clear();
+//                    String orderListJSon = (String) msg.obj;
+//                    Log.i("URL", orderListJSon);
+//                    loading_dailog.dismiss();
+//                    try {
+//                        JSONObject jsonObject = new JSONObject(orderListJSon);
+//                        int status = jsonObject.getInt("status");
+//                        if (status == 1) {
+//                            JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("orderlist");
+//                            for (int i = 0; i < jsonArray.length(); i++) {
+//                                JSONObject orderbean = jsonArray.getJSONObject(i);
+//                                OrderBean ob = new OrderBean();
+//                                ob.setId(orderbean.getString("id"));
+//                                ob.setStatus(orderbean.getString("status"));
+//                                ob.setOrder_price(orderbean.getString("order_price"));
+//                                ob.setOrdersn(orderbean.getString("ordersn"));
+//                                long created_at = Long.parseLong(orderbean.getString("created_at")) * 1000;
+//                                Date d = new Date(created_at);
+//                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                                ob.setCreated_at(sdf.format(d));
+//                                list.add(ob);
+//                            }
+//                            orderTotal.setText(jsonObject.getJSONObject("data").getString("total_num"));
+//                            orderTotalPrice.setText(DoubleUtils.setSSWRDouble(Double.parseDouble(jsonObject.getJSONObject("data").getString("total_amount"))));
+//                        } else if (status == 0) {
+//                            //获取失败
+//                            customDialog(jsonObject.getString("msg") + "，2秒后自动关闭");
+//                        }
+//                    } catch (JSONException e) {
+//                    } finally {
+//                        if (mSwipeLayout != null) {
+//                            if (mSwipeLayout.isRefreshing()) {
+//                                //关闭刷新动画
+//                                mSwipeLayout.setRefreshing(false);
+//                            }
+//                        }
+//                        orderListItemAdapter.notifyDataSetChanged();
+//                    }
+//                    break;
+
                 case 0:
                     list.clear();
                     String orderListJSon = (String) msg.obj;
@@ -100,7 +142,8 @@ public class TheOrderListActivity extends AppCompatActivity {
                         JSONObject jsonObject = new JSONObject(orderListJSon);
                         int status = jsonObject.getInt("status");
                         if (status == 1) {
-                            JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("orderlist");
+                            JSONObject jsonObject1 = jsonObject.getJSONObject("data").getJSONObject("orderlist");
+                            JSONArray jsonArray = jsonObject1.getJSONArray("data");
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject orderbean = jsonArray.getJSONObject(i);
                                 OrderBean ob = new OrderBean();
@@ -114,6 +157,15 @@ public class TheOrderListActivity extends AppCompatActivity {
                                 ob.setCreated_at(sdf.format(d));
                                 list.add(ob);
                             }
+                            //current_page 当前页面
+                            AppSharePreferenceMgr.put(TheOrderListActivity.this, "current_page", jsonObject1.getString("current_page"));
+                            //下一次要到的页面 当前页面
+                            AppSharePreferenceMgr.put(TheOrderListActivity.this, "to", jsonObject1.getString("to"));
+                            //last_page最后一页
+                            AppSharePreferenceMgr.put(TheOrderListActivity.this, "last_page", jsonObject1.getString("last_page"));
+                            //============================
+                            //记住当前页面的总金额
+                            AppSharePreferenceMgr.put(TheOrderListActivity.this, "money", jsonObject.getJSONObject("data").getString("total_amount"));
                             orderTotal.setText(jsonObject.getJSONObject("data").getString("total_num"));
                             orderTotalPrice.setText(DoubleUtils.setSSWRDouble(Double.parseDouble(jsonObject.getJSONObject("data").getString("total_amount"))));
                         } else if (status == 0) {
@@ -130,18 +182,19 @@ public class TheOrderListActivity extends AppCompatActivity {
                         }
                         orderListItemAdapter.notifyDataSetChanged();
                     }
-
                     break;
 
                 case 1:
-                    String orderListJSo = (String) msg.obj;
-                    Log.i("URL", orderListJSo);
+                    //上拉加载更多
+                    String orderListJS = (String) msg.obj;
+                    Log.i("URL", orderListJS);
                     loading_dailog.dismiss();
                     try {
-                        JSONObject jsonObject = new JSONObject(orderListJSo);
+                        JSONObject jsonObject = new JSONObject(orderListJS);
                         int status = jsonObject.getInt("status");
                         if (status == 1) {
-                            JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("orderlist");
+                            JSONObject jsonObject1 = jsonObject.getJSONObject("data").getJSONObject("orderlist");
+                            JSONArray jsonArray = jsonObject1.getJSONArray("data");
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject orderbean = jsonArray.getJSONObject(i);
                                 OrderBean ob = new OrderBean();
@@ -155,8 +208,26 @@ public class TheOrderListActivity extends AppCompatActivity {
                                 ob.setCreated_at(sdf.format(d));
                                 list.add(ob);
                             }
-                            orderTotal.setText(jsonObject.getJSONObject("data").getString("total_num"));
-                            orderTotalPrice.setText(DoubleUtils.setSSWRDouble(Double.parseDouble(jsonObject.getJSONObject("data").getString("total_amount"))));
+                            //current_page 当前页面
+                            AppSharePreferenceMgr.put(TheOrderListActivity.this, "current_page", jsonObject1.getString("current_page"));
+                            //下一次要到的页面 当前页面
+                            AppSharePreferenceMgr.put(TheOrderListActivity.this, "to", jsonObject1.getString("to"));
+                            //last_page最后一页
+                            AppSharePreferenceMgr.put(TheOrderListActivity.this, "last_page", jsonObject1.getString("last_page"));
+                            //============================
+                            //当前加载的数量
+                            String count = jsonObject.getJSONObject("data").getString("total_num");
+                            //订单列表中原来的数量
+                            String ordercount = orderTotal.getText().toString().trim();
+                            //当前页面的总数量
+                            int con = Integer.parseInt(count) + Integer.parseInt(ordercount);
+                            double money = Double.parseDouble((String) AppSharePreferenceMgr.get(TheOrderListActivity.this, "money", "0"));
+                            double price = money + Double.parseDouble(jsonObject.getJSONObject("data").getString("total_amount"));
+                            //重新记录
+                            AppSharePreferenceMgr.put(TheOrderListActivity.this, "money", price);
+                            orderTotal.setText(con + "");
+                            orderTotalPrice.setText(DoubleUtils.setSSWRDouble(price));
+
                         } else if (status == 0) {
                             //获取失败
                             customDialog(jsonObject.getString("msg") + "，2秒后自动关闭");
@@ -325,7 +396,6 @@ public class TheOrderListActivity extends AppCompatActivity {
             @Override
             public void onLoadMore() {
 //                mSwipeLayout.setLoading(true);
-                Log.i("URL", "还在上拉中5555555555555555555555555555555555");
                 refreshpushdown(orderState);
             }
         });
@@ -351,10 +421,22 @@ public class TheOrderListActivity extends AppCompatActivity {
     }
 
     /**
-     * 获取订单列表数据
+     * 获取订单列表数据 上拉加载
      */
     private void refreshpushdown(String status) {
         //默认是没有开启的
+        //下一次要到的页面 当前页面
+        String per_page = (String) AppSharePreferenceMgr.get(TheOrderListActivity.this, "current_page", "-1");
+        //last_page最后一页
+        String last_page = (String) AppSharePreferenceMgr.get(TheOrderListActivity.this, "last_page", "0");
+        if (per_page.equals(last_page)) {
+            Toast.makeText(TheOrderListActivity.this, "没有更多了", Toast.LENGTH_SHORT).show();
+            mSwipeLayout.setLoading(false);
+            return;
+        }
+        int page = Integer.parseInt(per_page);
+        page++;
+        Log.i("URL", page + "");
         String timestamp = System.currentTimeMillis() + "";
         String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
         Map<String, String> getOrderDetails = new HashMap<String, String>();
@@ -362,8 +444,9 @@ public class TheOrderListActivity extends AppCompatActivity {
         getOrderDetails.put("organization_id", userInfo.getOrganization_id());
         getOrderDetails.put("status", status);
         getOrderDetails.put("token", token);
+        getOrderDetails.put("page", page + "");
         getOrderDetails.put("timestamp", timestamp);
-        loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取订单列表。。。。");
+        loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "加载中。。。。");
         loading_dailog.show();
         NetUtils.netWorkByMethodPost(mContext, getOrderDetails, IpConfig.URL_ORDERLIST, handler, 1);
     }
@@ -407,8 +490,8 @@ public class TheOrderListActivity extends AppCompatActivity {
     }
 
     /**
-     *
      * 弹框提示
+     *
      * @param msg 提示消息
      */
     private void customDialog(String msg) {
@@ -424,6 +507,5 @@ public class TheOrderListActivity extends AppCompatActivity {
         dialog.show();
         //第二个参数是几秒后关闭
         mHandler.sendEmptyMessageDelayed(20, 2000);
-
     }
 }
