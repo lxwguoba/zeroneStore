@@ -3,10 +3,12 @@ package com.zerone.shopingtimetest.Utils;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ClearCacheRequest;
 import com.android.volley.toolbox.DiskBasedCache;
@@ -15,21 +17,20 @@ import com.zerone.shopingtimetest.Application.MyApplication;
 
 import java.io.File;
 import java.util.Map;
-
 /**
- * Created by Administrator on 2017/6/23.
+ *
+ * Created by Administrator on 2017/6/23
+ *
  */
-
 public class NetUtils {
 
     /**
      * pos
-     *
-     * @param context    ���� 上下文��
+     * @param context     上下文
      * @param map        参数
-     * @param url        ��      网址
-     * @param handler    ���ͷ� handler机制
-     * @param responseID ���ܷ��返回码
+     * @param url             网址
+     * @param handler     handler机制
+     * @param responseID  返回码
      */
     public static void netWorkByMethodPost(final Context context, final Map<String, String> map, String url, final Handler handler, final int responseID) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
@@ -43,7 +44,6 @@ public class NetUtils {
                         handler.sendMessage(message);
                     }
                 }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse(VolleyError error) {
                 Message message = new Message();
@@ -64,6 +64,22 @@ public class NetUtils {
         MyApplication.getQueues().start();
         // clear all volley caches.  清楚所有缓存
         MyApplication.getQueues().add(new ClearCacheRequest(cache, null));
+        stringRequest.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 6000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 0;
+            }
+
+            @Override
+            public void retry(VolleyError volleyError) throws VolleyError {
+                Log.i("URL", "这下真的超时了::::88888888888888888888888");
+            }
+        });
         MyApplication.getQueues().add(stringRequest);
     }
 
@@ -108,11 +124,11 @@ public class NetUtils {
     }
 
     /**
-     * get������������
+     * get获取数据
      *
-     * @param context    ��� 上下文������
-     * @param url        �      get访问的url
-     * @param handler    ���� handler 机制
+     * @param context    上下文
+     * @param url        get访问的url
+     * @param handler    handler 机制
      * @param responseID 返回码
      */
     public static void netWorkByMethodGet(final Context context, String url, final Handler handler, final int responseID) {

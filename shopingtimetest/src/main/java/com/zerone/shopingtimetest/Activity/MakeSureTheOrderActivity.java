@@ -100,6 +100,8 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    } finally {
+                        submitbtn.setEnabled(true);
                     }
                     break;
 
@@ -181,6 +183,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
         submitbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                submitbtn.setEnabled(false);
                 gotoSubmit();
             }
         });

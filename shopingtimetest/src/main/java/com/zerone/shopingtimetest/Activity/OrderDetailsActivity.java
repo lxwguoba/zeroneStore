@@ -158,6 +158,8 @@ public class OrderDetailsActivity extends BaseAppActivity {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    } finally {
+                        qxorder.setEnabled(true);
                     }
                     break;
                 case 2:
@@ -199,6 +201,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
                     } finally {
                         loading_dailog.dismiss();
                         dialog1.dismiss();
+                        subSurePay.setEnabled(true);
                     }
                     break;
                 case 511:
@@ -227,6 +230,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
         qxorder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                qxorder.setEnabled(false);
                 outDialog();
             }
         });
@@ -234,6 +238,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
         subSurePay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                subSurePay.setEnabled(false);
                 payDialog();
             }
         });
@@ -337,6 +342,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
                     PayUtils.LiftThePayment(money, OrderDetailsActivity.this);
                     dialog1.dismiss();
                     OrderDetailsActivity.this.finish();
+                    subSurePay.setEnabled(true);
                 }
             }
         });
