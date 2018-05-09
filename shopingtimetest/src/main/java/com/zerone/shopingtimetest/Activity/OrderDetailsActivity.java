@@ -301,6 +301,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
 
     /**
      * 自定义对话框
+     * 支付对话框
      */
     private void payDialog() {
         dialog1 = new Dialog(this, R.style.NormalDialogStyle);

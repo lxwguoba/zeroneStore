@@ -173,7 +173,5 @@ public class ListGoodsDetails_Adapter extends BaseAdapter {
         TextView shop_price;
         TextView decrease_shop;
         TextView add_shop;
-
     }
-
 }

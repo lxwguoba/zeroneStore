@@ -276,15 +276,15 @@ public class SystemSettingsActivity extends BaseAppActivity {
             }
         });
 
-        system_fkjkc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    system_fkjkc.setClickable(false);
-                    system_xdjkc.setClickable(true);
-                }
-            }
-        });
+//        system_fkjkc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked) {
+//                    system_fkjkc.setClickable(false);
+//                    system_xdjkc.setClickable(true);
+//                }
+//            }
+//        });
         system_fkjkc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -294,7 +294,12 @@ public class SystemSettingsActivity extends BaseAppActivity {
                 Map<String, String> kdMap = new HashMap<String, String>();
                 kdMap.put("account_id", userInfo.getAccount_id());
                 kdMap.put("organization_id", userInfo.getOrganization_id());
-                kdMap.put("cfg_value", "1");
+
+                if (system_fkjkc.isChecked()) {
+                    kdMap.put("cfg_value", "1");
+                } else {
+                    kdMap.put("cfg_value", "2");
+                }
                 kdMap.put("token", token);
                 kdMap.put("timestamp", timestamp);
                 loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "修改中。。。。");
@@ -303,15 +308,15 @@ public class SystemSettingsActivity extends BaseAppActivity {
             }
         });
 
-        system_xdjkc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    system_xdjkc.setClickable(false);
-                    system_fkjkc.setClickable(true);
-                }
-            }
-        });
+//        system_xdjkc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked) {
+//                    system_xdjkc.setClickable(false);
+//                    system_fkjkc.setClickable(true);
+//                }
+//            }
+//        });
         system_xdjkc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -321,7 +326,11 @@ public class SystemSettingsActivity extends BaseAppActivity {
                 Map<String, String> kdMap = new HashMap<String, String>();
                 kdMap.put("account_id", userInfo.getAccount_id());
                 kdMap.put("organization_id", userInfo.getOrganization_id());
-                kdMap.put("cfg_value", "2");
+                if (system_xdjkc.isChecked()) {
+                    kdMap.put("cfg_value", "2");
+                } else {
+                    kdMap.put("cfg_value", "1");
+                }
                 kdMap.put("token", token);
                 kdMap.put("timestamp", timestamp);
                 loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "修改中。。。。");
