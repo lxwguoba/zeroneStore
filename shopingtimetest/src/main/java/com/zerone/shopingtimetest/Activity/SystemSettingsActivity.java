@@ -308,15 +308,6 @@ public class SystemSettingsActivity extends BaseAppActivity {
             }
         });
 
-//        system_xdjkc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (isChecked) {
-//                    system_xdjkc.setClickable(false);
-//                    system_fkjkc.setClickable(true);
-//                }
-//            }
-//        });
         system_xdjkc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

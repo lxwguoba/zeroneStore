@@ -30,11 +30,15 @@ import android.widget.Toast;
 
 import com.zerone.shopingtimetest.Adapter.cart_list.ListGoodsDetails_Adapter;
 import com.zerone.shopingtimetest.Adapter.shopplistadapter.PersonAdapter;
+import com.zerone.shopingtimetest.Adapter.shopplistadapter.ProductListAdapter;
 import com.zerone.shopingtimetest.Adapter.shopplistadapter.RecycleGoodsCategoryListAdapter;
+import com.zerone.shopingtimetest.Adapter.shopplistadapter.RecycleProductCategoryListAdapter;
 import com.zerone.shopingtimetest.Base64AndMD5.CreateToken;
 import com.zerone.shopingtimetest.BaseActivity.BaseAppActivity;
 import com.zerone.shopingtimetest.Bean.ShopBean;
 import com.zerone.shopingtimetest.Bean.UserInfo;
+import com.zerone.shopingtimetest.Bean.main.CatingBean;
+import com.zerone.shopingtimetest.Bean.main.ProductBean;
 import com.zerone.shopingtimetest.Bean.refresh.RefreshBean;
 import com.zerone.shopingtimetest.Bean.refresh.SetDataGoodsOrder;
 import com.zerone.shopingtimetest.Bean.shoplistbean.GoodsCategroyListBean;
@@ -126,6 +130,12 @@ public class OrderListActvity extends BaseAppActivity {
     private TextView settlement_;
     //收银台显示文字 TextView
     private TextView cashier;
+    private List<CatingBean> clist = new ArrayList<>();
+    private List<ProductBean> plist = new ArrayList<>();
+    private LinearLayout refresh_layout;
+    //分类的适配器
+    private RecycleProductCategoryListAdapter rcpAdapter;
+    private ProductListAdapter plAdapter;
     Handler handler = new Handler() {
         @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
@@ -133,9 +143,12 @@ public class OrderListActvity extends BaseAppActivity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case 0:
-                    String shoplistJson = (String) msg.obj;
                     loading_dailog.dismiss();
-                    goodsitemlist.clear();
+                    plist.clear();
+                    clist.clear();
+                    shopCount.setText("0");
+                    selectedgoodsmoney.setText("0");
+                    String shoplistJson = (String) msg.obj;
                     try {
                         JSONObject jsonshoplist = new JSONObject(shoplistJson);
                         int status = jsonshoplist.getInt("status");
@@ -143,7 +156,7 @@ public class OrderListActvity extends BaseAppActivity {
                             JSONArray jsonArray = jsonshoplist.getJSONObject("data").getJSONArray("goodslist");
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject shopObject = jsonArray.getJSONObject(i);
-                                ShopBean shopBean = new ShopBean();
+                                ProductBean shopBean = new ProductBean();
                                 shopBean.setName(shopObject.getString("name"));
                                 shopBean.setId(shopObject.getInt("id"));
                                 shopBean.setCategory_id(shopObject.getInt("category_id"));
@@ -151,9 +164,9 @@ public class OrderListActvity extends BaseAppActivity {
                                 shopBean.setDetails(shopObject.getString("details"));
                                 shopBean.setPrice(shopObject.getString("price"));
                                 shopBean.setStock(shopObject.getInt("stock"));
-                                shopBean.setShop_Count("0");
-                                List<ShopBean.ThumbBean> Tlist = new ArrayList<ShopBean.ThumbBean>();
-                                ShopBean.ThumbBean thumbBean = new ShopBean.ThumbBean();
+                                shopBean.setProductCount(0);
+                                List<ProductBean.ThumbBean> Tlist = new ArrayList<ProductBean.ThumbBean>();
+                                ProductBean.ThumbBean thumbBean = new ProductBean.ThumbBean();
                                 if (shopObject.getJSONArray("thumb").length() > 0) {
                                     thumbBean.setThumb(shopObject.getJSONArray("thumb").getJSONObject(0).getString("thumb"));
                                 } else {
@@ -161,7 +174,7 @@ public class OrderListActvity extends BaseAppActivity {
                                 }
                                 Tlist.add(thumbBean);
                                 shopBean.setThumb(Tlist);
-                                goodsitemlist.add(shopBean);
+                                plist.add(shopBean);
                             }
                         }
                         getCategoryInfo();
@@ -169,11 +182,8 @@ public class OrderListActvity extends BaseAppActivity {
                         e.printStackTrace();
                     }
                     break;
-
                 case 10:
                     String cateJson = (String) msg.obj;
-                    loading_dailog.dismiss();
-                    catelist.clear();
                     try {
                         JSONObject jsonObject = new JSONObject(cateJson);
                         int status = jsonObject.getInt("status");
@@ -181,27 +191,115 @@ public class OrderListActvity extends BaseAppActivity {
                             JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("categorylist");
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject jsonBean = jsonArray.getJSONObject(i);
-                                GoodsCategroyListBean.DataBean.CategorylistBean clb = new GoodsCategroyListBean.DataBean.CategorylistBean();
-                                clb.setDisplayorder(jsonBean.getInt("displayorder"));
-                                clb.setId(jsonBean.getInt("id"));
-                                clb.setName(jsonBean.getString("name"));
-                                catelist.add(clb);
-                                titlePois.add(i);
-                            }
-                            initData(catelist);
-                            if (REFRESH_CODE == 1) {
-                                if (mPopupWindowMenu != null) {
-                                    mPopupWindowMenu.dismiss();
+                                CatingBean cb = new CatingBean();
+                                Map<String, List<ProductBean>> map = new HashMap<>();
+                                List<ProductBean> list = new ArrayList<>();
+                                int id = jsonBean.getInt("id");
+                                for (int j = 0; j < plist.size(); j++) {
+                                    if (id == plist.get(j).getCategory_id()) {
+                                        list.add(plist.get(j));
+                                    }
                                 }
-                                REFRESH_CODE = 0;
+                                map.put("" + id, list);
+                                cb.setMap(map);
+                                cb.setDisplayorder(jsonBean.getInt("displayorder"));
+                                cb.setId(jsonBean.getInt("id"));
+                                cb.setName(jsonBean.getString("name"));
+                                clist.add(cb);
                             }
+                            initRecycleView();
                         } else if (status == 0) {
                             Toast.makeText(OrderListActvity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    } finally {
+                        if (loading_dailog != null) {
+                            loading_dailog.dismiss();
+                        }
                     }
                     break;
+//                case 0:
+//                    String shoplistJson = (String) msg.obj;
+//
+//                    Log.i("URL","shoplistJson="+shoplistJson);
+//
+//                    loading_dailog.dismiss();
+//                    goodsitemlist.clear();
+//                    shopCount.setText("0");
+//                    selectedgoodsmoney.setText("0");
+//                    if (buyShoppingList!=null){
+//                        buyShoppingList.clear();
+//                    }
+//                    showOrderList.setVisibility(View.GONE);
+//                    try {
+//                        JSONObject jsonshoplist = new JSONObject(shoplistJson);
+//                        int status = jsonshoplist.getInt("status");
+//                        if (status == 1) {
+//                            JSONArray jsonArray = jsonshoplist.getJSONObject("data").getJSONArray("goodslist");
+//                            for (int i = 0; i < jsonArray.length(); i++) {
+//                                JSONObject shopObject = jsonArray.getJSONObject(i);
+//                                ShopBean shopBean = new ShopBean();
+//                                shopBean.setName(shopObject.getString("name"));
+//                                shopBean.setId(shopObject.getInt("id"));
+//                                shopBean.setCategory_id(shopObject.getInt("category_id"));
+//                                shopBean.setCategory_name(shopObject.getString("category_name"));
+//                                shopBean.setDetails(shopObject.getString("details"));
+//                                shopBean.setPrice(shopObject.getString("price"));
+//                                shopBean.setStock(shopObject.getInt("stock"));
+//                                shopBean.setShop_Count("0");
+//                                List<ShopBean.ThumbBean> Tlist = new ArrayList<ShopBean.ThumbBean>();
+//                                ShopBean.ThumbBean thumbBean = new ShopBean.ThumbBean();
+//                                if (shopObject.getJSONArray("thumb").length() > 0) {
+//                                    thumbBean.setThumb(shopObject.getJSONArray("thumb").getJSONObject(0).getString("thumb"));
+//                                } else {
+//                                    thumbBean.setThumb("");
+//                                }
+//                                Tlist.add(thumbBean);
+//                                shopBean.setThumb(Tlist);
+//                                goodsitemlist.add(shopBean);
+//                            }
+//                        }
+//                        getCategoryInfo();
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                    break;
+//
+//                case 10:
+//                    String cateJson = (String) msg.obj;
+//                    Log.i("URL","cateJson="+cateJson);
+//
+//                    loading_dailog.dismiss();
+//                    catelist.clear();
+//                    try {
+//                        JSONObject jsonObject = new JSONObject(cateJson);
+//                        int status = jsonObject.getInt("status");
+//                        if (status == 1) {
+//                            JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("categorylist");
+//                            for (int i = 0; i < jsonArray.length(); i++) {
+//                                JSONObject jsonBean = jsonArray.getJSONObject(i);
+//                                GoodsCategroyListBean.DataBean.CategorylistBean clb = new GoodsCategroyListBean.DataBean.CategorylistBean();
+//                                clb.setDisplayorder(jsonBean.getInt("displayorder"));
+//                                clb.setId(jsonBean.getInt("id"));
+//                                clb.setName(jsonBean.getString("name"));
+//                                catelist.add(clb);
+//                                titlePois.add(i);
+//                            }
+//                            initData(catelist);
+//                            if (REFRESH_CODE == 1) {
+//                                if (mPopupWindowMenu != null) {
+//                                    mPopupWindowMenu.dismiss();
+//                                }
+//                                REFRESH_CODE = 0;
+//                            }
+//                        } else if (status == 0) {
+//                            Toast.makeText(OrderListActvity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                    break;
                 case 3:
                     /*清空购物车*/
                     for (int i = 0; i < goodsitemlist.size(); i++) {
@@ -258,15 +356,19 @@ public class OrderListActvity extends BaseAppActivity {
                     Integer sameIndex = null;
                     int index = (int) msg.obj;
                     //给列表设置个数
-                    int count = Integer.parseInt(goodsitemlist.get(index).getShop_Count());
-                    count++;
-                    goodsitemlist.get(index).setShop_Count(count + "");
+                    int productCount = plist.get(index).getProductCount();
+                    productCount++;
+                    plist.get(index).setProductCount(productCount);
+                    int category_pos = plist.get(index).getCategory_pos();
+                    Map<String, List<ProductBean>> map = clist.get(category_pos).getMap();
+                    map.put(category_pos + "", plist);
+                    clist.get(category_pos).setMap(map);
                     //给购物车添加商品
                     if (buyShoppingList.size() > 0) {
                         // 1、购物车已有商品
                         for (int i = 0; i < buyShoppingList.size(); i++) {
                             //判断是否是同一个商品
-                            if (goodsitemlist.get(index).getId() == buyShoppingList.get(i).getId()) {
+                            if (plist.get(index).getId() == buyShoppingList.get(i).getId()) {
                                 sameShopboolean = true;
                                 sameIndex = i;
                                 break;
@@ -276,15 +378,18 @@ public class OrderListActvity extends BaseAppActivity {
                             //相同商品 数量加一
                             if (sameIndex != null) {
                                 //把这个商品从新设置一下
-                                buyShoppingList.set(sameIndex, goodsitemlist.get(index));
+                                ShopBean shopBean = setShopBean(index);
+                                buyShoppingList.set(sameIndex, shopBean);
                             }
                         } else {
                             //不同商品
-                            buyShoppingList.add(goodsitemlist.get(index));
+                            ShopBean shopBean = setShopBean(index);
+                            buyShoppingList.add(shopBean);
                         }
                     } else {
                         //2、购物车没有商品
-                        buyShoppingList.add(goodsitemlist.get(index));
+                        ShopBean shopBean = setShopBean(index);
+                        buyShoppingList.add(shopBean);
                     }
                     double dmoney = 0.00;
                     if (buyShoppingList.size() > 0) {
@@ -298,24 +403,35 @@ public class OrderListActvity extends BaseAppActivity {
                         shopCount.setText(buyNum + "");
                     }
                     selectedgoodsmoney.setText("" + DoubleUtils.setSSWRDouble(dmoney));
-                    personAdapter.notifyDataSetChanged();
+
+                    rcpAdapter.notifyDataSetChanged();
+                    plAdapter.notifyDataSetChanged();
                     myCheckstandGray(true);
                     break;
 
                 case 1110:
                     //减号点击按钮点击
                     boolean sameDShopboolean = false;
-                    Integer sameDIndex = null;
+                    int sameDIndex = -1;
                     //按了减少商品这个按钮
                     int indx = (int) msg.obj;
-                    int cou = Integer.parseInt(goodsitemlist.get(indx).getShop_Count());
+                    int cou = plist.get(indx).getProductCount();
+                    for (int i = 0; i < buyShoppingList.size(); i++) {
+                        if (plist.get(indx).getId() == buyShoppingList.get(i).getId()) {
+                            sameDIndex = i;
+                            break;
+                        }
+                    }
                     if (cou > 0) {
                         cou--;
                         if (cou == 0) {
-                            goodsitemlist.get(indx).setShop_Count("0");
-                            buyShoppingList.remove(goodsitemlist.get(indx));
+                            plist.get(indx).setProductCount(0);
+                            if (sameDIndex != -1) {
+                                buyShoppingList.remove(sameDIndex);
+                            }
                         } else {
-                            goodsitemlist.get(indx).setShop_Count(cou + "");
+                            plist.get(indx).setProductCount(cou);
+                            buyShoppingList.get(sameDIndex).setShop_Count(cou + "");
                         }
                     }
 
@@ -342,17 +458,17 @@ public class OrderListActvity extends BaseAppActivity {
                         selectedgoodsmoney.setText("0");
                         shopCount.setText("0");
                     }
-                    personAdapter.notifyDataSetChanged();
+                    plAdapter.notifyDataSetChanged();
                     break;
                 case 207:
                     //搜索款返回来的数据
                     ShopBean shopBean = (ShopBean) msg.obj;
                     Log.i("URL", "BBBBBBBBBBBB==============" + shopBean);
-                    for (int i = 0; i < goodsitemlist.size(); i++) {
-                        if (shopBean.getId() == goodsitemlist.get(i).getId()) {
-                            int counts = Integer.parseInt(goodsitemlist.get(i).getShop_Count());
+                    for (int i = 0; i < plist.size(); i++) {
+                        if (shopBean.getId() == plist.get(i).getId()) {
+                            int counts = plist.get(i).getProductCount();
                             counts++;
-                            goodsitemlist.get(i).setShop_Count(counts + "");
+                            plist.get(i).setProductCount(counts);
                             break;
                         }
                     }
@@ -381,18 +497,14 @@ public class OrderListActvity extends BaseAppActivity {
                                 buyShoppingList.set(sameindex, buyShoppingList.get(sameindex));
                             }
                         } else {
-                            //不同商品
-                            Log.i("URL", "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
                             buyShoppingList.add(shopBean);
                         }
                     } else {
                         //2、购物车没有商品
-                        Log.i("URL", "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCc");
                         buyShoppingList.add(shopBean);
                     }
                     double dmone = 0.00;
                     if (buyShoppingList.size() > 0) {
-                        Log.i("URL", "DDDDDDDDDDDDDDd===" + buyShoppingList.toString());
                         showOrderList.setVisibility(View.VISIBLE);
                         int buyNum = 0;
                         for (int i = 0; i < buyShoppingList.size(); i++) {
@@ -403,7 +515,7 @@ public class OrderListActvity extends BaseAppActivity {
                         shopCount.setText(buyNum + "");
                     }
                     selectedgoodsmoney.setText("" + DoubleUtils.setSSWRDouble(dmone));
-                    personAdapter.notifyDataSetChanged();
+                    plAdapter.notifyDataSetChanged();
                     myCheckstandGray(true);
                     break;
 
@@ -524,7 +636,7 @@ public class OrderListActvity extends BaseAppActivity {
                     if (mPopupWindow != null) {
                         mPopupWindow.dismiss();
                     }
-                    personAdapter.notifyDataSetChanged();
+                    plAdapter.notifyDataSetChanged();
                     break;
                 case 120:
                     Intent inten = new Intent(OrderListActvity.this, MakeSureTheOrderActivity.class);
@@ -532,14 +644,33 @@ public class OrderListActvity extends BaseAppActivity {
                         inten.putExtra("listobj", (Serializable) buycartshoplist);
                         startActivity(inten);
                     }
-                    personAdapter.notifyDataSetChanged();
+                    plAdapter.notifyDataSetChanged();
                     break;
                 case 200:
                     //popwindow 里 添加按钮  步骤如下：
                     //1、商品添加 2个购物车的数量也要添加  要做到一致
                     //这个是选中的商品  数量要加一  这里不存在没有的商品 所以 保存购物车的集合是有数据的  数量++就好了
-                    Log.i("URL", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
                     int addIndex = (int) msg.obj;
+                    //plist中改变数据
+                    for (int j = 0; j < clist.size(); j++) {
+                        if (buycartshoplist.get(addIndex).getCatPosition() == j) {
+                            Map<String, List<ProductBean>> map1 = clist.get(j).getMap();
+                            List<ProductBean> list = map1.get(buycartshoplist.get(addIndex).getCategory_id());
+                            for (int x = 0; x < list.size(); x++) {
+                                if (Integer.parseInt(buycartshoplist.get(addIndex).getSp_id()) == list.get(x).getId()) {
+                                    int productCount1 = list.get(x).getProductCount();
+                                    productCount1++;
+                                    list.get(x).setProductCount(productCount1);
+                                    map1.put(buycartshoplist.get(addIndex).getCategory_id(), list);
+                                    clist.get(j).setMap(map1);
+
+                                    Log.i("URL", clist.toString());
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
                     for (int i = 0; i < buycartshoplist.size(); i++) {
                         if (buycartshoplist.get(addIndex).getSp_id().equals(buycartshoplist.get(i).getSp_id())) {
                             int acount = Integer.parseInt(buycartshoplist.get(i).getSp_count());
@@ -548,6 +679,8 @@ public class OrderListActvity extends BaseAppActivity {
                             break;
                         }
                     }
+
+
                     for (int l = 0; l < buyShoppingList.size(); l++) {
                         if (buycartshoplist.get(addIndex).getSp_id().equals(buyShoppingList.get(l).getId() + "")) {
                             int acoun = Integer.parseInt(buyShoppingList.get(l).getShop_Count());
@@ -566,15 +699,34 @@ public class OrderListActvity extends BaseAppActivity {
                     checkCount.setText("已选" + buycartshoplist.size() + "种商品");
                     selectedgoodsmoney.setText(DoubleUtils.setSSWRDouble(mprice));
                     pop_price.setText(DoubleUtils.setSSWRDouble(mprice));
-                    personAdapter.notifyDataSetChanged();
+                    plAdapter.notifyDataSetChanged();
                     listAdapter.notifyDataSetChanged();
-
+                    rcpAdapter.notifyDataSetChanged();
                     break;
                 case 201:
                     //popwindow 里 减少按钮
                     int lessenIndex = (int) msg.obj;
+                    for (int j = 0; j < clist.size(); j++) {
+                        if (buycartshoplist.get(lessenIndex).getCatPosition() == j) {
+                            Map<String, List<ProductBean>> map2 = clist.get(j).getMap();
+                            List<ProductBean> list = map2.get(buycartshoplist.get(lessenIndex).getCategory_id());
+                            for (int x = 0; x < list.size(); x++) {
+                                if (Integer.parseInt(buycartshoplist.get(lessenIndex).getSp_id()) == list.get(x).getId()) {
+                                    int productCou = list.get(x).getProductCount();
+                                    productCou--;
+                                    if (productCou < 0) {
+                                        list.get(x).setProductCount(0);
+                                    } else {
+                                        list.get(x).setProductCount(productCou);
+                                    }
+                                    map2.put(buycartshoplist.get(lessenIndex).getCategory_id(), list);
+                                    clist.get(j).setMap(map2);
+                                    break;
+                                }
+                            }
+                        }
+                    }
                     //第一种做法
-                    //第二种做法
                     for (int i = 0; i < buyShoppingList.size(); i++) {
                         if (buycartshoplist.get(lessenIndex).getSp_id().equals(buyShoppingList.get(i).getId() + "")) {
                             int acount = Integer.parseInt(buyShoppingList.get(i).getShop_Count());
@@ -588,7 +740,6 @@ public class OrderListActvity extends BaseAppActivity {
                             break;
                         }
                     }
-
                     int lcount = Integer.parseInt(buycartshoplist.get(lessenIndex).getSp_count());
                     if (lcount > 0) {
                         lcount--;
@@ -619,7 +770,7 @@ public class OrderListActvity extends BaseAppActivity {
                             mPopupWindow.dismiss();
                         }
                     }
-                    personAdapter.notifyDataSetChanged();
+                    plAdapter.notifyDataSetChanged();
                     listAdapter.notifyDataSetChanged();
                     break;
                 case 202:
@@ -633,13 +784,14 @@ public class OrderListActvity extends BaseAppActivity {
                     break;
                 case 511:
                     //Toast.makeText(OrderListActvity.this, "网络超时，请重试", Toast.LENGTH_SHORT).show();
-                  String error= (String) msg.obj;
-                    Log.i("URL","error====================="+error);
+                    String error = (String) msg.obj;
+                    Log.i("URL", "error=====================" + error);
                     loading_dailog.dismiss();
                     break;
                 case 100000:
-                    for (int i = 0; i < goodsitemlist.size(); i++) {
-                        goodsitemlist.get(i).setShop_Count("0");
+                    //================2018-05-10有问题=========
+                    for (int i = 0; i < plist.size(); i++) {
+                        plist.get(i).setProductCount(0);
                     }
                     buycartshoplist.clear();
                     buyShoppingList.clear();
@@ -649,12 +801,12 @@ public class OrderListActvity extends BaseAppActivity {
                     settlement_.setTextColor(Color.parseColor("#cecece"));
                     myCheckstandGray(false);
                     initGetData();
-                    personAdapter.notifyDataSetChanged();
+                    plAdapter.notifyDataSetChanged();
                     break;
             }
         }
     };
-    private LinearLayout refresh_layout;
+    private int shopBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -668,6 +820,56 @@ public class OrderListActvity extends BaseAppActivity {
         initGetUserInfo();
         initGetData();
         action();
+    }
+
+    private void initRecycleView() {
+        //默认选中第一个
+
+        //先要清空数据 因为从服务器中获取的数据已经保存在了 clist中 所以为了不使商品重复及要把plist给清空
+        plist.clear();
+        if (clist.size() > 0 && clist != null) {
+            Map<String, List<ProductBean>> map = clist.get(0).getMap();
+            List<ProductBean> list = map.get(clist.get(0).getId() + "");
+            if (list != null && list.size() > 0) {
+                for (int i = 0; i < list.size(); i++) {
+                    ProductBean productBean = list.get(i);
+                    productBean.setCategory_pos(0);
+                    plist.add(productBean);
+                }
+            }
+        }
+        rcpAdapter = new RecycleProductCategoryListAdapter(clist, OrderListActvity.this);
+        mGoodsCateGoryList.setLayoutManager(new LinearLayoutManager(OrderListActvity.this));
+        mGoodsCateGoryList.setAdapter(rcpAdapter);
+        rcpAdapter.setCheckPosition(0);
+        mLinearLayoutManager = new LinearLayoutManager(OrderListActvity.this, LinearLayoutManager.VERTICAL, false);
+        myLayoutManage = new MyLayoutManage(OrderListActvity.this, LinearLayoutManager.VERTICAL, false);
+        mGoodsInfoRecyclerView.setLayoutManager(mLinearLayoutManager);
+        plAdapter = new ProductListAdapter(OrderListActvity.this, plist, handler);
+        mGoodsInfoRecyclerView.setAdapter(plAdapter);
+        //分类的点击事件
+        rcpAdapter.setOnItemClickListener(new RecycleProductCategoryListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                //切换选中的颜色改变
+                rcpAdapter.setCheckPosition(position);
+                Log.i("URL", "点击时的数据：：：" + clist);
+                plist.clear();
+                CatingBean catingBean = clist.get(position);
+                Map<String, List<ProductBean>> map = catingBean.getMap();
+                List<ProductBean> li = map.get(clist.get(position).getId() + "");
+                if (li != null && li.size() > 0) {
+                    for (int i = 0; i < li.size(); i++) {
+                        ProductBean productBean = li.get(i);
+                        productBean.setCategory_pos(position);
+                        plist.add(productBean);
+                    }
+                }
+                plAdapter.notifyDataSetChanged();
+            }
+        });
+
+
     }
 
     private void action() {
@@ -823,6 +1025,7 @@ public class OrderListActvity extends BaseAppActivity {
             smb.setCategory_id(buyShoppingList.get(i).getCategory_id() + "");
             smb.setSp_name(buyShoppingList.get(i).getName());
             smb.setSp_id(buyShoppingList.get(i).getId() + "");
+            smb.setCatPosition(buyShoppingList.get(i).getCatPosition());
             buycartshoplist.add(smb);
         }
         //popwindow-》商品列表
@@ -941,6 +1144,8 @@ public class OrderListActvity extends BaseAppActivity {
         ordermenu = menuView.findViewById(R.id.ordermenu);
         quxiaoMenu = menuView.findViewById(R.id.quxiao);
         //menuViewPopwindow
+
+
     }
 
     //这个是有用的需要改动
@@ -1152,6 +1357,33 @@ public class OrderListActvity extends BaseAppActivity {
         //取消广播的注册
         EventBus.getDefault().unregister(this);
     }
+
+    public ShopBean setShopBean(int pos) {
+        ShopBean sb = new ShopBean();
+        sb.setShop_Count(plist.get(pos).getProductCount() + "");
+        sb.setName(plist.get(pos).getName());
+        sb.setCategory_id(plist.get(pos).getCategory_id());
+        sb.setCategory_name(plist.get(pos).getCategory_name());
+        sb.setDetails(plist.get(pos).getDetails());
+        sb.setId(plist.get(pos).getId());
+        sb.setPrice(plist.get(pos).getPrice());
+        sb.setStock(plist.get(pos).getStock());
+        sb.setCatPosition(plist.get(pos).getCategory_pos());
+        List<ProductBean.ThumbBean> thumb = plist.get(pos).getThumb();
+        List<ShopBean.ThumbBean> tlist = new ArrayList<>();
+        for (int i = 0; i < thumb.size(); i++) {
+            ShopBean.ThumbBean tb = new ShopBean.ThumbBean();
+            tb.setThumb(thumb.get(i).getThumb());
+            tlist.add(tb);
+        }
+        sb.setThumb(tlist);
+        return sb;
+    }
+
+    public int getShopBean() {
+        return shopBean;
+    }
+
 
     /**
      * 处理滑动 是两个ListView联动

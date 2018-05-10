@@ -35,6 +35,7 @@
             android:name=".Activity.MainActivity"
             android:label="零壹零售"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Activity.JavaText" />
         <activity android:name=".Activity.MakeSureTheOrderActivity" />
         <activity android:name=".Activity.SystemSettingsActivity" />
         <activity android:name=".Activity.TheOrderListActivity" />

@@ -266,6 +266,7 @@ public class LoginActivity extends BaseAppActivity {
                 userimpl.upDateUserInfo(userInfo);
             }
             Intent intent = new Intent(LoginActivity.this, OrderListActvity.class);
+//            Intent intent = new Intent(LoginActivity.this, JavaText.class);
             startActivity(intent);
             LoginActivity.this.finish();
         } catch (Exception e) {

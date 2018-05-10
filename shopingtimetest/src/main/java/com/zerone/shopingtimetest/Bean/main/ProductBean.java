@@ -1,40 +1,54 @@
-package com.zerone.shopingtimetest.Bean;
+package com.zerone.shopingtimetest.Bean.main;
 
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created by on 2018/4/4 0004 10 36.
+ * Created by on 2018/5/10 0010 10 31.
  * Author  LiuXingWen
  */
 
-public class ShopBean implements Serializable {
+public class ProductBean implements Serializable {
+
+    /**
+     * id : 15
+     * name : 西瓜奶茶
+     * category_id : 4
+     * details : 西瓜奶茶
+     * price : 20.00
+     * stock : 553
+     * category_name : 奶茶01
+     * thumb : [{"thumb":"uploads/simple/20180504030852200.jpg"}]
+     */
+
     private int id;
     private String name;
     private int category_id;
-    private int catPosition;
+    //所属分类的位置
+    private int category_pos;
     private String details;
     private String price;
     private int stock;
     private String category_name;
-    private String shop_Count;
     private List<ThumbBean> thumb;
+    //商品数量
+    private int productCount;
 
 
-    public int getCatPosition() {
-        return catPosition;
+    public int getCategory_pos() {
+        return category_pos;
     }
 
-    public void setCatPosition(int catPosition) {
-        this.catPosition = catPosition;
+    public void setCategory_pos(int category_pos) {
+        this.category_pos = category_pos;
     }
 
-    public String getShop_Count() {
-        return shop_Count;
+    public int getProductCount() {
+        return productCount;
     }
 
-    public void setShop_Count(String shop_Count) {
-        this.shop_Count = shop_Count;
+    public void setProductCount(int productCount) {
+        this.productCount = productCount;
     }
 
     public int getId() {
@@ -103,26 +117,26 @@ public class ShopBean implements Serializable {
 
     @Override
     public String toString() {
-        return "ShopBean{" +
+        return "ProductBean{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", category_id=" + category_id +
+                ", category_pos=" + category_pos +
                 ", details='" + details + '\'' +
                 ", price='" + price + '\'' +
                 ", stock=" + stock +
                 ", category_name='" + category_name + '\'' +
-                ", shop_Count='" + shop_Count + '\'' +
                 ", thumb=" + thumb +
+                ", productCount=" + productCount +
                 '}';
     }
 
-    public static class ThumbBean implements Serializable {
+    public static class ThumbBean {
         /**
-         * thumb : uploads/catering/20180317025956983.jpg
+         * thumb : uploads/simple/20180504030852200.jpg
          */
 
         private String thumb;
-
 
         public String getThumb() {
             return thumb;
@@ -130,13 +144,6 @@ public class ShopBean implements Serializable {
 
         public void setThumb(String thumb) {
             this.thumb = thumb;
-        }
-
-        @Override
-        public String toString() {
-            return "ThumbBean{" +
-                    "thumb='" + thumb + '\'' +
-                    '}';
         }
     }
 }
