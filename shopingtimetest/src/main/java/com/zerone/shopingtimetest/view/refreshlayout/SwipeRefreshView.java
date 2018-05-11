@@ -16,6 +16,7 @@ import com.zerone.shopingtimetest.R;
 /**
  * Created by on 2018/4/26 0026 18 39.
  * Author  LiuXingWen
+ * 这个不好用
  */
 
 public class SwipeRefreshView extends SwipeRefreshLayout {
@@ -61,7 +62,6 @@ public class SwipeRefreshView extends SwipeRefreshLayout {
                 } else if (getChildAt(0) instanceof RecyclerView) {
                     // 创建ListView对象
                     mRecyclerView = (RecyclerView) getChildAt(0);
-
                     // 设置RecyclerView的滑动监听
                     setRecyclerViewOnScroll();
                 }
@@ -99,14 +99,16 @@ public class SwipeRefreshView extends SwipeRefreshLayout {
     private boolean canLoadMore() {
         // 1. 是上拉状态
         boolean condition1 = (mDownY - mUpY) >= mScaledTouchSlop;
+
         if (condition1) {
-            Log.d(TAG, "------->  是上拉状态");
+            Log.d(TAG, "------->  是上拉状态 mScaledTouchSlop" + mScaledTouchSlop);
+
+            Log.d(TAG, "------->  是上拉状态" + (mDownY - mUpY));
         }
 
         // 2. 当前页面可见的item是最后一个条目,一般最后一个条目位置需要大于第一页的数据长度
         boolean condition2 = false;
         if (mListView != null && mListView.getAdapter() != null) {
-
             if (mItemCount > 0) {
                 if (mListView.getAdapter().getCount() < mItemCount) {
                     // 第一页未满，禁止下拉
@@ -116,9 +118,9 @@ public class SwipeRefreshView extends SwipeRefreshLayout {
                 }
             } else {
                 // 未设置数据长度，则默认第一页数据不满时也可以上拉
+                Log.d(TAG, "------->  是上拉状态 getLastVisiblePosition" + mListView.getLastVisiblePosition());
                 condition2 = mListView.getLastVisiblePosition() == (mListView.getAdapter().getCount() - 1);
             }
-
         }
 
         if (condition2) {

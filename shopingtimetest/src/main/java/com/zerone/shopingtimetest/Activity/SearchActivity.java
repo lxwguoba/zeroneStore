@@ -154,7 +154,7 @@ public class SearchActivity extends BaseAppActivity {
                             smb.setSp_id(listBuy.get(tsIndex).getSp_id() + "");
                             smb.setCategory_id(listBuy.get(tsIndex).getCategory_id() + "");
                             smb.setSp_name(listBuy.get(tsIndex).getSp_name());
-                            smb.setSp_picture_url(listBuy.get(tsIndex).getSp_picture_url());
+                            smb.setSp_picture_url(IpConfig.URL_GETPICTURE + listBuy.get(tsIndex).getSp_picture_url());
                             smb.setSp_check(true);
                             smb.setSp_discount(listBuy.get(tsIndex).getSp_discount());
                             smb.setSp_price(listBuy.get(tsIndex).getSp_price());
@@ -167,8 +167,9 @@ public class SearchActivity extends BaseAppActivity {
                             smb.setSp_id(shopBean.getId() + "");
                             smb.setCategory_id(shopBean.getCategory_id() + "");
                             smb.setSp_name(shopBean.getName());
+
                             if (shopBean.getThumb().size() > 0) {
-                                smb.setSp_picture_url(shopBean.getThumb().get(0).getThumb());
+                                smb.setSp_picture_url(IpConfig.URL_GETPICTURE + shopBean.getThumb().get(0).getThumb());
                             } else {
                                 smb.setSp_picture_url("");
                             }
@@ -186,7 +187,7 @@ public class SearchActivity extends BaseAppActivity {
                         smb.setCategory_id(shopBean.getCategory_id() + "");
                         smb.setSp_name(shopBean.getName());
                         if (shopBean.getThumb().size() > 0) {
-                            smb.setSp_picture_url(shopBean.getThumb().get(0).getThumb());
+                            smb.setSp_picture_url(IpConfig.URL_GETPICTURE + shopBean.getThumb().get(0).getThumb());
                         } else {
                             smb.setSp_picture_url("");
                         }
@@ -326,7 +327,7 @@ public class SearchActivity extends BaseAppActivity {
                 smb.setCategory_id(lists.get(i).getCategory_id() + "");
                 smb.setSp_name(lists.get(i).getName());
                 if (lists.get(i).getThumb().size() > 0) {
-                    smb.setSp_picture_url(lists.get(i).getThumb().get(0).getThumb());
+                    smb.setSp_picture_url(IpConfig.URL_GETPICTURE + lists.get(i).getThumb().get(0).getThumb());
                 } else {
                     smb.setSp_picture_url("");
                 }

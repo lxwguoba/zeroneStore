@@ -318,12 +318,14 @@ public class OrderDetailsActivity extends BaseAppActivity {
             @Override
             public void onClick(View v) {
                 dialog1.dismiss();
+                subSurePay.setEnabled(true);
             }
         });
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog1.dismiss();
+                subSurePay.setEnabled(true);
             }
         });
         cashPay.setOnClickListener(new View.OnClickListener() {
@@ -331,6 +333,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
             public void onClick(View v) {
                 //点击启动现金支付接口调试
                 docashPay();
+
             }
         });
 
@@ -343,7 +346,6 @@ public class OrderDetailsActivity extends BaseAppActivity {
                     PayUtils.LiftThePayment(money, OrderDetailsActivity.this);
                     dialog1.dismiss();
                     OrderDetailsActivity.this.finish();
-                    subSurePay.setEnabled(true);
                 }
             }
         });
@@ -366,6 +368,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                subSurePay.setEnabled(true);
             }
         });
         confirm.setOnClickListener(new View.OnClickListener() {

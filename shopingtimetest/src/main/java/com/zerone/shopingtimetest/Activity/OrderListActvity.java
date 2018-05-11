@@ -302,8 +302,14 @@ public class OrderListActvity extends BaseAppActivity {
 //                    break;
                 case 3:
                     /*清空购物车*/
-                    for (int i = 0; i < goodsitemlist.size(); i++) {
-                        goodsitemlist.get(i).setShop_Count("0");
+                    for (int i = 0; i < clist.size(); i++) {
+                        Map<String, List<ProductBean>> map = clist.get(i).getMap();
+                        for (Map.Entry<String, List<ProductBean>> entry : map.entrySet()) {
+                            List<ProductBean> value = entry.getValue();
+                            for (int j = 0; j < value.size(); j++) {
+                                value.get(j).setProductCount(0);
+                            }
+                        }
                     }
                     selectedgoodsmoney.setText("0");
                     buycartshoplist.clear();
@@ -312,17 +318,15 @@ public class OrderListActvity extends BaseAppActivity {
                     pop_price.setText("0.00");
                     listAdapter.notifyDataSetChanged();
                     showOrderList.setVisibility(View.GONE);
-                    personAdapter.notifyDataSetChanged();
+                    plAdapter.notifyDataSetChanged();
                     if (mPopupWindow != null) {
                         mPopupWindow.dismiss();
                     }
-
                     break;
                 case 4:
                     /**
                      * 全选和全不选
                      */
-
                     String money = "";
                     double v = 0.00;
                     if (allcheck.isChecked()) {

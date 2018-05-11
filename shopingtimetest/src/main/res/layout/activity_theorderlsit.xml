@@ -276,7 +276,7 @@
 
         >
 
-        <com.zerone.shopingtimetest.view.refreshlayout.SwipeRefreshView
+        <com.zerone.shopingtimetest.view.RecycleView.PullRefreshLayout
              android:id="@+id/swipe_ly"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -287,10 +287,9 @@
             android:background="#fff"
             android:divider="#f1f5f8"
             android:dividerHeight="10dp"
-            android:paddingBottom="10dp"
             android:scrollbars="none"/>
 
-        </com.zerone.shopingtimetest.view.refreshlayout.SwipeRefreshView>
+        </com.zerone.shopingtimetest.view.RecycleView.PullRefreshLayout>
     </LinearLayout>
 
 

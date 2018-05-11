@@ -3,6 +3,7 @@ package com.zerone.shopingtimetest.Adapter.cart_list;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,6 +86,7 @@ public class ListGoodsDetails_Adapter extends BaseAdapter {
         holder.shop_price.setText(list.get(position).getSp_price());
         holder.shop_count.setText(list.get(position).getSp_count());
         String url = list.get(position).getSp_picture_url();
+        Log.i("URL", "搜索：：：" + url);
         Glide.with(mContext).load(url).centerCrop().placeholder(R.mipmap.app_logo).crossFade().into(holder.shop_img);
 
         /**

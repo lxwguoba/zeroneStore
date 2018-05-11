@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -30,7 +29,7 @@ import com.zerone.shopingtimetest.Utils.AppSharePreferenceMgr;
 import com.zerone.shopingtimetest.Utils.DoubleUtils;
 import com.zerone.shopingtimetest.Utils.LoadingUtils;
 import com.zerone.shopingtimetest.Utils.NetUtils;
-import com.zerone.shopingtimetest.view.refreshlayout.SwipeRefreshView;
+import com.zerone.shopingtimetest.view.RecycleView.PullRefreshLayout;
 import com.zyao89.view.zloading.ZLoadingDialog;
 
 import org.json.JSONArray;
@@ -50,7 +49,7 @@ import java.util.Map;
  * 订单类表
  */
 
-public class TheOrderListActivity extends AppCompatActivity {
+public class TheOrderListActivity extends AppCompatActivity implements PullRefreshLayout.OnRefreshListener {
 
     private ListView orderlistview;
     private List<OrderBean> list;
@@ -71,7 +70,7 @@ public class TheOrderListActivity extends AppCompatActivity {
     private ImageView back;
     //这个是用来结账后判断是全部订单还是待付款订单按钮触发的  0为全部订单  1为待付款订单
     private int post;
-    private SwipeRefreshView mSwipeLayout;
+    private PullRefreshLayout mSwipeLayout;
     //这个是 判断当前页面是那个订单转态，"" 空字符串是全部订单、 "'0'" 这个是待付款订单 、"1"是已完成订单、"-1"是已取消订单
     private String orderState = "";
     private Dialog dialog;
@@ -177,10 +176,9 @@ public class TheOrderListActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                     } finally {
                         if (mSwipeLayout != null) {
-                            if (mSwipeLayout.isRefreshing()) {
-                                //关闭刷新动画
-                                mSwipeLayout.setRefreshing(false);
-                            }
+                            //关闭刷新动画
+                            mSwipeLayout.loadMoreFinished();
+
                         }
                         orderListItemAdapter.notifyDataSetChanged();
                     }
@@ -237,8 +235,7 @@ public class TheOrderListActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                     } finally {
                         if (mSwipeLayout != null) {
-                            //关闭刷新动画
-                            mSwipeLayout.setLoading(false);
+                            mSwipeLayout.refreshFinished();
                         }
                         orderListItemAdapter.notifyDataSetChanged();
                     }
@@ -276,6 +273,7 @@ public class TheOrderListActivity extends AppCompatActivity {
         mContext = this;
         initGetUserInfo();
         initView();
+        mSwipeLayout.setRefreshListener(this);
         action();
         initGetDataOrderList("");
     }
@@ -285,7 +283,7 @@ public class TheOrderListActivity extends AppCompatActivity {
      */
     private void initView() {
         //刷新按钮
-        mSwipeLayout = (SwipeRefreshView) findViewById(R.id.swipe_ly);
+        mSwipeLayout = (PullRefreshLayout) findViewById(R.id.swipe_ly);
         orderTotal = (TextView) findViewById(R.id.orderTotal);
         orderTotalPrice = (TextView) findViewById(R.id.orderTotalPrice);
         //导航按钮============================
@@ -392,31 +390,6 @@ public class TheOrderListActivity extends AppCompatActivity {
             }
         });
 
-        /**
-         * 这个是下拉刷新的组件的点击事件
-         */
-
-        mSwipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                //这里可以做一下下拉刷新的操作
-                Log.i("BBBB", "订单转态值：" + orderState);
-                initGetDataOrderList(orderState);
-            }
-        });
-
-        /**
-         * 上拉加载更多
-         *
-         */
-        mSwipeLayout.setOnLoadMoreListener(new SwipeRefreshView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-//                mSwipeLayout.setLoading(true);
-                refreshpushdown(orderState);
-            }
-        });
-
     }
 
     /**
@@ -447,8 +420,9 @@ public class TheOrderListActivity extends AppCompatActivity {
         //last_page最后一页
         String last_page = (String) AppSharePreferenceMgr.get(TheOrderListActivity.this, "last_page", "0");
         if (per_page.equals(last_page)) {
-            Toast.makeText(TheOrderListActivity.this, "没有更多了", Toast.LENGTH_SHORT).show();
-            mSwipeLayout.setLoading(false);
+            if (mSwipeLayout != null) {
+                mSwipeLayout.loadMoreFinished();
+            }
             return;
         }
         int page = Integer.parseInt(per_page);
@@ -524,5 +498,18 @@ public class TheOrderListActivity extends AppCompatActivity {
         dialog.show();
         //第二个参数是几秒后关闭
         mHandler.sendEmptyMessageDelayed(20, 2000);
+    }
+
+
+    //++++++++++++++++++刷新加载+++++++++++++++++++++++++
+    @Override
+    public void refreshFinished() {
+        //下拉刷新
+        initGetDataOrderList(orderState);
+    }
+
+    @Override
+    public void loadMoreFinished() {
+        refreshpushdown(orderState);
     }
 }

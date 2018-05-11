@@ -8,8 +8,8 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,7 +56,7 @@ public class OrderDetailsYFKActivity extends AppCompatActivity {
     private TextView jiedaiy;
     private TextView ordersn;
     private TextView beizhu;
-    private ImageView back;
+    private RelativeLayout back;
     private TextView ordertime;
     Handler handler = new Handler() {
         @Override
@@ -158,7 +158,7 @@ public class OrderDetailsYFKActivity extends AppCompatActivity {
         jiedaiy = (TextView) findViewById(R.id.jiedaiy);
         ordersn = (TextView) findViewById(R.id.ordersn);
         beizhu = (TextView) findViewById(R.id.beizhu);
-        back = (ImageView) findViewById(R.id.back);
+        back = (RelativeLayout) findViewById(R.id.back);
         ordertime = (TextView) findViewById(R.id.ordertime);
         listView = (ListView) findViewById(R.id.goodslist);
         odlia = new OrderDetialsListItemAdapter(this, list);
