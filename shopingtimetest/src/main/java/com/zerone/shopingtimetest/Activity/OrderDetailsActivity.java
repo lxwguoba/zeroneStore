@@ -72,7 +72,11 @@ public class OrderDetailsActivity extends BaseAppActivity {
     private ImageView back;
     private Dialog dialog;
     private Dialog dialog1;
+    private RelativeLayout relative_back;
+    private TextView discount_price;
     Handler handler = new Handler() {
+
+        private String discount_money;
 
         @Override
         public void handleMessage(Message msg) {
@@ -80,6 +84,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
             switch (msg.what) {
                 case 0:
                     String dykJSon = (String) msg.obj;
+                    Log.i("URL", "dykJSon=" + dykJSon);
                     loading_dailog.dismiss();
                     printBean = new PrintBean();
                     printItemList = new ArrayList<>();
@@ -116,10 +121,13 @@ public class OrderDetailsActivity extends BaseAppActivity {
                                 printItem.setGprice(Item.getString("price"));
                                 printItemList.add(printItem);
                             }
+                            printBean.setPayment_price(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
                             printBean.setList(printItemList);
                             money = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price");
-                            ordermoney.setText("￥" + money);
                             listOrderMoney.setText("￥" + money);
+                            discount_money = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price");
+                            discount_price.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
+                            ordermoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 GoodsBean gb = new GoodsBean();
                                 gb.setGoods_total(jsonArray.getJSONObject(i).getString("total"));
@@ -190,7 +198,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
                                 }
                             }
                             //语音播报
-                            VoiceUtils.with(OrderDetailsActivity.this).Play(jsonObject.getJSONObject("data").getString("price"), true);
+                            VoiceUtils.with(OrderDetailsActivity.this).Play(jsonObject.getJSONObject("data").getString("payment_price"), true);
                             setResult(300, intent);
                             OrderDetailsActivity.this.finish();
                         } else {
@@ -211,7 +219,6 @@ public class OrderDetailsActivity extends BaseAppActivity {
             }
         }
     };
-    private RelativeLayout relative_back;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -258,6 +265,9 @@ public class OrderDetailsActivity extends BaseAppActivity {
         subSurePay = (RelativeLayout) findViewById(R.id.subSurePay);
         //确认订单的按钮 显示的价格
         ordermoney = (TextView) findViewById(R.id.ordermoney);
+
+        discount_price = (TextView) findViewById(R.id.discount_price);
+
         qxorder = (LinearLayout) findViewById(R.id.qxorder);
         listView = (ListView) findViewById(R.id.goodslist);
         odlia = new OrderDetialsListItemAdapter(this, list);

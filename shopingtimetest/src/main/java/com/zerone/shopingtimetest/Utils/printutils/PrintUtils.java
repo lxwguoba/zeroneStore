@@ -146,7 +146,7 @@ public class PrintUtils {
         //---------------------------金额--餐位费--------------------------------------
         LinkedList<TableItem> moneylist = new LinkedList<>();
         TableItem monTi = new TableItem();
-        String[] monTiCon = {"总计：", "", "￥" + pb.getPmoney()};
+        String[] monTiCon = {"原价：", "", "￥" + pb.getPmoney()};
         int[] monTialt = {0, 2, 2};
         int[] monTiwid = {1, 0, 2};
         monTi.setText(monTiCon);
@@ -154,6 +154,14 @@ public class PrintUtils {
         monTi.setWidth(monTiwid);
         moneylist.add(monTi);
 
+        TableItem monT = new TableItem();
+        String[] monTiCo = {"实收金额", "", "￥" + pb.getPayment_price()};
+        int[] monTial = {0, 2, 2};
+        int[] monTiwi = {1, 0, 1};
+        monT.setText(monTiCo);
+        monT.setAlign(monTial);
+        monT.setWidth(monTiwi);
+        moneylist.add(monT);
         //---------------------------金额----------------------------------
         AidlUtil.getInstance().printTable(head, 40, true);
         AidlUtil.getInstance().printTable(title, 36, true);

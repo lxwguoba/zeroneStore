@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +41,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +54,7 @@ import java.util.Map;
  * 选完商品后的下单前确认订单
  */
 
-public class MakeSureTheOrderActivity extends BaseAppActivity {
+public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberPicker.OnValueChangeListener, NumberPicker.Formatter, NumberPicker.OnScrollListener {
 
     private Intent intent;
     private ArrayList<ShopMessageBean> listObj;
@@ -71,6 +73,11 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
     private TextView subMoney;
     private ImageView back;
     private TextView remark;
+    private RelativeLayout relative_back;
+    private TextView zhekou;
+    private NumberPicker numberPicker;
+    private EditText discountValue;
+    private TextView zhekouValue;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -83,7 +90,6 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
                         JSONObject jsonObject = new JSONObject(subJSon);
                         int status = jsonObject.getInt("status");
                         if (status == 1) {
-                            Log.i("URL","****************7777****************"+subJSon);
                             //订单提交成功  获取商品数据 打印小票，吊起支付。
                             String orderid = jsonObject.getJSONObject("data").getString("order_id");
                             //订单提交成功 跳转到 订单详情
@@ -94,7 +100,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
                             MakeSureTheOrderActivity.this.finish();
                             EventBus.getDefault().post(new RefreshBean("清空购物车的类", ContantData.REFRESH_ONE));
                         } else if (status == 0) {
-                            Log.i("URL","****************8888****************"+subJSon);
+                            Log.i("URL", "****************8888****************" + subJSon);
                             //订单提交失败  提示用户失败的原因
                             Toast.makeText(MakeSureTheOrderActivity.this, "错误返回：" + jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                         }
@@ -111,16 +117,24 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
                         remark.setText(reinfo);
                     }
                     break;
+
+                case 10:
+                    String rein = (String) msg.obj;
+                    if (rein != null) {
+                        zhekouValue.setText(rein);
+                    }
+                    break;
                 case 511:
                     Toast.makeText(MakeSureTheOrderActivity.this, "网络超时，请重试", Toast.LENGTH_SHORT).show();
-                    if (loading_dailog!=null){
+                    if (loading_dailog != null) {
                         loading_dailog.dismiss();
                     }
                     break;
             }
         }
     };
-    private RelativeLayout relative_back;
+    private NumberPicker numberPicker1;
+    private String zkou = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +171,8 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
             listObj.get(i).getSp_price();
             dSOMoney += Double.parseDouble(listObj.get(i).getSp_price()) * Integer.parseInt(listObj.get(i).getSp_count());
         }
+
+        zhekouValue = (TextView) findViewById(R.id.zhekouValue);
         goodslist = (ListView) findViewById(R.id.goodslist);
         mAdapter = new MakeOrderDetialsListItemAdapter(MakeSureTheOrderActivity.this, listObj);
         goodslist.setAdapter(mAdapter);
@@ -171,9 +187,11 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
         actionremark = (LinearLayout) findViewById(R.id.actionremark);
         writeoff = (LinearLayout) findViewById(R.id.writeoff);
         jiedaiyuan = (TextView) findViewById(R.id.jiedaiyuan);
-        if (userInfo!=null){
+        if (userInfo != null) {
             jiedaiyuan.setText(userInfo.getRealName());
         }
+
+        zhekou = (TextView) findViewById(R.id.zhekou);
     }
 
     /**
@@ -206,6 +224,13 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
             @Override
             public void onClick(View v) {
                 MakeSureTheOrderActivity.this.finish();
+            }
+        });
+
+        zhekou.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setDiscount();
             }
         });
     }
@@ -264,6 +289,10 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
         if (goodsdata != null) {
             subMap.put("goodsdata", goodsdata);
         }
+        if (zkou != null) {
+            subMap.put("discount", zkou);
+        }
+
         loading = LoadingUtils.getDailog(MakeSureTheOrderActivity.this, Color.RED, "提交订单中。。。。");
         loading.show();
         NetUtils.netWorkByMethodPost(MakeSureTheOrderActivity.this, subMap, IpConfig.URL_SUBMITORDER, handler, 0);
@@ -300,5 +329,71 @@ public class MakeSureTheOrderActivity extends BaseAppActivity {
             }
         });
         dialog.show();
+    }
+
+    /**
+     * 自定义对话框
+     */
+    private void setDiscount() {
+        final Dialog dialog = new Dialog(this, R.style.NormalDialogStyle);
+        View view = View.inflate(this, R.layout.activity_dialog_edit_discount_view, null);
+//        discountValue = (EditText) view.findViewById(R.id.discount);
+        TextView cancel = view.findViewById(R.id.cancel);
+        TextView confirm = view.findViewById(R.id.confirm);
+        numberPicker1 = view.findViewById(R.id.numberPicker);
+        numberPicker1.setFormatter(this);
+        numberPicker1.setOnValueChangedListener(this);
+        numberPicker1.setOnScrollListener(this);
+        final String[] array = new String[100];
+        int i = 0;
+
+        for (double d = 9.9; d > 0; d -= 0.1) {
+
+            array[i] = new DecimalFormat("0.0").format(d);
+            i++;
+        }
+        numberPicker1.setDisplayedValues(array);
+        //设置最大最小值
+        numberPicker1.setMinValue(1);
+        numberPicker1.setMaxValue(100);
+        //设置默认的位置
+        numberPicker1.setValue(1);
+        dialog.setContentView(view);
+        //使得点击对话框外部不消失对话框
+        dialog.setCanceledOnTouchOutside(true);
+        //设置对话框的大小
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Message message = new Message();
+                message.what = 10;
+                zkou = array[numberPicker1.getValue() - 1];
+                message.obj = array[numberPicker1.getValue() - 1];
+                handler.sendMessage(message);
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+
+    @Override
+    public String format(int value) {
+        return null;
+    }
+
+    @Override
+    public void onScrollStateChange(NumberPicker view, int scrollState) {
+    }
+
+    @Override
+    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+
     }
 }

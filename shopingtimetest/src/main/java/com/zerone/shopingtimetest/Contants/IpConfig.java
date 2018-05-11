@@ -34,7 +34,7 @@ public class IpConfig {
     public static final String URL_ORDERLIST = URL + "order_list";
     //取消订单
     public static final String URL_QXORDER = URL + "cancel_order";
-    //取消订单
+    //提交订单
     public static final String URL_SUBMITORDER = URL + "order_check";
     //修改订单支付状态接口（现金除外）
     public static final String URL_UPDATAPAY = URL + "other_payment";
