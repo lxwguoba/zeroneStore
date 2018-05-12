@@ -152,6 +152,8 @@ public class TheOrderListActivity extends AppCompatActivity implements PullRefre
                                 ob.setStatus(orderbean.getString("status"));
                                 ob.setOrder_price(orderbean.getString("order_price"));
                                 ob.setOrdersn(orderbean.getString("ordersn"));
+                                ob.setPayment_price(orderbean.getString("payment_price"));
+                                ob.setDiscount_price(orderbean.getString("discount_price"));
                                 long created_at = Long.parseLong(orderbean.getString("created_at")) * 1000;
                                 Date d = new Date(created_at);
                                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -201,6 +203,8 @@ public class TheOrderListActivity extends AppCompatActivity implements PullRefre
                                 ob.setId(orderbean.getString("id"));
                                 ob.setStatus(orderbean.getString("status"));
                                 ob.setOrder_price(orderbean.getString("order_price"));
+                                ob.setPayment_price(orderbean.getString("payment_price"));
+                                ob.setDiscount_price(orderbean.getString("discount_price"));
                                 ob.setOrdersn(orderbean.getString("ordersn"));
                                 long created_at = Long.parseLong(orderbean.getString("created_at")) * 1000;
                                 Date d = new Date(created_at);

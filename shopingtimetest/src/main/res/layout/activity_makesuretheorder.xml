@@ -219,11 +219,13 @@
 
                 <TextView
                     android:id="@+id/zhekou"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="80dp"
+                    android:layout_height="30dp"
+                    android:background="#fedb43"
                     android:fontFamily="AdobeHeitiStd-Regular"
-                    android:text="折扣"
-                    android:textColor="#333333"
+                    android:gravity="center"
+                    android:text="折扣选择"
+                    android:textColor="#000000"
                     android:textSize="16sp" />
 
                 <TextView

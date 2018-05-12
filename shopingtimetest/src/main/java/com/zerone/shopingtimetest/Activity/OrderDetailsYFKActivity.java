@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -58,6 +59,8 @@ public class OrderDetailsYFKActivity extends AppCompatActivity {
     private TextView beizhu;
     private RelativeLayout back;
     private TextView ordertime;
+    private TextView discountmoney;
+    private TextView paymoney;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -65,6 +68,7 @@ public class OrderDetailsYFKActivity extends AppCompatActivity {
             switch (msg.what) {
                 case 0:
                     String yfkJSon = (String) msg.obj;
+                    Log.i("URL", "BBBBBBBBBBBBBB=" + yfkJSon);
                     loading_dailog.dismiss();
                     try {
                         JSONObject jsonObject = new JSONObject(yfkJSon);
@@ -88,6 +92,9 @@ public class OrderDetailsYFKActivity extends AppCompatActivity {
                                 list.add(gb);
                             }
                             totalmoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price"));
+                            discountmoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
+                            paymoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("payment_price"));
+
                             String paytype = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("paytype");
                             if ("-1".equals(paytype)) {
                                 zhifufangshi.setText("现金支付");
@@ -153,6 +160,8 @@ public class OrderDetailsYFKActivity extends AppCompatActivity {
      */
     private void initView() {
         totalmoney = (TextView) findViewById(R.id.totalmoney);
+        discountmoney = (TextView) findViewById(R.id.discountmoney);
+        paymoney = (TextView) findViewById(R.id.paymoney);
         zhifufangshi = (TextView) findViewById(R.id.zhifufangshi);
         xiaofeizhe = (TextView) findViewById(R.id.xiaofeizhe);
         jiedaiy = (TextView) findViewById(R.id.jiedaiy);

@@ -348,7 +348,6 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
         int i = 0;
 
         for (double d = 9.9; d > 0; d -= 0.1) {
-
             array[i] = new DecimalFormat("0.0").format(d);
             i++;
         }
@@ -385,6 +384,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
 
     @Override
     public String format(int value) {
+
         return null;
     }
 

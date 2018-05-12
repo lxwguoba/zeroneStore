@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -57,6 +58,8 @@ public class OrderDetailsYQXActivity extends AppCompatActivity {
     private TextView ordersn;
     private TextView beizhu;
     private RelativeLayout back;
+    private TextView discountmoney;
+    private TextView paymoney;
     private TextView ordertime;
     Handler handler = new Handler() {
         @Override
@@ -65,6 +68,7 @@ public class OrderDetailsYQXActivity extends AppCompatActivity {
             switch (msg.what) {
                 case 0:
                     String yqxJSon = (String) msg.obj;
+                    Log.i("URL", "AAAAAAAAAAAAAAAAA=" + yqxJSon);
                     loading_dailog.dismiss();
                     try {
                         JSONObject jsonObject = new JSONObject(yqxJSon);
@@ -86,6 +90,9 @@ public class OrderDetailsYQXActivity extends AppCompatActivity {
                                 list.add(gb);
                             }
                             totalmoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price"));
+                            discountmoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
+                            paymoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("payment_price"));
+
                             String paytype = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("paytype");
                             xiaofeizhe.setText("散客");
                             ordertime.setText(sdf.format(d));
@@ -108,6 +115,7 @@ public class OrderDetailsYQXActivity extends AppCompatActivity {
             }
         }
     };
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -138,6 +146,8 @@ public class OrderDetailsYQXActivity extends AppCompatActivity {
      */
     private void initView() {
         totalmoney = (TextView) findViewById(R.id.totalmoney);
+        discountmoney = (TextView) findViewById(R.id.discountmoney);
+        paymoney = (TextView) findViewById(R.id.paymoney);
 //        zhifufangshi = (TextView) findViewById(R.id.zhifufangshi);
         xiaofeizhe = (TextView) findViewById(R.id.xiaofeizhe);
         jiedaiy = (TextView) findViewById(R.id.jiedaiy);

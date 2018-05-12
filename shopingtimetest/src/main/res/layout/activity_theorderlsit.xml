@@ -45,7 +45,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@mipmap/pull_down_menu_w" />
+                android:src="@mipmap/pull_down_menu_w"
+                android:visibility="gone" />
 
 
         </RelativeLayout>
