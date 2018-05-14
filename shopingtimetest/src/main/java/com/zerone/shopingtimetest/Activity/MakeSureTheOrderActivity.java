@@ -86,6 +86,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
                 case 0:
                     loading.dismiss();
                     String subJSon = (String) msg.obj;
+                    Log.i("URL", "" + subJSon);
                     try {
                         JSONObject jsonObject = new JSONObject(subJSon);
                         int status = jsonObject.getInt("status");
@@ -100,7 +101,6 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
                             MakeSureTheOrderActivity.this.finish();
                             EventBus.getDefault().post(new RefreshBean("清空购物车的类", ContantData.REFRESH_ONE));
                         } else if (status == 0) {
-                            Log.i("URL", "****************8888****************" + subJSon);
                             //订单提交失败  提示用户失败的原因
                             Toast.makeText(MakeSureTheOrderActivity.this, "错误返回：" + jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                         }
@@ -292,7 +292,6 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
         if (zkou != null) {
             subMap.put("discount", zkou);
         }
-
         loading = LoadingUtils.getDailog(MakeSureTheOrderActivity.this, Color.RED, "提交订单中。。。。");
         loading.show();
         NetUtils.netWorkByMethodPost(MakeSureTheOrderActivity.this, subMap, IpConfig.URL_SUBMITORDER, handler, 0);

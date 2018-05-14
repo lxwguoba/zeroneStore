@@ -11,7 +11,6 @@
     <string name="login_error">登录遇到问题？</string>
     <string name="xiyi"><b>登录代表您已同意</b></string>
     <string name="xiyicontnent">《零壹用户协议》</string>
-
     <!--instruction-->
     <string name="toast_1">Transaction print,use the AIDL mode!</string>
     <string name="toast_2">The service has been disconnected!</string>

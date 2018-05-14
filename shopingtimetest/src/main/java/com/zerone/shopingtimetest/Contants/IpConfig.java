@@ -6,13 +6,12 @@ package com.zerone.shopingtimetest.Contants;
  * 用来保存域名 就是链接
  */
 public class IpConfig {
-
     //正式版
     public static final String URL_ZS = "http://o2o.01nnt.com/api/androidSimpleApi/";
     //测试版
     public static final String URL_CS = "http://develop.01nnt.com/api/androidSimpleApi/";
     //通用的接口
-    public static final String URL = "http://develop.01nnt.com/api/androidSimpleApi/";
+    public static final String URL = URL_CS;
     //登录接口
     public static final String URL_LOGIN = URL + "login";
     //分类接口
