@@ -13,13 +13,13 @@
         android:orientation="vertical">
         <!--The Head-->
         <RelativeLayout
+            android:id="@+id/back"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginLeft="17dp"
             android:layout_marginRight="17dp">
 
             <ImageView
-                android:id="@+id/back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -40,16 +40,22 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@mipmap/pull_down_menu_b" />
+                android:src="@mipmap/pull_down_menu_b"
+                android:visibility="gone" />
 
         </RelativeLayout>
 
     </LinearLayout>
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:src="@mipmap/cart_line02" />
+
     <LinearLayout
         android:id="@+id/daohang"
         android:layout_width="match_parent"
-        android:layout_height="123dp"
+        android:layout_height="83dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
@@ -87,7 +93,6 @@
                     <!--android:layout_marginLeft="6dp"-->
                     <!--android:src="@mipmap/unpaid_into" />-->
                 </LinearLayout>
-
             </RelativeLayout>
 
             <LinearLayout
@@ -132,7 +137,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -169,11 +175,6 @@
 
         </LinearLayout>
     </LinearLayout>
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:src="@mipmap/cart_line02" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -298,7 +299,7 @@
     <LinearLayout
         android:id="@+id/mingxi"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="280dp"
         android:layout_below="@id/daohang"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
@@ -359,6 +360,60 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
+            android:layout_height="40dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="17dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="AdobeHeitiStd-Regular"
+                    android:text="原价："
+                    android:textColor="#333333"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/totalmoney"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="Roboto-Medium"
+                    android:textColor="#f4545a"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="17dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="AdobeHeitiStd-Regular"
+                    android:text="折扣价："
+                    android:textColor="#333333"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/discountmoney"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="Roboto-Medium"
+                    android:textColor="#f4545a"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="50dp">
 
             <LinearLayout
@@ -372,25 +427,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="AdobeHeitiStd-Regular"
-                    android:text="合计："
+                    android:text="实收："
                     android:textColor="#333333"
                     android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/totalmoney"
+                    android:id="@+id/paymoney"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="Roboto-Medium"
-                    android:text="￥500"
                     android:textColor="#f4545a"
                     android:textSize="14sp" />
-
             </LinearLayout>
-
         </RelativeLayout>
-
-
     </LinearLayout>
-
-
 </LinearLayout>

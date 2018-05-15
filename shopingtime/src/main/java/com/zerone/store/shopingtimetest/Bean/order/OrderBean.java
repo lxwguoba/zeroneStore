@@ -20,7 +20,30 @@ public class OrderBean implements Serializable {
     //created_at
     private String created_at;
 
+    //折扣价
+    private String discount_price;
+    //实收
+    private String payment_price;
+
+
     public OrderBean() {
+    }
+
+
+    public String getDiscount_price() {
+        return discount_price;
+    }
+
+    public void setDiscount_price(String discount_price) {
+        this.discount_price = discount_price;
+    }
+
+    public String getPayment_price() {
+        return payment_price;
+    }
+
+    public void setPayment_price(String payment_price) {
+        this.payment_price = payment_price;
     }
 
     public String getId() {

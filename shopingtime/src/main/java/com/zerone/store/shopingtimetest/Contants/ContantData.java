@@ -9,7 +9,6 @@ import java.io.Serializable;
 
 public class ContantData implements Serializable {
 
-    //登录的返回
     public static final int LOGINRESPONSE = 1;
     //获取分店的返回
     public static final int GETBRANCHRESPONSE = 2;
@@ -51,4 +50,9 @@ public class ContantData implements Serializable {
 
     //扫码返回的结果
     public static final int SCANQRCODE = 21;
+
+    //=====================广播refresh的int值列表===========================
+    //刷新商品列表的购车并清空
+    public static final int REFRESH_ONE = 1;
+
 }

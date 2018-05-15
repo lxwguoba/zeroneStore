@@ -28,7 +28,6 @@ import com.zerone.store.shopingtimetest.Utils.AppSharePreferenceMgr;
 import com.zerone.store.shopingtimetest.Utils.LoadingUtils;
 import com.zerone.store.shopingtimetest.Utils.NetUtils;
 import com.zerone.store.shopingtimetest.Utils.NetworkUtil;
-import com.zerone.store.shopingtimetest.Utils.SystemUIUtils;
 import com.zyao89.view.zloading.ZLoadingDialog;
 
 import org.json.JSONException;
@@ -51,7 +50,6 @@ public class LoginActivity extends BaseAppActivity {
     private LoginActivity mContext;
     private AccountInfoDao accountInfoDao;
     private CheckBox login_rember_account;
-//
     private boolean checkboolen = false;
     private ImageView showpassword;
     private boolean showBoolean = false;
@@ -118,8 +116,8 @@ public class LoginActivity extends BaseAppActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mContext = LoginActivity.this;
-        //页面全屏显示
-        SystemUIUtils.setStickFullScreen(getWindow().getDecorView());
+//        //页面全屏显示
+//        SystemUIUtils.setStickFullScreen(getWindow().getDecorView());
         initPosInfo();
         initview();
         action();
@@ -146,11 +144,7 @@ public class LoginActivity extends BaseAppActivity {
         showpassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (showBoolean) {
-                    showBoolean = false;
-                } else {
-                    showBoolean = true;
-                }
+                showBoolean = !showBoolean;
                 Message message = new Message();
                 message.what = 2;
                 handler.sendMessage(message);
@@ -230,9 +224,9 @@ public class LoginActivity extends BaseAppActivity {
     private void customDialog(String msg) {
         final Dialog dialog = new Dialog(this, R.style.NormalDialogStyle);
         View view = View.inflate(this, R.layout.activity_dialog_view, null);
-        TextView cancel = (TextView) view.findViewById(R.id.cancel);
-        TextView confirm = (TextView) view.findViewById(R.id.confirm);
-        TextView errormsg = (TextView) view.findViewById(R.id.errormsg);
+        TextView cancel = view.findViewById(R.id.cancel);
+        TextView confirm = view.findViewById(R.id.confirm);
+        TextView errormsg = view.findViewById(R.id.errormsg);
         errormsg.setText(msg);
         dialog.setContentView(view);
         //使得点击对话框外部不消失对话框

@@ -20,12 +20,21 @@ public class ShopMessageBean implements Serializable {
     private String sp_picture_url;
     private boolean sp_check;
     private String category_id;
+    private int catPosition;
 
 
     public ShopMessageBean() {
 
     }
 
+
+    public int getCatPosition() {
+        return catPosition;
+    }
+
+    public void setCatPosition(int catPosition) {
+        this.catPosition = catPosition;
+    }
 
     public String getCategory_id() {
         return category_id;

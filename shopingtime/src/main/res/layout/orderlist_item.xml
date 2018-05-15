@@ -7,13 +7,13 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="132dp"
+        android:layout_height="152dp"
         android:background="#ffffff"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="82dp"
+            android:layout_height="102dp"
             android:orientation="horizontal"
             android:paddingLeft="10dp"
             android:paddingTop="10dp">
@@ -82,13 +82,14 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="8dp">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -107,7 +108,62 @@
                             android:textSize="11sp" />
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="15dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="SourceHanSansCN-Medium"
+                            android:text="折扣价：￥"
+                            android:textColor="#666666"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/discountmoney"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="Roboto-Medium"
+                            android:text="6535.00"
+                            android:textColor="#666666"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="15dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="SourceHanSansCN-Medium"
+                            android:text="实收："
+                            android:textColor="#666666"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/paymoney"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="Roboto-Medium"
+                            android:text="6535.00"
+                            android:textColor="#666666"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
 
             </LinearLayout>
 

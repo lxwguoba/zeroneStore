@@ -27,6 +27,7 @@ import com.zerone.store.shopingtimetest.Adapter.MyAdapter;
 import com.zerone.store.shopingtimetest.Adapter.cart_list.ListGoodsDetails_Adapter;
 import com.zerone.store.shopingtimetest.BaseActivity.BaseAppActivity;
 import com.zerone.store.shopingtimetest.Bean.ShopBean;
+import com.zerone.store.shopingtimetest.Bean.refresh.SetDataGoodsOrder;
 import com.zerone.store.shopingtimetest.Bean.shoplistbean.ShopMessageBean;
 import com.zerone.store.shopingtimetest.Contants.IpConfig;
 import com.zerone.store.shopingtimetest.R;
@@ -36,6 +37,7 @@ import com.zerone.store.shopingtimetest.Utils.MapUtilsSetParam;
 import com.zerone.store.shopingtimetest.Utils.NetUtils;
 import com.zyao89.view.zloading.ZLoadingDialog;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,6 +78,12 @@ public class SearchActivity extends BaseAppActivity {
     private PopupWindow mPopupWindow;
     private LinearLayout parentView;
     private double money = 0.0;
+    private LinearLayout shoppingcart;
+    private Intent intent;
+    private List<ShopMessageBean> listObj;
+    private LinearLayout search_btn_layout;
+    private TextView sure_btn;
+    private TextView cashier;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -92,7 +100,7 @@ public class SearchActivity extends BaseAppActivity {
                             JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("goodslist");
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 ShopBean shopBean = new ShopBean();
-                                shopBean.setShop_Count("10");
+                                shopBean.setShop_Count("1");
                                 shopBean.setName(jsonArray.getJSONObject(i).getString("name"));
                                 shopBean.setCategory_id(jsonArray.getJSONObject(i).getInt("category_id"));
                                 shopBean.setCategory_name(jsonArray.getJSONObject(i).getString("category_name"));
@@ -113,7 +121,7 @@ public class SearchActivity extends BaseAppActivity {
                             }
                             mAdapter.notifyDataSetChanged();
                         } else if (status == 0) {
-                            Toast.makeText(SearchActivity.this, "没有搜到该关键字的商品哦", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SearchActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -122,6 +130,8 @@ public class SearchActivity extends BaseAppActivity {
                 case 10:
                     //点击了条目
                     int index = (int) msg.obj;
+                    //发送广播到商城首页 进行数量的加减
+                    EventBus.getDefault().post(new SetDataGoodsOrder(list.get(index), 0));
                     if (listBuy.size() > 0) {
                         //1.0设置一个int值来记录通一个商品的下标 , 用一个Boolean 来判断是否是同一个商品 默认是不同一个商品
                         boolean thesamelean = false;
@@ -144,7 +154,7 @@ public class SearchActivity extends BaseAppActivity {
                             smb.setSp_id(listBuy.get(tsIndex).getSp_id() + "");
                             smb.setCategory_id(listBuy.get(tsIndex).getCategory_id() + "");
                             smb.setSp_name(listBuy.get(tsIndex).getSp_name());
-                            smb.setSp_picture_url(listBuy.get(tsIndex).getSp_picture_url());
+                            smb.setSp_picture_url(IpConfig.URL_GETPICTURE + listBuy.get(tsIndex).getSp_picture_url());
                             smb.setSp_check(true);
                             smb.setSp_discount(listBuy.get(tsIndex).getSp_discount());
                             smb.setSp_price(listBuy.get(tsIndex).getSp_price());
@@ -157,8 +167,9 @@ public class SearchActivity extends BaseAppActivity {
                             smb.setSp_id(shopBean.getId() + "");
                             smb.setCategory_id(shopBean.getCategory_id() + "");
                             smb.setSp_name(shopBean.getName());
+
                             if (shopBean.getThumb().size() > 0) {
-                                smb.setSp_picture_url(shopBean.getThumb().get(0).getThumb());
+                                smb.setSp_picture_url(IpConfig.URL_GETPICTURE + shopBean.getThumb().get(0).getThumb());
                             } else {
                                 smb.setSp_picture_url("");
                             }
@@ -176,7 +187,7 @@ public class SearchActivity extends BaseAppActivity {
                         smb.setCategory_id(shopBean.getCategory_id() + "");
                         smb.setSp_name(shopBean.getName());
                         if (shopBean.getThumb().size() > 0) {
-                            smb.setSp_picture_url(shopBean.getThumb().get(0).getThumb());
+                            smb.setSp_picture_url(IpConfig.URL_GETPICTURE + shopBean.getThumb().get(0).getThumb());
                         } else {
                             smb.setSp_picture_url("");
                         }
@@ -237,13 +248,13 @@ public class SearchActivity extends BaseAppActivity {
                     pop_price.setText("￥" + DoubleUtils.setSSWRDouble(dm));
                     search_money.setText("￥" + DoubleUtils.setSSWRDouble(dm));
                     if (listBuy.size() > 0) {
-                        checkCount.setText("已选商品" + listBuy.size() + "件");
+                        checkCount.setText("已选商品" + listBuy.size() + "种");
                     }
+                    setTextColor(listBuy.size());
                     listAdapter.notifyDataSetChanged();
                     break;
                 case 201:
                     //减少
-                    //添加
                     int aIndex = (int) msg.obj;
                     //同一个商品数量加一
                     //
@@ -266,11 +277,12 @@ public class SearchActivity extends BaseAppActivity {
                     goodsCount.setText("" + count);
                     pop_price.setText("￥" + DoubleUtils.setSSWRDouble(d));
                     if (listBuy.size() > 0) {
-                        checkCount.setText("已选商品" + listBuy.size() + "件");
+                        checkCount.setText("已选商品" + listBuy.size() + "种");
+
                     } else {
                         checkCount.setText("亲，没有商品了哦");
                     }
-
+                    setTextColor(listBuy.size());
                     listAdapter.notifyDataSetChanged();
                     break;
 
@@ -289,9 +301,8 @@ public class SearchActivity extends BaseAppActivity {
             }
         }
     };
-    private LinearLayout shoppingcart;
-    private Intent intent;
-    private List<ShopMessageBean> listObj;
+    private ImageView cart_logo;
+    private ImageView back;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -316,7 +327,7 @@ public class SearchActivity extends BaseAppActivity {
                 smb.setCategory_id(lists.get(i).getCategory_id() + "");
                 smb.setSp_name(lists.get(i).getName());
                 if (lists.get(i).getThumb().size() > 0) {
-                    smb.setSp_picture_url(lists.get(i).getThumb().get(0).getThumb());
+                    smb.setSp_picture_url(IpConfig.URL_GETPICTURE + lists.get(i).getThumb().get(0).getThumb());
                 } else {
                     smb.setSp_picture_url("");
                 }
@@ -325,13 +336,14 @@ public class SearchActivity extends BaseAppActivity {
                 listBuy.add(smb);
             }
         }
-
     }
 
     /**
      * 初始view
      */
     private void initView() {
+        back = (ImageView) findViewById(R.id.back);
+        search_btn_layout = (LinearLayout) findViewById(R.id.search_btn_layout);
         search_message = (EditText) findViewById(R.id.search_message);
         search_img_btn = (ImageView) findViewById(R.id.search_btn);
         showOrderList = (RelativeLayout) findViewById(R.id.showOrderList);
@@ -349,19 +361,32 @@ public class SearchActivity extends BaseAppActivity {
         }
         parentView = (LinearLayout) findViewById(R.id.shoppingcart);
         shoppingcart = (LinearLayout) findViewById(R.id.shoppingcart);
-
         goods_recycleView = (RecyclerView) findViewById(R.id.goods_recycleView);
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         goods_recycleView.setLayoutManager(mLayoutManager);
         mAdapter = new MyAdapter(list, SearchActivity.this);
         goods_recycleView.setAdapter(mAdapter);
+        sure_btn = (TextView) findViewById(R.id.sure_btn);
+        cashier = (TextView) findViewById(R.id.cashier);
+        setTextColor(lists.size());
+
+    }
+
+    public void setTextColor(int i) {
+        if (i > 0) {
+            sure_btn.setTextColor(Color.parseColor("#000000"));
+            cashier.setTextColor(Color.parseColor("#383638"));
+        } else {
+            sure_btn.setTextColor(Color.parseColor("#cecece"));
+            cashier.setTextColor(Color.parseColor("#cecece"));
+        }
     }
 
     /**
      * 控件的点击事件
      */
     private void action() {
-        search_img_btn.setOnClickListener(new View.OnClickListener() {
+        search_btn_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String msg = search_message.getText().toString().trim();
@@ -393,6 +418,13 @@ public class SearchActivity extends BaseAppActivity {
                 }
             }
         });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SearchActivity.this.finish();
+            }
+        });
     }
 
     /**
@@ -414,15 +446,16 @@ public class SearchActivity extends BaseAppActivity {
         if (shopview == null) {
             shopview = LayoutInflater.from(SearchActivity.this).inflate(R.layout.activity_shopping_cart_pop_, null);
         }
-        checkCount = (TextView) shopview.findViewById(R.id.checkCount);
-        checkCount.setText(listBuy.size() + "件商品");
-        clear_cart = (LinearLayout) shopview.findViewById(R.id.clear_cart);
-        shoplistview = (ListView) shopview.findViewById(R.id.shoplistview);
-        pop_price = (TextView) shopview.findViewById(R.id.pop_price);
+        checkCount = shopview.findViewById(R.id.checkCount);
+        checkCount.setText(listBuy.size() + "种商品");
+        clear_cart = shopview.findViewById(R.id.clear_cart);
+        shoplistview = shopview.findViewById(R.id.shoplistview);
+        pop_price = shopview.findViewById(R.id.pop_price);
         //结算
-        settlement = (LinearLayout) shopview.findViewById(R.id.settlement);
+        settlement = shopview.findViewById(R.id.settlement);
+        cart_logo = shopview.findViewById(R.id.cart_logo);
         if (listBuy != null) {
-            int dmoney = 0;
+            double dmoney = 0;
             for (int i = 0; i < listBuy.size(); i++) {
                 dmoney += Integer.parseInt(listBuy.get(i).getSp_count()) * Double.parseDouble(listBuy.get(i).getSp_price());
             }
@@ -454,6 +487,12 @@ public class SearchActivity extends BaseAppActivity {
                 mPopupWindow.dismiss();
                 listBuy.clear();
                 SearchActivity.this.finish();
+            }
+        });
+        cart_logo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPopupWindow.dismiss();
             }
         });
 

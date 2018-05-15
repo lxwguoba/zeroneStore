@@ -9,7 +9,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +22,7 @@ import com.zerone.store.shopingtimetest.Bean.UserInfo;
 import com.zerone.store.shopingtimetest.Contants.IpConfig;
 import com.zerone.store.shopingtimetest.DB.impl.UserInfoImpl;
 import com.zerone.store.shopingtimetest.R;
+import com.zerone.store.shopingtimetest.Utils.AppSharePreferenceMgr;
 import com.zerone.store.shopingtimetest.Utils.LoadingUtils;
 import com.zerone.store.shopingtimetest.Utils.NetUtils;
 import com.zyao89.view.zloading.ZLoadingDialog;
@@ -79,15 +82,18 @@ public class SystemSettingsActivity extends BaseAppActivity {
                         if (status == 1) {
                             JSONObject data = jfk.getJSONObject("data");
                             if ("1".equals(data.getString("vfg_value"))) {
-                                system_kaidan.setChecked(true);
                                 system_fkjkc.setChecked(true);
                                 system_xdjkc.setChecked(false);
                             } else if ("2".equals(data.getString("vfg_value"))) {
                                 system_fkjkc.setChecked(false);
                                 system_xdjkc.setChecked(true);
                             }
+                        } else {
+                            system_fkjkc.setChecked(system_fkjkc.isChecked());
+                            Toast.makeText(SystemSettingsActivity.this, jfk.getString("msg"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                     break;
                 case 3:
@@ -105,8 +111,12 @@ public class SystemSettingsActivity extends BaseAppActivity {
                                 system_fkjkc.setChecked(false);
                                 system_xdjkc.setChecked(true);
                             }
+                        } else {
+                            system_xdjkc.setChecked(system_xdjkc.isChecked());
+                            Toast.makeText(SystemSettingsActivity.this, jfk.getString("msg"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
+                        e.printStackTrace();
                     }
 
                     break;
@@ -164,6 +174,8 @@ public class SystemSettingsActivity extends BaseAppActivity {
     private UserInfo userInfo;
     private ImageView system_back;
     private Button systemout;
+    private boolean remberChecked;
+    private LinearLayout layout_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,6 +183,7 @@ public class SystemSettingsActivity extends BaseAppActivity {
         setContentView(R.layout.activity_systemsettings);
         StatusBarCompat.setStatusBarColor(this, Color.parseColor("#ffffff"));
         mContext = SystemSettingsActivity.this;
+        remberChecked = (boolean) AppSharePreferenceMgr.get(mContext, "remberChecked", false);
         initGetUserInfo();
         initView();
         aciton();
@@ -179,7 +192,7 @@ public class SystemSettingsActivity extends BaseAppActivity {
     }
 
     private void aciton() {
-        system_back.setOnClickListener(new View.OnClickListener() {
+        layout_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SystemSettingsActivity.this.finish();
@@ -223,7 +236,11 @@ public class SystemSettingsActivity extends BaseAppActivity {
      * view的初始
      */
     private void initView() {
+//        .put(SystemSettingsActivity.this,"remberChecked",isChecked);
+
+        layout_back = (LinearLayout) findViewById(R.id.layout_back);
         system_login_rember_account = (CheckBox) findViewById(R.id.system_login_rember_account);
+        system_login_rember_account.setChecked(remberChecked);
         system_kaidan = (CheckBox) findViewById(R.id.system_kaidan);
         system_fkjkc = (CheckBox) findViewById(R.id.system_fkjkc);
         system_xdjkc = (CheckBox) findViewById(R.id.system_xdjkc);
@@ -259,6 +276,15 @@ public class SystemSettingsActivity extends BaseAppActivity {
             }
         });
 
+//        system_fkjkc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked) {
+//                    system_fkjkc.setClickable(false);
+//                    system_xdjkc.setClickable(true);
+//                }
+//            }
+//        });
         system_fkjkc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -268,14 +294,12 @@ public class SystemSettingsActivity extends BaseAppActivity {
                 Map<String, String> kdMap = new HashMap<String, String>();
                 kdMap.put("account_id", userInfo.getAccount_id());
                 kdMap.put("organization_id", userInfo.getOrganization_id());
-                kdMap.put("cfg_value", "1");
-//                if (system_kaidan.isChecked()){
-//                    //付款后减库存   值为  1
-//                    kdMap.put("cfg_value","1");
-//                }else {
-//                    //下单后减库存  值为  2
-//                    kdMap.put("cfg_value","2");
-//                }
+
+                if (system_fkjkc.isChecked()) {
+                    kdMap.put("cfg_value", "1");
+                } else {
+                    kdMap.put("cfg_value", "2");
+                }
                 kdMap.put("token", token);
                 kdMap.put("timestamp", timestamp);
                 loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "修改中。。。。");
@@ -283,6 +307,7 @@ public class SystemSettingsActivity extends BaseAppActivity {
                 NetUtils.netWorkByMethodPost(mContext, kdMap, IpConfig.URL_FKJKC, handler, 2);
             }
         });
+
         system_xdjkc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -292,19 +317,23 @@ public class SystemSettingsActivity extends BaseAppActivity {
                 Map<String, String> kdMap = new HashMap<String, String>();
                 kdMap.put("account_id", userInfo.getAccount_id());
                 kdMap.put("organization_id", userInfo.getOrganization_id());
-//                if (system_kaidan.isChecked()){
-//                    //付款后减库存   值为  1
-//                    kdMap.put("cfg_value","1");
-//                }else {
-//                    //下单后减库存  值为  2
-//                    kdMap.put("cfg_value","2");
-//                }
-                kdMap.put("cfg_value", "2");
+                if (system_xdjkc.isChecked()) {
+                    kdMap.put("cfg_value", "2");
+                } else {
+                    kdMap.put("cfg_value", "1");
+                }
                 kdMap.put("token", token);
                 kdMap.put("timestamp", timestamp);
                 loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "修改中。。。。");
                 loading_dailog.show();
                 NetUtils.netWorkByMethodPost(mContext, kdMap, IpConfig.URL_FKJKC, handler, 3);
+            }
+        });
+
+        system_login_rember_account.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                AppSharePreferenceMgr.put(mContext, "remberChecked", isChecked);
             }
         });
     }
@@ -315,8 +344,8 @@ public class SystemSettingsActivity extends BaseAppActivity {
     private void customDialog() {
         final Dialog dialog = new Dialog(this, R.style.NormalDialogStyle);
         View view = View.inflate(this, R.layout.activity_dialog_out_view, null);
-        TextView cancel = (TextView) view.findViewById(R.id.cancel);
-        TextView confirm = (TextView) view.findViewById(R.id.confirm);
+        TextView cancel = view.findViewById(R.id.cancel);
+        TextView confirm = view.findViewById(R.id.confirm);
         dialog.setContentView(view);
         //使得点击对话框外部不消失对话框
         dialog.setCanceledOnTouchOutside(true);

@@ -195,13 +195,12 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
 //        mSectionLetters = getSectionLetters();
         notifyDataSetChanged();
     }
-
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         //设置名
         holder.shop_name.setText(dataList.get(position).getName());
         //设置说明
-        holder.shop_shopdiscount.setText(dataList.get(position).getName());
+        holder.shop_shopdiscount.setText(dataList.get(position).getDetails());
         //设置价格
         holder.shopprice.setText(dataList.get(position).getPrice());
         //商品数量
@@ -218,9 +217,7 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
         }
         //设置商品图片
         String s = IpConfig.URL_GETPICTURE + dataList.get(position).getThumb().get(0).getThumb();
-
         Log.i("URL", "picture::=" + s);
-
         Glide.with(mContext).load(IpConfig.URL_GETPICTURE + dataList.get(position).getThumb().get(0).getThumb()).centerCrop().placeholder(R.mipmap.app_logo).crossFade().into(holder.shop_picture);
         //通过判别对应位置的数量是否大于0来显示隐藏数量
         isSelected(goodsNum[position], holder);
@@ -307,22 +304,22 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
         public final TextView shop_name;
         public final TextView shop_shopdiscount;
         public final TextView shopprice;
-        public final TextView decrease_shop;
+        public final LinearLayout decrease_shop;
         public final TextView shopCount;
-        public final TextView add_shop;
+        public final LinearLayout add_shop;
         public final LinearLayout showTextCount;
         public final View root;
 
         public ViewHolder(View root) {
             super(root);
-            shop_picture = (ImageView) root.findViewById(R.id.picture);
-            shop_name = (TextView) root.findViewById(R.id.shopname);
-            shop_shopdiscount = (TextView) root.findViewById(R.id.shopdiscount);
-            shopprice = (TextView) root.findViewById(R.id.shopprice);
-            decrease_shop = (TextView) root.findViewById(R.id.decrease_shop);
-            shopCount = (TextView) root.findViewById(R.id.shopCount);
-            add_shop = (TextView) root.findViewById(R.id.add_shop);
-            showTextCount = (LinearLayout) root.findViewById(R.id.showTextCount);
+            shop_picture = root.findViewById(R.id.picture);
+            shop_name = root.findViewById(R.id.shopname);
+            shop_shopdiscount = root.findViewById(R.id.shopdiscount);
+            shopprice = root.findViewById(R.id.shopprice);
+            decrease_shop = root.findViewById(R.id.decrease_shop);
+            shopCount = root.findViewById(R.id.shopCount);
+            add_shop = root.findViewById(R.id.add_shop);
+            showTextCount = root.findViewById(R.id.showTextCount);
             this.root = root;
         }
     }

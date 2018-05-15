@@ -25,12 +25,10 @@ import com.zerone.store.shopingtimetest.Bean.order.GoodsBean;
 import com.zerone.store.shopingtimetest.Bean.print.PrintBean;
 import com.zerone.store.shopingtimetest.Bean.print.PrintItem;
 import com.zerone.store.shopingtimetest.Contants.IpConfig;
-import com.zerone.store.shopingtimetest.Contants.StringData;
 import com.zerone.store.shopingtimetest.DB.impl.UserInfoImpl;
 import com.zerone.store.shopingtimetest.R;
 import com.zerone.store.shopingtimetest.Utils.LoadingUtils;
 import com.zerone.store.shopingtimetest.Utils.NetUtils;
-import com.zerone.store.shopingtimetest.Utils.UtilsTime;
 import com.zerone.store.shopingtimetest.Utils.payutils.PayUtils;
 import com.zerone.store.shopingtimetest.Utils.printutils.PrintUtils;
 import com.zyao89.view.zloading.ZLoadingDialog;
@@ -39,7 +37,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +50,6 @@ import java.util.Map;
  */
 
 public class OrderDetailsActivity extends BaseAppActivity {
-
     private ListView listView;
     private UserInfo userInfo;
     private OrderDetailsActivity mContext;
@@ -60,7 +59,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
     private OrderDetialsListItemAdapter odlia;
     private LinearLayout qxorder;
     private TextView ordermoney;
-    private LinearLayout subSurePay;
+    private RelativeLayout subSurePay;
     private List<PrintItem> printItemList;
     private PrintBean printBean;
     private String money;
@@ -72,7 +71,12 @@ public class OrderDetailsActivity extends BaseAppActivity {
     private TextView beizhu;
     private ImageView back;
     private Dialog dialog;
+    private Dialog dialog1;
+    private RelativeLayout relative_back;
+    private TextView discount_price;
     Handler handler = new Handler() {
+
+        private String discount_money;
 
         @Override
         public void handleMessage(Message msg) {
@@ -80,20 +84,20 @@ public class OrderDetailsActivity extends BaseAppActivity {
             switch (msg.what) {
                 case 0:
                     String dykJSon = (String) msg.obj;
-                    Log.i("URL", dykJSon);
+                    Log.i("URL", "dykJSon=" + dykJSon);
                     loading_dailog.dismiss();
                     printBean = new PrintBean();
                     printItemList = new ArrayList<>();
-
                     try {
                         JSONObject jsonObject = new JSONObject(dykJSon);
                         int status = jsonObject.getInt("status");
                         if (status == 1) {
                             //封装打印类 的数据
-                            long aLong = jsonObject.getJSONObject("data").getJSONObject("orderdata").getLong("created_at");
+                            long aLong = jsonObject.getJSONObject("data").getJSONObject("orderdata").getLong("created_at") * 1000;
                             //下单时间
-                            String otime = UtilsTime.getTime(aLong);
-                            printBean.setCreateTime(otime);
+                            Date d = new Date(aLong);
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            printBean.setCreateTime(sdf.format(d));
                             printBean.setOrdersn(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("ordersn"));
                             int payStatus = jsonObject.getJSONObject("data").getJSONObject("orderdata").getInt("status");
                             if (payStatus == -1) {
@@ -117,11 +121,13 @@ public class OrderDetailsActivity extends BaseAppActivity {
                                 printItem.setGprice(Item.getString("price"));
                                 printItemList.add(printItem);
                             }
+                            printBean.setPayment_price(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
                             printBean.setList(printItemList);
-
                             money = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price");
-                            ordermoney.setText("￥" + money);
                             listOrderMoney.setText("￥" + money);
+                            discount_money = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price");
+                            discount_price.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
+                            ordermoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 GoodsBean gb = new GoodsBean();
                                 gb.setGoods_total(jsonArray.getJSONObject(i).getString("total"));
@@ -132,10 +138,9 @@ public class OrderDetailsActivity extends BaseAppActivity {
                                 gb.setGoods_thumb(jsonArray.getJSONObject(i).getString("thumb"));
                                 list.add(gb);
                             }
-
-                            ordertime.setText(otime);
+                            ordertime.setText(sdf.format(d));
                             ordersn.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("ordersn"));
-                            jiedaiyuan.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("operator_account"));
+                            jiedaiyuan.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("realname"));
                             beizhu.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("remarks"));
                         } else if (status == 0) {
                         }
@@ -148,15 +153,6 @@ public class OrderDetailsActivity extends BaseAppActivity {
                 case 1:
                     String qxJSOn = (String) msg.obj;
                     Log.i("URL", "qxJSOn==" + qxJSOn);
-                    /**
-                     * {
-                     status: "1",
-                     msg: "取消订单成功",
-                     data: {
-                     order_id: "82"
-                     }
-                     }
-                     */
                     try {
                         JSONObject jsonObject = new JSONObject(qxJSOn);
                         int status = jsonObject.getInt("status");
@@ -170,6 +166,8 @@ public class OrderDetailsActivity extends BaseAppActivity {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    } finally {
+                        qxorder.setEnabled(true);
                     }
                     break;
                 case 2:
@@ -184,7 +182,6 @@ public class OrderDetailsActivity extends BaseAppActivity {
                      */
                     String cashJSon = (String) msg.obj;
                     Log.i("URL", "cashJSon=" + cashJSon);
-
                     try {
                         JSONObject jsonObject = new JSONObject(cashJSon);
                         int status = jsonObject.getInt("status");
@@ -192,11 +189,16 @@ public class OrderDetailsActivity extends BaseAppActivity {
                             Toast.makeText(OrderDetailsActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                             //吊起打印机
                             if (printBean != null) {
-                                PrintUtils.print(StringData.STORE_NAME, printBean);
+                                if (printBean != null) {
+                                    if (userInfo != null) {
+                                        if (userInfo.getOrganization_name().length() > 0 && userInfo.getOrganization_name() != null) {
+                                            PrintUtils.print(userInfo.getOrganization_name(), printBean);
+                                        }
+                                    }
+                                }
                             }
-
                             //语音播报
-                            VoiceUtils.with(OrderDetailsActivity.this).Play(jsonObject.getJSONObject("data").getString("price"), true);
+                            VoiceUtils.with(OrderDetailsActivity.this).Play(jsonObject.getJSONObject("data").getString("payment_price"), true);
                             setResult(300, intent);
                             OrderDetailsActivity.this.finish();
                         } else {
@@ -204,9 +206,12 @@ public class OrderDetailsActivity extends BaseAppActivity {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    } finally {
+                        loading_dailog.dismiss();
+                        dialog1.dismiss();
+                        subSurePay.setEnabled(true);
                     }
                     break;
-
                 case 511:
                     Toast.makeText(OrderDetailsActivity.this, "网络超时，请重试", Toast.LENGTH_SHORT).show();
                     loading_dailog.dismiss();
@@ -226,13 +231,13 @@ public class OrderDetailsActivity extends BaseAppActivity {
         initView();
         initCheckBoxStates();
         intiAction();
-
     }
 
     private void intiAction() {
         qxorder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                qxorder.setEnabled(false);
                 outDialog();
             }
         });
@@ -240,27 +245,29 @@ public class OrderDetailsActivity extends BaseAppActivity {
         subSurePay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                subSurePay.setEnabled(false);
                 payDialog();
             }
         });
-
-        back.setOnClickListener(new View.OnClickListener() {
+        relative_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 OrderDetailsActivity.this.finish();
             }
         });
     }
-
     /**
      * 初始化view
      */
     private void initView() {
         listOrderMoney = (TextView) findViewById(R.id.listOrderMoney);
         //确认订单按钮
-        subSurePay = (LinearLayout) findViewById(R.id.subSurePay);
+        subSurePay = (RelativeLayout) findViewById(R.id.subSurePay);
         //确认订单的按钮 显示的价格
         ordermoney = (TextView) findViewById(R.id.ordermoney);
+
+        discount_price = (TextView) findViewById(R.id.discount_price);
+
         qxorder = (LinearLayout) findViewById(R.id.qxorder);
         listView = (ListView) findViewById(R.id.goodslist);
         odlia = new OrderDetialsListItemAdapter(this, list);
@@ -271,10 +278,8 @@ public class OrderDetailsActivity extends BaseAppActivity {
         ordersn = (TextView) findViewById(R.id.ordersn);
         jiedaiyuan = (TextView) findViewById(R.id.jiedaiyuan);
         beizhu = (TextView) findViewById(R.id.beizhu);
-
+        relative_back = (RelativeLayout) findViewById(R.id.relative_back);
         back = (ImageView) findViewById(R.id.back);
-
-
     }
 
     /**
@@ -306,28 +311,31 @@ public class OrderDetailsActivity extends BaseAppActivity {
 
     /**
      * 自定义对话框
+     * 支付对话框
      */
     private void payDialog() {
-        final Dialog dialog = new Dialog(this, R.style.NormalDialogStyle);
+        dialog1 = new Dialog(this, R.style.NormalDialogStyle);
         View view = View.inflate(this, R.layout.activity_dialog_pay_view, null);
-        TextView cancel = (TextView) view.findViewById(R.id.cancel);
-        TextView confirm = (TextView) view.findViewById(R.id.confirm);
-        RelativeLayout cashPay = (RelativeLayout) view.findViewById(R.id.cashPay);
-        RelativeLayout otherPay = (RelativeLayout) view.findViewById(R.id.otherPay);
-        dialog.setContentView(view);
+        TextView cancel = view.findViewById(R.id.cancel);
+        TextView confirm = view.findViewById(R.id.confirm);
+        RelativeLayout cashPay = view.findViewById(R.id.cashPay);
+        RelativeLayout otherPay = view.findViewById(R.id.otherPay);
+        dialog1.setContentView(view);
         //使得点击对话框外部不消失对话框
-        dialog.setCanceledOnTouchOutside(false);
+        dialog1.setCanceledOnTouchOutside(false);
         //设置对话框的大小
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
+                dialog1.dismiss();
+                subSurePay.setEnabled(true);
             }
         });
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
+                dialog1.dismiss();
+                subSurePay.setEnabled(true);
             }
         });
         cashPay.setOnClickListener(new View.OnClickListener() {
@@ -335,6 +343,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
             public void onClick(View v) {
                 //点击启动现金支付接口调试
                 docashPay();
+
             }
         });
 
@@ -345,16 +354,13 @@ public class OrderDetailsActivity extends BaseAppActivity {
                 //吊起支付
                 if (money != null) {
                     PayUtils.LiftThePayment(money, OrderDetailsActivity.this);
-                    dialog.dismiss();
+                    dialog1.dismiss();
                     OrderDetailsActivity.this.finish();
                 }
-
             }
         });
-
-        dialog.show();
+        dialog1.show();
     }
-
 
     /**
      * 自定义对话框
@@ -362,8 +368,8 @@ public class OrderDetailsActivity extends BaseAppActivity {
     private void outDialog() {
         dialog = new Dialog(this, R.style.NormalDialogStyle);
         View view = View.inflate(this, R.layout.activity_dialog_qx_order_view, null);
-        TextView cancel = (TextView) view.findViewById(R.id.cancel);
-        TextView confirm = (TextView) view.findViewById(R.id.confirm);
+        TextView cancel = view.findViewById(R.id.cancel);
+        TextView confirm = view.findViewById(R.id.confirm);
         dialog.setContentView(view);
         //使得点击对话框外部不消失对话框
         dialog.setCanceledOnTouchOutside(false);
@@ -372,6 +378,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                subSurePay.setEnabled(true);
             }
         });
         confirm.setOnClickListener(new View.OnClickListener() {
@@ -392,8 +399,6 @@ public class OrderDetailsActivity extends BaseAppActivity {
 
             }
         });
-
-
         dialog.show();
     }
 
@@ -405,17 +410,11 @@ public class OrderDetailsActivity extends BaseAppActivity {
         String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
         Map<String, String> getOrderDetails = new HashMap<String, String>();
         getOrderDetails.put("account_id", userInfo.getAccount_id());
-        Log.i("URL", "account_id=" + userInfo.getAccount_id());
         getOrderDetails.put("organization_id", userInfo.getOrganization_id());
-        Log.i("URL", "organization_id=" + userInfo.getOrganization_id());
         getOrderDetails.put("order_id", intent.getStringExtra("orderid"));
-        Log.i("URL", "order_id=" + intent.getStringExtra("orderid"));
         getOrderDetails.put("paytype", "-1");
         getOrderDetails.put("token", token);
-        Log.i("URL", "token=" + token);
         getOrderDetails.put("timestamp", timestamp);
-        Log.i("URL", "timestamp=" + timestamp);
-
         loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "现金付款中。。。。");
         loading_dailog.show();
         NetUtils.netWorkByMethodPost(mContext, getOrderDetails, IpConfig.URL_CASHPAY, handler, 2);

@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class BaseDao extends SQLiteOpenHelper {
 
-    private static final String DB_NAME = "zerone_retail.db";
+    private static final String DB_NAME = "zerone_retail_.db";
 
     private static final int DB_VERSION = 1;
 
@@ -69,6 +69,8 @@ public class BaseDao extends SQLiteOpenHelper {
         sb.append(" 	'account' varchar(20) not null,");
         sb.append(" 	'u_orgid' varchar(100) not null,");
         sb.append(" 	'u_uuid' varchar(100) not null,");
+        sb.append(" 	'realname' varchar(100) not null,");
+        sb.append("      'organization_name' varchar(100) not null,");
         sb.append("primary key(u_id)");
         sb.append(" );");
         db.execSQL(sb.toString());

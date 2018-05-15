@@ -67,12 +67,14 @@ public class OrderListItemAdapter extends BaseAdapter {
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = inflate.inflate(R.layout.orderlist_item, null);
-            holder.shop_img = (ImageView) convertView.findViewById(R.id.logo_order);
-            holder.orderNumber = (TextView) convertView.findViewById(R.id.ordernumber);
-            holder.orderTime = (TextView) convertView.findViewById(R.id.ordertime);
-            holder.orderMoney = (TextView) convertView.findViewById(R.id.ordermoney);
-            holder.orderStates = (TextView) convertView.findViewById(R.id.orderstates);
-            holder.lookoverorder = (TextView) convertView.findViewById(R.id.lookover);
+            holder.shop_img = convertView.findViewById(R.id.logo_order);
+            holder.orderNumber = convertView.findViewById(R.id.ordernumber);
+            holder.orderTime = convertView.findViewById(R.id.ordertime);
+            holder.orderMoney = convertView.findViewById(R.id.ordermoney);
+            holder.orderStates = convertView.findViewById(R.id.orderstates);
+            holder.lookoverorder = convertView.findViewById(R.id.lookover);
+            holder.discountmoney = convertView.findViewById(R.id.discountmoney);
+            holder.paymoney = convertView.findViewById(R.id.paymoney);
             convertView.setTag(holder);
         } else {
             //直接通过holder获取下面三个子控件，不必使用findviewbyid，加快了 UI 的响应速度
@@ -81,11 +83,15 @@ public class OrderListItemAdapter extends BaseAdapter {
         holder.orderNumber.setText(list.get(position).getOrdersn());
         holder.orderTime.setText(list.get(position).getCreated_at());
         holder.orderMoney.setText(list.get(position).getOrder_price());
+        holder.discountmoney.setText(list.get(position).getDiscount_price());
+        holder.paymoney.setText("￥" + list.get(position).getPayment_price());
         //这个地方需要修改 根据不同的id去判断是什么订单
         //holder.orderStates.setText();
         if ("0".equals(list.get(position).getStatus())) {
             //待付款
             holder.orderStates.setText("待付款");
+            holder.paymoney.setText("尚未付款");
+            holder.paymoney.setTextColor(Color.parseColor("#ff0000"));
             holder.orderStates.setTextColor(Color.parseColor("#f3454c"));
         } else if ("1".equals(list.get(position).getStatus())) {
             //已付款
@@ -134,6 +140,8 @@ public class OrderListItemAdapter extends BaseAdapter {
         TextView orderMoney;
         TextView orderStates;
         TextView lookoverorder;
+        TextView paymoney;
+        TextView discountmoney;
 
     }
 }

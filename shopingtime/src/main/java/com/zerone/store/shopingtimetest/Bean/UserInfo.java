@@ -11,12 +11,31 @@ import java.io.Serializable;
 
 public class UserInfo implements Serializable {
 
-    String account_id;
-    String account;
-    String organization_id;
-    String uuid;
+    private String account_id;
+    private String account;
+    private String organization_id;
+    private String uuid;
+    private String organization_name;
+    private String realName;
 
     public UserInfo() {
+
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
+    public String getOrganization_name() {
+        return organization_name;
+    }
+
+    public void setOrganization_name(String organization_name) {
+        this.organization_name = organization_name;
     }
 
     public String getAccount_id() {

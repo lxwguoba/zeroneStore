@@ -67,14 +67,14 @@ public class ListGoodsDetailsAdapter extends BaseAdapter {
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = inflate.inflate(R.layout.goodslistitem, null);
-            holder.checkshop = (CheckBox) convertView.findViewById(R.id.checkshop);
-            holder.shop_img = (ImageView) convertView.findViewById(R.id.picture);
-            holder.shop_name = (TextView) convertView.findViewById(R.id.shopname);
-            holder.shopdiscount = (TextView) convertView.findViewById(R.id.shopdiscount);
-            holder.shop_price = (TextView) convertView.findViewById(R.id.shopprice);
-            holder.shop_count = (TextView) convertView.findViewById(R.id.shopCount);
-            holder.decrease_shop = (TextView) convertView.findViewById(R.id.decrease_shop);
-            holder.add_shop = (TextView) convertView.findViewById(R.id.add_shop);
+            holder.checkshop = convertView.findViewById(R.id.checkshop);
+            holder.shop_img = convertView.findViewById(R.id.picture);
+            holder.shop_name = convertView.findViewById(R.id.shopname);
+            holder.shopdiscount = convertView.findViewById(R.id.shopdiscount);
+            holder.shop_price = convertView.findViewById(R.id.shopprice);
+            holder.shop_count = convertView.findViewById(R.id.shopCount);
+            holder.decrease_shop = convertView.findViewById(R.id.decrease_shop);
+            holder.add_shop = convertView.findViewById(R.id.add_shop);
             convertView.setTag(holder);
         } else {
             //直接通过holder获取下面三个子控件，不必使用findviewbyid，加快了 UI 的响应速度

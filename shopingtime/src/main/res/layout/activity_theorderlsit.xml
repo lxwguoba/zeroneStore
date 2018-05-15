@@ -17,12 +17,19 @@
             android:layout_marginLeft="23dp"
             android:layout_marginRight="23dp">
 
-            <ImageView
-                android:id="@+id/back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:src="@mipmap/order_list_reture" />
+            <LinearLayout
+                android:id="@+id/layout_back"
+                android:layout_width="70dp"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:src="@mipmap/order_list_reture" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -38,7 +45,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@mipmap/pull_down_menu_w" />
+                android:src="@mipmap/pull_down_menu_w"
+                android:visibility="gone" />
 
 
         </RelativeLayout>
@@ -54,7 +62,7 @@
                 android:layout_weight="1">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:gravity="center_horizontal"
@@ -70,10 +78,13 @@
 
                     <TextView
                         android:id="@+id/orderTotalPrice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="31dp"
                         android:layout_marginTop="17dp"
                         android:fontFamily="Roboto-Medium"
+                        android:gravity="left"
+                        android:lines="1"
                         android:text="0"
                         android:textColor="#ffffff"
                         android:textSize="20sp" />
@@ -112,7 +123,7 @@
 
                     <TextView
                         android:id="@+id/orderTotal"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="17dp"
                         android:fontFamily="Roboto-Medium"
@@ -142,17 +153,19 @@
         android:orientation="horizontal">
 
         <RelativeLayout
+            android:id="@+id/allrelative"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
 
             <TextView
                 android:id="@+id/alltvorder"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:fontFamily="SourceHanSansCN-Medium"
+                android:gravity="center_horizontal"
                 android:text="全部订单"
                 android:textColor="#000000"
                 android:textSize="16sp" />
@@ -169,16 +182,18 @@
 
 
         <RelativeLayout
+            android:id="@+id/allrelative_dfk"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
 
             <TextView
                 android:id="@+id/alltvdfk"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:fontFamily="SourceHanSansCN-Medium"
+                android:gravity="center_horizontal"
                 android:text="待付款"
                 android:textColor="#7c7c7c"
                 android:textSize="16sp" />
@@ -195,16 +210,18 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/allrelative_wc"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
 
             <TextView
                 android:id="@+id/alltvywc"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:fontFamily="SourceHanSansCN-Medium"
+                android:gravity="center_horizontal"
                 android:text="已完成"
                 android:textColor="#7c7c7c"
                 android:textSize="16sp" />
@@ -221,16 +238,18 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/allrelative_qx"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
 
             <TextView
                 android:id="@+id/alltvyqx"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:fontFamily="SourceHanSansCN-Medium"
+                android:gravity="center_horizontal"
                 android:text="已取消"
                 android:textColor="#7c7c7c"
                 android:textSize="16sp" />
@@ -258,21 +277,19 @@
 
         >
 
-        <ListView
-            android:id="@+id/orderlistview"
+        <com.zerone.store.shopingtimetest.view.PullRefreshLayout
+            android:id="@+id/swipe_ly"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#fff"
-            android:divider="#f1f5f8"
-            android:dividerHeight="10dp"
-            android:paddingBottom="10dp"
-            android:scrollbars="none">
+            android:layout_height="match_parent">
 
-
-        </ListView>
-
-
+            <ListView
+                android:id="@+id/orderlistview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#fff"
+                android:divider="#f1f5f8"
+                android:dividerHeight="10dp"
+                android:scrollbars="none" />
+        </com.zerone.store.shopingtimetest.view.PullRefreshLayout>
     </LinearLayout>
-
-
 </RelativeLayout>

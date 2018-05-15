@@ -18,10 +18,21 @@ public class PrintBean implements Serializable {
     private String pmoney;
     //订单状态
     private String orderTuype;
+
+    //师父金额
+    private String payment_price;
     //备注
     private String remark;
     private List<PrintItem> list;
 
+
+    public String getPayment_price() {
+        return payment_price;
+    }
+
+    public void setPayment_price(String payment_price) {
+        this.payment_price = payment_price;
+    }
 
     public String getRemark() {
         return remark;

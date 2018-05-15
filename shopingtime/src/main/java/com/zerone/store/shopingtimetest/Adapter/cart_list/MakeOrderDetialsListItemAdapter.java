@@ -58,9 +58,9 @@ public class MakeOrderDetialsListItemAdapter extends BaseAdapter {
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = inflate.inflate(R.layout.orderdetailslistitem, null);
-            holder.goodsCount = (TextView) convertView.findViewById(R.id.goodscount);
-            holder.goodsName = (TextView) convertView.findViewById(R.id.goodsname);
-            holder.goodsMoney = (TextView) convertView.findViewById(R.id.goodsmoney);
+            holder.goodsCount = convertView.findViewById(R.id.goodscount);
+            holder.goodsName = convertView.findViewById(R.id.goodsname);
+            holder.goodsMoney = convertView.findViewById(R.id.goodsmoney);
             convertView.setTag(holder);
         } else {
             //直接通过holder获取下面三个子控件，不必使用findviewbyid，加快了 UI 的响应速度

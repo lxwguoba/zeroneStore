@@ -9,27 +9,25 @@ import java.util.List;
  */
 
 public class ShopBean implements Serializable {
-
-    /**
-     * id : 2
-     * name : 茄子豆角
-     * category_id : 8
-     * details : 茄子豆角茄子豆角茄子豆角茄子豆角茄子豆角茄子豆角
-     * price : 12.00
-     * stock : 986
-     * category_name : 盖浇饭
-     * thumb : [{"thumb":"uploads/catering/20180317025956983.jpg"}]
-     */
-
     private int id;
     private String name;
     private int category_id;
+    private int catPosition;
     private String details;
     private String price;
     private int stock;
     private String category_name;
     private String shop_Count;
     private List<ThumbBean> thumb;
+
+
+    public int getCatPosition() {
+        return catPosition;
+    }
+
+    public void setCatPosition(int catPosition) {
+        this.catPosition = catPosition;
+    }
 
     public String getShop_Count() {
         return shop_Count;

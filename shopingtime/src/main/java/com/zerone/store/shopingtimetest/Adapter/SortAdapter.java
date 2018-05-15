@@ -1,6 +1,5 @@
 package com.zerone.store.shopingtimetest.Adapter;
 
-
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
@@ -43,7 +42,7 @@ public class SortAdapter extends RvAdapter<String> {
         SortHolder(View itemView, int type, RvListener listener) {
             super(itemView, type, listener);
             this.mView = itemView;
-            tvName = (TextView) itemView.findViewById(R.id.tv_sort);
+            tvName = itemView.findViewById(R.id.tv_sort);
         }
 
         @Override

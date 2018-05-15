@@ -1,5 +1,6 @@
 package com.zerone.store.shopingtimetest.DB.impl;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
@@ -28,8 +29,8 @@ public class UserInfoImpl extends AbstractDao {
     public void saveUserInfo(UserInfo userInfo) throws Exception {
         try {
             db = baseDao.getWritableDatabase();
-            String sql = "insert into customer (u_id, account_id,account,u_orgid,u_uuid) values (?,?,?,?,?)";
-            String[] param = new String[]{"10", userInfo.getAccount_id(), userInfo.getAccount(), userInfo.getOrganization_id(), userInfo.getUuid()};
+            String sql = "insert into customer (u_id, account_id,account,u_orgid,u_uuid,organization_name,realname) values (?,?,?,?,?,?,?)";
+            String[] param = new String[]{"10", userInfo.getAccount_id(), userInfo.getAccount(), userInfo.getOrganization_id(), userInfo.getUuid(), userInfo.getOrganization_name(), userInfo.getRealName()};
             db.execSQL(sql, param);
             Log.i("URL", "保存用户信息成功");
         } catch (Exception e) {
@@ -64,11 +65,12 @@ public class UserInfoImpl extends AbstractDao {
 
                     userInfo.setUuid(cur.getString(cur.getColumnIndex("u_uuid")));
 
+                    userInfo.setOrganization_name(cur.getString(cur.getColumnIndex("organization_name")));
+
+                    userInfo.setRealName(cur.getString(cur.getColumnIndex("realname")));
                 } while (cur.moveToNext());
             }
-            Log.i("BBBBB", userInfo.toString());
             return userInfo;
-
         } catch (Exception e) {
             throw new Exception("获取失败", e);
         } finally {
@@ -94,7 +96,6 @@ public class UserInfoImpl extends AbstractDao {
         }
     }
 
-
     /**
      * 获取session
      *
@@ -108,24 +109,10 @@ public class UserInfoImpl extends AbstractDao {
             db = baseDao.getReadableDatabase();
             cur = db.rawQuery("select * from customer", null);
             int count = cur.getCount();
-            Log.i("BBBBB", count + "");
             if (count == 0) {
                 return null;
             }
             cur.moveToFirst();
-            Log.i("BBBBB", cur.getString(cur.getColumnIndex("acount")));
-
-//            if (cur.moveToFirst()) {
-//                do {
-//                    UserInfo userInfo = new UserInfo();
-//                    userInfo.setAccount(cur.getString(cur.getColumnIndex("acount")));
-//                    userInfo.setAccount_id(cur.getString(cur.getColumnIndex("acount_id")));
-//                    userInfo.setOrganization_id(cur.getString(cur.getColumnIndex("u_orgid")));
-//                    userInfo.setUuid(cur.getString(cur.getColumnIndex("u_uuid")));
-//                    list.add(userInfo);
-//                } while (cur.moveToNext());
-//            }
-            Log.i("BBBBB", "userInfo: " + list);
             return list;
         } catch (Exception e) {
             throw new Exception("获取失败", e);
@@ -133,6 +120,25 @@ public class UserInfoImpl extends AbstractDao {
             cur.close();
             db.close();
         }
+    }
+
+    /**
+     * 修改登录后的用户信息
+     *
+     * @param userInfo 用户信息实体类
+     */
+    public void upDateUserInfo(UserInfo userInfo) {
+        db = baseDao.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("account_id", userInfo.getAccount_id());
+        values.put("account", userInfo.getAccount());
+        values.put("u_orgid", userInfo.getOrganization_id());
+        values.put("u_uuid", userInfo.getUuid());
+        values.put("organization_name", userInfo.getOrganization_name());
+        values.put("realname", userInfo.getRealName());
+        int count = db.update("customer", values, "u_id = ?", new String[]{"10"});
+        values.clear();
+        Log.i("BBBB", "修改UserInfo的数据时的方式:::=" + count);
     }
 
 }

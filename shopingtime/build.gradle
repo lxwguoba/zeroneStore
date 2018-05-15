@@ -66,9 +66,4 @@ dependencies {
     //打印机的配置-------------------------------
     //语音播报功能设置-----------------------------
     compile 'com.github.javaexception:VoiceAnnouncements:v1.0'
-    //语音播报功能设置----------------------------------
-//    compile 'com.google.code.gson:gson:2.7'
-    //zxing库的使用---------------------------------
-//        compile 'com.github.yuzhiqiang1993:zxing:2.1.6'
-    //zxing库的使用---------------------------------
 }

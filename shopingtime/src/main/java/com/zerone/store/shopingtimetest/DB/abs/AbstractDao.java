@@ -1,5 +1,4 @@
 package com.zerone.store.shopingtimetest.DB.abs;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 

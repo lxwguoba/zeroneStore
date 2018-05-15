@@ -3,6 +3,7 @@ package com.zerone.store.shopingtimetest.Adapter.cart_list;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,13 +68,13 @@ public class ListGoodsDetails_Adapter extends BaseAdapter {
             holder = new ViewHolder();
             convertView = inflate.inflate(R.layout.goodslistitem_, null);
 //            holder.checkshop = (CheckBox) convertView.findViewById(R.id.checkshop);
-            holder.shop_img = (ImageView) convertView.findViewById(R.id.picture);
-            holder.shop_name = (TextView) convertView.findViewById(R.id.shopname);
-            holder.shopdiscount = (TextView) convertView.findViewById(R.id.shopdiscount);
-            holder.shop_price = (TextView) convertView.findViewById(R.id.shopprice);
-            holder.shop_count = (TextView) convertView.findViewById(R.id.shopCount);
-            holder.decrease_shop = (TextView) convertView.findViewById(R.id.decrease_shop);
-            holder.add_shop = (TextView) convertView.findViewById(R.id.add_shop);
+            holder.shop_img = convertView.findViewById(R.id.picture);
+            holder.shop_name = convertView.findViewById(R.id.shopname);
+            holder.shopdiscount = convertView.findViewById(R.id.shopdiscount);
+            holder.shop_price = convertView.findViewById(R.id.shopprice);
+            holder.shop_count = convertView.findViewById(R.id.shopCount);
+            holder.decrease_shop = convertView.findViewById(R.id.decrease_shop);
+            holder.add_shop = convertView.findViewById(R.id.add_shop);
             convertView.setTag(holder);
         } else {
             //直接通过holder获取下面三个子控件，不必使用findviewbyid，加快了 UI 的响应速度
@@ -84,7 +85,9 @@ public class ListGoodsDetails_Adapter extends BaseAdapter {
         holder.shopdiscount.setText(list.get(position).getSp_discount());
         holder.shop_price.setText(list.get(position).getSp_price());
         holder.shop_count.setText(list.get(position).getSp_count());
-        Glide.with(mContext).load(list.get(position).getSp_picture_url()).centerCrop().placeholder(R.mipmap.app_logo).crossFade().into(holder.shop_img);
+        String url = list.get(position).getSp_picture_url();
+        Log.i("URL", "搜索：：：" + url);
+        Glide.with(mContext).load(url).centerCrop().placeholder(R.mipmap.app_logo).crossFade().into(holder.shop_img);
 
         /**
          *
@@ -172,7 +175,5 @@ public class ListGoodsDetails_Adapter extends BaseAdapter {
         TextView shop_price;
         TextView decrease_shop;
         TextView add_shop;
-
     }
-
 }

@@ -110,14 +110,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
         public ViewHolder(View root) {
             super(root);
-            shop_picture = (ImageView) root.findViewById(R.id.picture);
-            shop_name = (TextView) root.findViewById(R.id.shopname);
-            shop_shopdiscount = (TextView) root.findViewById(R.id.shopdiscount);
-            shopprice = (TextView) root.findViewById(R.id.shopprice);
-            decrease_shop = (TextView) root.findViewById(R.id.decrease_shop);
-            shopCount = (TextView) root.findViewById(R.id.shopCount);
-            add_shop = (TextView) root.findViewById(R.id.add_shop);
-            showTextCount = (LinearLayout) root.findViewById(R.id.showTextCount);
+            shop_picture = root.findViewById(R.id.picture);
+            shop_name = root.findViewById(R.id.shopname);
+            shop_shopdiscount = root.findViewById(R.id.shopdiscount);
+            shopprice = root.findViewById(R.id.shopprice);
+            decrease_shop = root.findViewById(R.id.decrease_shop);
+            shopCount = root.findViewById(R.id.shopCount);
+            add_shop = root.findViewById(R.id.add_shop);
+            showTextCount = root.findViewById(R.id.showTextCount);
             this.root = root;
         }
     }

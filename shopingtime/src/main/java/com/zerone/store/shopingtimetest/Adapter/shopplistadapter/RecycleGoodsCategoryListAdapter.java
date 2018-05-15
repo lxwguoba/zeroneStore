@@ -112,9 +112,9 @@ public class RecycleGoodsCategoryListAdapter extends RecyclerView.Adapter<Recycl
 
         public ViewHolder(View root) {
             super(root);
-            goodsCategoryName = (TextView) root.findViewById(R.id.catName);
+            goodsCategoryName = root.findViewById(R.id.catName);
 //            shopCartNum = (TextView) root.findViewById(R.id.shopCartNumTV);
-            checkcategory = (ImageView) root.findViewById(R.id.checkcategory);
+            checkcategory = root.findViewById(R.id.checkcategory);
             this.root = root;
         }
     }
