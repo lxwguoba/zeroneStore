@@ -27,6 +27,7 @@ import com.zerone.store.shopingtimetest.Bean.print.PrintItem;
 import com.zerone.store.shopingtimetest.Contants.IpConfig;
 import com.zerone.store.shopingtimetest.DB.impl.UserInfoImpl;
 import com.zerone.store.shopingtimetest.R;
+import com.zerone.store.shopingtimetest.Utils.AppSharePreferenceMgr;
 import com.zerone.store.shopingtimetest.Utils.LoadingUtils;
 import com.zerone.store.shopingtimetest.Utils.NetUtils;
 import com.zerone.store.shopingtimetest.Utils.payutils.PayUtils;
@@ -63,6 +64,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
     private List<PrintItem> printItemList;
     private PrintBean printBean;
     private String money;
+    private String discount_mone;
     private TextView listOrderMoney;
     private TextView ordertime;
     private TextView xiaofeizhe;
@@ -75,9 +77,6 @@ public class OrderDetailsActivity extends BaseAppActivity {
     private RelativeLayout relative_back;
     private TextView discount_price;
     Handler handler = new Handler() {
-
-        private String discount_money;
-
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -108,7 +107,6 @@ public class OrderDetailsActivity extends BaseAppActivity {
                                 printBean.setOrderTuype("已付款");
                             }
                             printBean.setPmoney(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price"));
-                            printBean.setRemark(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("remarks"));
                             /**
                              *  这个是商品列表
                              */
@@ -125,9 +123,15 @@ public class OrderDetailsActivity extends BaseAppActivity {
                             printBean.setList(printItemList);
                             money = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price");
                             listOrderMoney.setText("￥" + money);
-                            discount_money = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price");
+                            discount_mone = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price");
                             discount_price.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
                             ordermoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
+                            int userid = jsonObject.getJSONObject("data").getJSONObject("orderdata").getInt("user_id");
+                            if (userid == 0) {
+                                xiaofeizhe.setText("散客");
+                            } else {
+                                xiaofeizhe.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("nickname"));
+                            }
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 GoodsBean gb = new GoodsBean();
                                 gb.setGoods_total(jsonArray.getJSONObject(i).getString("total"));
@@ -141,7 +145,13 @@ public class OrderDetailsActivity extends BaseAppActivity {
                             ordertime.setText(sdf.format(d));
                             ordersn.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("ordersn"));
                             jiedaiyuan.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("realname"));
-                            beizhu.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("remarks"));
+                            if ("null".equals(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("remarks"))) {
+                                beizhu.setText("");
+                                printBean.setRemark("");
+                            } else {
+                                beizhu.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("remarks"));
+                                printBean.setRemark(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("remarks"));
+                            }
                         } else if (status == 0) {
                         }
                     } catch (JSONException e) {
@@ -168,6 +178,9 @@ public class OrderDetailsActivity extends BaseAppActivity {
                         e.printStackTrace();
                     } finally {
                         qxorder.setEnabled(true);
+                        if (loading_dailog != null) {
+                            loading_dailog.dismiss();
+                        }
                     }
                     break;
                 case 2:
@@ -219,6 +232,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
             }
         }
     };
+    private String orderid;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -227,6 +241,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
         mContext = OrderDetailsActivity.this;
         list = new ArrayList<>();
         intent = getIntent();
+        orderid = intent.getStringExtra("orderid");
         initGetUserInfo();
         initView();
         initCheckBoxStates();
@@ -245,8 +260,14 @@ public class OrderDetailsActivity extends BaseAppActivity {
         subSurePay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                subSurePay.setEnabled(false);
-                payDialog();
+                if (orderid != null) {
+                    subSurePay.setEnabled(false);
+                    AppSharePreferenceMgr.put(OrderDetailsActivity.this, "orderid", orderid);
+                    payDialog();
+                } else {
+                    Toast.makeText(OrderDetailsActivity.this, "订单不存在哦", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
         relative_back.setOnClickListener(new View.OnClickListener() {
@@ -265,9 +286,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
         subSurePay = (RelativeLayout) findViewById(R.id.subSurePay);
         //确认订单的按钮 显示的价格
         ordermoney = (TextView) findViewById(R.id.ordermoney);
-
         discount_price = (TextView) findViewById(R.id.discount_price);
-
         qxorder = (LinearLayout) findViewById(R.id.qxorder);
         listView = (ListView) findViewById(R.id.goodslist);
         odlia = new OrderDetialsListItemAdapter(this, list);
@@ -301,7 +320,13 @@ public class OrderDetailsActivity extends BaseAppActivity {
         Map<String, String> getOrderDetails = new HashMap<String, String>();
         getOrderDetails.put("account_id", userInfo.getAccount_id());
         getOrderDetails.put("organization_id", userInfo.getOrganization_id());
-        getOrderDetails.put("order_id", intent.getStringExtra("orderid"));
+        if (orderid != null) {
+            getOrderDetails.put("order_id", orderid);
+        } else {
+
+            return;
+        }
+
         getOrderDetails.put("token", token);
         getOrderDetails.put("timestamp", timestamp);
         loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取订单中。。。。");
@@ -343,7 +368,6 @@ public class OrderDetailsActivity extends BaseAppActivity {
             public void onClick(View v) {
                 //点击启动现金支付接口调试
                 docashPay();
-
             }
         });
 
@@ -352,8 +376,8 @@ public class OrderDetailsActivity extends BaseAppActivity {
             public void onClick(View v) {
                 //调起其他支付方式  盛付通支付
                 //吊起支付
-                if (money != null) {
-                    PayUtils.LiftThePayment(money, OrderDetailsActivity.this);
+                if (discount_mone != null) {
+                    PayUtils.LiftThePayment(discount_mone, OrderDetailsActivity.this);
                     dialog1.dismiss();
                     OrderDetailsActivity.this.finish();
                 }

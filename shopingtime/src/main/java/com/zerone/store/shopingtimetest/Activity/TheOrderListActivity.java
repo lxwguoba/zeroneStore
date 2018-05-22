@@ -143,6 +143,7 @@ public class TheOrderListActivity extends AppCompatActivity implements PullRefre
                         JSONObject jsonObject = new JSONObject(orderListJSon);
                         int status = jsonObject.getInt("status");
                         if (status == 1) {
+                            Log.i("URL", "订单列表：：" + list.toString());
                             JSONObject jsonObject1 = jsonObject.getJSONObject("data").getJSONObject("orderlist");
                             JSONArray jsonArray = jsonObject1.getJSONArray("data");
                             for (int i = 0; i < jsonArray.length(); i++) {
@@ -175,12 +176,13 @@ public class TheOrderListActivity extends AppCompatActivity implements PullRefre
                             //获取失败
                             customDialog(jsonObject.getString("msg") + "，2秒后自动关闭");
                         }
+
                     } catch (JSONException e) {
+                        e.printStackTrace();
                     } finally {
                         if (mSwipeLayout != null) {
                             //关闭刷新动画
                             mSwipeLayout.loadMoreFinished();
-
                         }
                         orderListItemAdapter.notifyDataSetChanged();
                     }

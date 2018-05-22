@@ -62,7 +62,20 @@ public class ResultActivity extends BaseAppActivity {
                 case 0:
                     loading_dailog.dismiss();
                     String upDataStates = (String) msg.obj;
-                    AppSharePreferenceMgr.remove(ResultActivity.this, "orderid");
+                    try {
+                        JSONObject jsonObject = new JSONObject(upDataStates);
+                        int status = jsonObject.getInt("status");
+                        if (status == 1) {
+                            String order_id = jsonObject.getJSONObject("data").getString("order_id");
+                            gotoPrint(order_id);
+                        } else if (status == 0) {
+                            Toast.makeText(mContext, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } finally {
+                        AppSharePreferenceMgr.remove(ResultActivity.this, "orderid");
+                    }
                     break;
                 case 2:
                     String upprint = (String) msg.obj;
@@ -89,6 +102,7 @@ public class ResultActivity extends BaseAppActivity {
                             }
                             printBean.setPmoney(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price"));
                             printBean.setRemark(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("remarks"));
+                            printBean.setPayment_price(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
                             /**
                              *  这个是商品列表
                              */
@@ -109,7 +123,6 @@ public class ResultActivity extends BaseAppActivity {
                                     }
                                 }
                             }
-                            goUpDataOrderState();
                         } else if (status == 0) {
                             Toast.makeText(mContext, "没有这个订单，打印失败", Toast.LENGTH_SHORT).show();
                         }
@@ -135,7 +148,6 @@ public class ResultActivity extends BaseAppActivity {
         initGetUserInfo();
         initView();
         action();
-
     }
 
     private void action() {
@@ -167,27 +179,15 @@ public class ResultActivity extends BaseAppActivity {
             //语音播报
             VoiceUtils.with(this).Play(dmoney + "", true);
             //打印小票  获取订单详情
-            orderid = (String) AppSharePreferenceMgr.get(ResultActivity.this, "orderid", "");
-            if (orderid != null && orderid.length() > 0) {
-                gotoPrint(orderid);
-            }
+            goUpDataOrderState();
         } else if (resultCode == -1) {
             // 交易失败
             Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
             Log.e(TAG, errorMsg);
             result_info.setTextColor(Color.parseColor("#ff0000"));
             result_iv.setImageResource(R.mipmap.pay_fails);
-//            if (errorCode == 401) {
-//                result_info.setText("交易失败");
-//            } else if (errorCode == 418) {
-//                result_info.setText("支付已被取消");
-//            } else if (errorCode == 413) {
-//                result_info.setText("支付交易超时");
-//            } else {
             result_info.setText(errorMsg);
-//            }
             Log.i("BBB", "resultInfo=" + resultInfo);
-//            result_tv.setText("Result:" + resultInfo);
         }
     }
 
@@ -197,7 +197,6 @@ public class ResultActivity extends BaseAppActivity {
      * @param orderid
      */
     private void gotoPrint(String orderid) {
-
         if (userInfo == null) {
             return;
         }
@@ -232,11 +231,10 @@ public class ResultActivity extends BaseAppActivity {
         if (orderid != null && orderid.length() > 0) {
             loginMap.put("order_id", orderid);
         }
-        Log.i("URL", "paymentType=" + paymentType);
         loginMap.put("paytype", "5");
         loginMap.put("timestamp", timestamp);
-        loginMap.put("payment_company", "盛付通支付");
-        loading_dailog = LoadingUtils.getDailog(ResultActivity.this, Color.RED, "整理数据中。。。");
+        loginMap.put("payment_company", "乐刷支付");
+        loading_dailog = LoadingUtils.getDailog(ResultActivity.this, Color.RED, "修改中。。。");
         loading_dailog.show();
         NetUtils.netWorkByMethodPost(ResultActivity.this, loginMap, IpConfig.URL_UPDATAPAY, handler, 0);
     }

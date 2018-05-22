@@ -28,7 +28,6 @@ public class ResultReceiver extends BroadcastReceiver {
         String action = intent.getAction();
         String transType = (String) AppSharePreferenceMgr.get(context, "transType", "-1");
         //这个是查pos信息
-        Log.i("URL", "transType===" + transType);
         if ("-1".equals(transType)) {
             Toast.makeText(context, "交易有吴请重新操作", Toast.LENGTH_SHORT).show();
         } else if ("0".equals(transType)) {
@@ -51,7 +50,6 @@ public class ResultReceiver extends BroadcastReceiver {
                 answerCode = intent.getStringExtra("answerCode");
                 String merchantNameEn = intent.getStringExtra("merchantNameEn");
                 paymentType = intent.getIntExtra("paymentType", -2);
-                Log.i("URL", "paymentType=" + paymentType);
                 String transTime = intent.getStringExtra("transTime");
                 errorCode = intent.getIntExtra("errorCode", 0);
                 final String errorMsg = intent.getStringExtra("errorMsg");
@@ -145,20 +143,17 @@ public class ResultReceiver extends BroadcastReceiver {
                 //终端号
                 String terminalId = intent.getStringExtra("terminalId");
                 AppSharePreferenceMgr.put(context, "terminalId", terminalId);
-                Log.i("URL", "terminalId=" + terminalId);
                 //商户号
                 String merchantId = intent.getStringExtra("merchantId");
                 AppSharePreferenceMgr.put(context, "merchantId", merchantId);
-                Log.i("URL", "merchantId=" + merchantId);
                 //商户名称
                 String merchantName = intent.getStringExtra("merchantName");
-                Log.i("URL", "merchantName=" + merchantName);
                 //商户英文名
                 String merchantNameEn = intent.getStringExtra("merchantNameEn");
-                Log.i("URL", "merchantNameEn=" + merchantNameEn);
+                String msg = "terminalId=" + terminalId + " merchantId=" + merchantId + " merchantName=" + merchantName + " merchantNameEn" + merchantNameEn;
+                Log.i("URL", msg);
 
-                Toast.makeText(context, "terminalId=" + terminalId + "merchantId=" + merchantId + "merchantName=" + merchantName
-                        + "merchantNameEn=" + merchantNameEn, Toast.LENGTH_SHORT).show();
+
             }
         }
     }

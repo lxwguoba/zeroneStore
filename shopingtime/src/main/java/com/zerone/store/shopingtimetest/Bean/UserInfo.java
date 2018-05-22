@@ -17,9 +17,19 @@ public class UserInfo implements Serializable {
     private String uuid;
     private String organization_name;
     private String realName;
+    private String fansnamage_id;
+
 
     public UserInfo() {
 
+    }
+
+    public String getFansnamage_id() {
+        return fansnamage_id;
+    }
+
+    public void setFansnamage_id(String fansnamage_id) {
+        this.fansnamage_id = fansnamage_id;
     }
 
     public String getRealName() {

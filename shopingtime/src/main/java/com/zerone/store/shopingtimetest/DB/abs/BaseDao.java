@@ -70,7 +70,8 @@ public class BaseDao extends SQLiteOpenHelper {
         sb.append(" 	'u_orgid' varchar(100) not null,");
         sb.append(" 	'u_uuid' varchar(100) not null,");
         sb.append(" 	'realname' varchar(100) not null,");
-        sb.append("      'organization_name' varchar(100) not null,");
+        sb.append("      'organization_name' varchar(10) not null,");
+        sb.append("      'fansnamage_id' varchar(10) not null,");
         sb.append("primary key(u_id)");
         sb.append(" );");
         db.execSQL(sb.toString());

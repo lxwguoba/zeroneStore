@@ -1,6 +1,7 @@
 package com.zerone.store.shopingtimetest.Activity;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -22,10 +23,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.bumptech.glide.Glide;
 import com.zerone.store.shopingtimetest.Adapter.cart_list.MakeOrderDetialsListItemAdapter;
 import com.zerone.store.shopingtimetest.Base64AndMD5.CreateToken;
 import com.zerone.store.shopingtimetest.BaseActivity.BaseAppActivity;
 import com.zerone.store.shopingtimetest.Bean.UserInfo;
+import com.zerone.store.shopingtimetest.Bean.UserInfoVip;
 import com.zerone.store.shopingtimetest.Bean.order.SubmitDataBean;
 import com.zerone.store.shopingtimetest.Bean.order.SubmitShopBean;
 import com.zerone.store.shopingtimetest.Bean.refresh.RefreshBean;
@@ -38,6 +41,7 @@ import com.zerone.store.shopingtimetest.Utils.AppSharePreferenceMgr;
 import com.zerone.store.shopingtimetest.Utils.DoubleUtils;
 import com.zerone.store.shopingtimetest.Utils.LoadingUtils;
 import com.zerone.store.shopingtimetest.Utils.NetUtils;
+import com.zerone.store.shopingtimetest.Utils.OutSignCustomer;
 import com.zyao89.view.zloading.ZLoadingDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -51,6 +55,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by on 2018/3/30 0030 11 36.
@@ -93,6 +99,15 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
     private ScrollView scrollView;
     private Timer timer;
     private TimerTask task;
+    private Context mContext;
+    private String terminalId;
+    private String merchantId;
+    private int signInt = 1;
+    //签退页面
+    private Dialog out_dialog;
+    private UserInfoVip userinfovip;
+    private CircleImageView userHeadImg;
+    private TextView vip_;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -109,6 +124,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
                             //订单提交成功  获取商品数据 打印小票，吊起支付。
                             String orderid = jsonObject.getJSONObject("data").getString("order_id");
                             //订单提交成功 跳转到 订单详情
+                            OutSignCustomer.signOut(userInfo, MakeSureTheOrderActivity.this, terminalId, handler, 6);
                             Intent intent = new Intent(MakeSureTheOrderActivity.this, OrderDetailsActivity.class);
                             intent.putExtra("orderid", orderid);
                             startActivity(intent);
@@ -132,6 +148,19 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
                         remark.setText(reinfo);
                     }
                     break;
+                case 3:
+                    String qrcodeJson = (String) msg.obj;
+                    try {
+                        JSONObject jsonObject = new JSONObject(qrcodeJson);
+                        int return_code = jsonObject.getInt("return_code");
+                        if (return_code == 1) {
+                            String qrUrl = jsonObject.getJSONObject("data").getString("url");
+                            setSignInCustomer(qrUrl);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
 
                 case 10:
                     String rein = (String) msg.obj;
@@ -146,11 +175,67 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
                     }
                     break;
                 case 1100:
-                    int i = (int) msg.obj;
-
-                    if (i == 10) {
-                        stopTimer();
-
+                    getUserInfo();
+                    break;
+                case 4:
+                    String userinfoJson = (String) msg.obj;
+                    try {
+                        JSONObject userInfoJson = new JSONObject(userinfoJson);
+                        int return_code = userInfoJson.getInt("return_code");
+                        if (return_code == 1) {
+                            userinfovip.setDevice_num(userInfoJson.getJSONObject("data").getString("device_num"));
+                            userinfovip.setHead_imgurl(userInfoJson.getJSONObject("data").getString("head_imgurl"));
+                            userinfovip.setNickname(userInfoJson.getJSONObject("data").getString("nickname"));
+                            userinfovip.setUser_id(userInfoJson.getJSONObject("data").getString("user_id"));
+                            userinfovip.setFansmanage_user_id(userInfoJson.getJSONObject("data").getString("fansmanage_user_id"));
+                            Log.i("URL", "userid==" + userinfovip.getUser_id());
+                            userHeadImg.setVisibility(View.VISIBLE);
+                            Glide.with(MakeSureTheOrderActivity.this).load(userinfovip.getHead_imgurl()).into(userHeadImg);
+                            vip_.setText(userinfovip.getNickname());
+                            signInt = 2;
+                            stopTimer();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } finally {
+                        btn_signin.setEnabled(true);
+                    }
+                    break;
+                case 5:
+                    String outSignJson = (String) msg.obj;
+                    try {
+                        JSONObject outJson = new JSONObject(outSignJson);
+                        int return_code = outJson.getInt("return_code");
+                        if (return_code == 1) {
+                            Toast.makeText(MakeSureTheOrderActivity.this, "签退成功", Toast.LENGTH_SHORT).show();
+                            userHeadImg.setVisibility(View.GONE);
+                            vip_.setText("");
+                            if (out_dialog != null) {
+                                out_dialog.dismiss();
+                            }
+                        } else if (return_code == 0) {
+                            Toast.makeText(MakeSureTheOrderActivity.this, "签退失败,请重试", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } finally {
+                        btn_signin.setEnabled(true);
+                    }
+                    break;
+                case 6:
+                    String outSignJso = (String) msg.obj;
+                    try {
+                        JSONObject outJso = new JSONObject(outSignJso);
+                        int return_code = outJso.getInt("return_code");
+                        if (return_code == 1) {
+                            Toast.makeText(MakeSureTheOrderActivity.this, "签退成功", Toast.LENGTH_SHORT).show();
+                            userHeadImg.setVisibility(View.GONE);
+                            vip_.setText("");
+                        } else if (return_code == 0) {
+                            Toast.makeText(MakeSureTheOrderActivity.this, "签退失败,您需要手动试试", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                     break;
             }
@@ -162,8 +247,14 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_makesuretheorder);
         intent = getIntent();
+        mContext = MakeSureTheOrderActivity.this;
         initGetUserInfo();
         listObj = (ArrayList<ShopMessageBean>) getIntent().getSerializableExtra("listobj");
+        //终端号
+        terminalId = (String) AppSharePreferenceMgr.get(mContext, "terminalId", "");
+        //pos商户号
+        merchantId = (String) AppSharePreferenceMgr.get(mContext, "merchantId", "");
+        userinfovip = new UserInfoVip();
         initView();
         initViewBtn();
         initAction();
@@ -174,7 +265,21 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
         btn_signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSignInCustomer();
+                //1、这个地方需要一个开关按钮，用来签入活者是签退。
+                //2、我们用signInt 来做区分 1是没有会员直接开启签到  2是有会员直接启用签退
+                //3、signInt 这个默认值是1 默认开启的是签到
+                btn_signin.setEnabled(false);
+                if (signInt == 1) {
+                    //终端号
+                    if (terminalId != null && terminalId.length() > 0) {
+                        //1、调用签入的接口 获取二维码
+                        getqrcode();
+                        //2、二维码获取成功打开签入的二维码
+                        //3、如果没有获取成功就提示重新获取
+                    }
+                } else if (signInt == 2) {
+                    setSignOutCustomer();
+                }
             }
         });
     }
@@ -233,6 +338,8 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
         }
 
         zhekou = (TextView) findViewById(R.id.zhekou);
+        userHeadImg = (CircleImageView) findViewById(R.id.userHeandImg);
+        vip_ = (TextView) findViewById(R.id.vip_);
     }
 
     /**
@@ -298,8 +405,14 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
             subMap.put("token", token);
         }
 
-        //0为散客
-        subMap.put("user_id", "0");
+        String user_id = userinfovip.getFansmanage_user_id();
+        if (user_id != null && user_id.length() > 0) {
+            subMap.put("user_id", user_id);
+        } else {
+            //0为散客
+            subMap.put("user_id", "0");
+        }
+
         if (timestamp != null) {
             subMap.put("timestamp", timestamp);
         }
@@ -368,16 +481,13 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
         dialog.show();
     }
 
-
     //================================客户签入=============================
-
     /**
      * 自定义对话框
      */
     private void setDiscount() {
         final Dialog dialog = new Dialog(this, R.style.NormalDialogStyle);
         View view = View.inflate(this, R.layout.activity_dialog_edit_discount_view, null);
-//        discountValue = (EditText) view.findViewById(R.id.discount);
         TextView cancel = view.findViewById(R.id.cancel);
         TextView confirm = view.findViewById(R.id.confirm);
         numberPicker1 = view.findViewById(R.id.numberPicker);
@@ -439,14 +549,16 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
     /**
      * 自定义用户签入的view
      */
-    private void setSignInCustomer() {
+    private void setSignInCustomer(String url) {
         dialog = new Dialog(this, R.style.NormalDialogStyle);
         View view = View.inflate(this, R.layout.activity_dialog_signin_view, null);
+        ImageView signin_img = view.findViewById(R.id.signin_img);
         TextView cancel = view.findViewById(R.id.cancel);
         TextView confirm = view.findViewById(R.id.confirm);
+        Glide.with(MakeSureTheOrderActivity.this).load(url).into(signin_img);
         dialog.setContentView(view);
         //使得点击对话框外部不消失对话框
-        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCanceledOnTouchOutside(false);
         //设置对话框的大小
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -466,28 +578,90 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
         createTask();
     }
 
+    /**
+     * 自定义用户签退的view
+     */
+    private void setSignOutCustomer() {
+        out_dialog = new Dialog(this, R.style.NormalDialogStyle);
+        View view = View.inflate(this, R.layout.activity_dialog_signout_view, null);
+        TextView cancel = view.findViewById(R.id.signinout_cancel);
+        TextView confirm = view.findViewById(R.id.signinout_confirm);
+        out_dialog.setContentView(view);
+        //使得点击对话框外部不消失对话框
+        out_dialog.setCanceledOnTouchOutside(false);
+        //设置对话框的大小
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                out_dialog.dismiss();
+            }
+        });
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OutSignCustomer.signOut(userInfo, MakeSureTheOrderActivity.this, terminalId, handler, 5);
+                signInt = 1;
+            }
+        });
+        out_dialog.show();
+    }
     public void createTask() {
         timer = new Timer();
         task = new TimerTask() {
             @Override
             public void run() {
-                Log.i("URL", ++i + "");
                 Message message = new Message();
                 message.what = 1100;
                 message.obj = i;
                 handler.sendMessage(message);
             }
         };
-        timer.schedule(task, 0, 1000);
+        timer.schedule(task, 0, 3000);
     }
 
     public void stopTimer() {
         i = 0;
-        timer.cancel();
-        timer = null;
-        task.cancel();
-        task = null;
-        Log.i("URL", "停止了吗");
-        dialog.dismiss();
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        if (timer != null) {
+            timer.cancel();
+        }
+        if (task != null) {
+            task.cancel();
+            task = null;
+        }
+        if (dialog != null) {
+            dialog.dismiss();
+        }
+    }
+
+    /**
+     * 获取二维码
+     *
+     * @return
+     */
+    public void getqrcode() {
+        String timestamp = System.currentTimeMillis() + "";
+        String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
+        Map<String, String> codeMap = new HashMap<>();
+        codeMap.put("organization_id", userInfo.getFansnamage_id());
+        codeMap.put("store_id", userInfo.getAccount_id());
+        codeMap.put("device_num", terminalId);
+        NetUtils.netWorkByMethodPost(MakeSureTheOrderActivity.this, codeMap, IpConfig.URL_GETCODE, handler, 3);
+    }
+
+    /**
+     * 获取会员信息
+     *
+     * @return
+     */
+    public void getUserInfo() {
+        String timestamp = System.currentTimeMillis() + "";
+        String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
+        Map<String, String> codeMap = new HashMap<>();
+        codeMap.put("device_num", terminalId);
+        NetUtils.netWorkByMethodPost(MakeSureTheOrderActivity.this, codeMap, IpConfig.URL_GETUSERINFO, handler, 4);
     }
 }

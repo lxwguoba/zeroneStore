@@ -94,7 +94,12 @@ public class OrderDetailsYQXActivity extends AppCompatActivity {
                             paymoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("payment_price"));
 
                             String paytype = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("paytype");
-                            xiaofeizhe.setText("散客");
+                            int userid = jsonObject.getJSONObject("data").getJSONObject("orderdata").getInt("user_id");
+                            if (userid == 0) {
+                                xiaofeizhe.setText("散客");
+                            } else {
+                                xiaofeizhe.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("nickname"));
+                            }
                             ordertime.setText(sdf.format(d));
                             jiedaiy.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("realname"));
                             ordersn.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("ordersn"));

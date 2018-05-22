@@ -18,14 +18,11 @@ import com.zerone.store.shopingtimetest.DB.impl.UserInfoImpl;
  */
 
 public class BaseAppActivity extends AppCompatActivity {
-
     private MyApplication baseApp;
     private BaseAppActivity oContext;
     private UserInfo userInfo;
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         //去掉标题栏
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题栏
         StatusBarCompat.setStatusBarColor(this, Color.parseColor("#fedc42"));
@@ -39,7 +36,6 @@ public class BaseAppActivity extends AppCompatActivity {
         // 调用添加方法
         addActivity();
     }
-
     /**
      * 添加Activity方法
      */
@@ -71,7 +67,6 @@ public class BaseAppActivity extends AppCompatActivity {
     public void showToast(String text) {
         Toast.makeText(oContext, text, Toast.LENGTH_SHORT).show();
     }
-
 
     private void initGetUserInfo(Context mContext) {
         UserInfoImpl userInfoImpl = new UserInfoImpl(mContext);

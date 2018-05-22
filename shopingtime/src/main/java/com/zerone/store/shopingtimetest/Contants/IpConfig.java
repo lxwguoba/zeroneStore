@@ -6,11 +6,10 @@ package com.zerone.store.shopingtimetest.Contants;
  * 用来保存域名 就是链接
  */
 public class IpConfig {
-
-    //正式版
-    public static final String URL_ZS = "http://o2o.01nnt.com/api/androidSimpleApi/";
-    //测试版
-    public static final String URL_CS = "http://develop.01nnt.com/api/androidSimpleApi/";
+    //正式版a
+    public static final String URL_ZS = "http://o2o.01nnt.com/api/androidRetailApi/";
+    //测试版消费共富版
+    public static final String URL_CS = "http://develop.01nnt.com/api/androidRetailApi/";
     //通用的接口
     public static final String URL = URL_CS;
     //登录接口
@@ -40,4 +39,10 @@ public class IpConfig {
     public static final String URL_UPDATAPAY = URL + "other_payment";
     //现金支付方式
     public static final String URL_CASHPAY = URL + "cash_payment";
+    //获取签入二维码
+    public static final String URL_GETCODE = URL + "code";
+    //获取签入信息
+    public static final String URL_GETUSERINFO = URL + "deviceInfo";
+    //设备信息签出接口
+    public static final String URL_SINGOUT = URL + "deviceCheckOut";
 }

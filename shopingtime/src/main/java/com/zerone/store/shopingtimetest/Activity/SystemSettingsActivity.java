@@ -55,7 +55,7 @@ public class SystemSettingsActivity extends BaseAppActivity {
             switch (msg.what) {
                 case 0:
                     String kaidanJson = (String) msg.obj;
-                    Log.i("URL", "" + kaidanJson);
+                    Log.i("URL", "kaidanJson=" + kaidanJson);
                     loading_dailog.dismiss();
                     try {
                         JSONObject jfk = new JSONObject(kaidanJson);
@@ -69,6 +69,7 @@ public class SystemSettingsActivity extends BaseAppActivity {
                             }
                         }
                     } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                     break;
 
@@ -215,7 +216,7 @@ public class SystemSettingsActivity extends BaseAppActivity {
         kdMap.put("organization_id", userInfo.getOrganization_id());
         kdMap.put("token", token);
         kdMap.put("timestamp", timestamp);
-        loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "修改中。。。。");
+        loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取状态中...");
         loading_dailog.show();
         NetUtils.netWorkByMethodPost(mContext, kdMap, IpConfig.URL_DPSZ, handler, 4);
     }

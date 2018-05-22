@@ -109,7 +109,12 @@ public class OrderDetailsYFKActivity extends AppCompatActivity {
                             } else if ("4".equals(paytype)) {
                                 zhifufangshi.setText("微信二维码");
                             }
-                            xiaofeizhe.setText("散客");
+                            int userid = jsonObject.getJSONObject("data").getJSONObject("orderdata").getInt("user_id");
+                            if (userid == 0) {
+                                xiaofeizhe.setText("散客");
+                            } else {
+                                xiaofeizhe.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("nickname"));
+                            }
                             ordertime.setText(sdf.format(d));
                             jiedaiy.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("realname"));
                             ordersn.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("ordersn"));

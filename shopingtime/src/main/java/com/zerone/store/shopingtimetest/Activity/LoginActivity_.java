@@ -25,6 +25,7 @@ import com.zerone.store.shopingtimetest.Contants.IpConfig;
 import com.zerone.store.shopingtimetest.DB.impl.AccountInfoDao;
 import com.zerone.store.shopingtimetest.DB.impl.UserInfoImpl;
 import com.zerone.store.shopingtimetest.R;
+import com.zerone.store.shopingtimetest.Utils.AppSharePreferenceMgr;
 import com.zerone.store.shopingtimetest.Utils.LoadingUtils;
 import com.zerone.store.shopingtimetest.Utils.NetUtils;
 import com.zerone.store.shopingtimetest.Utils.NetworkUtil;
@@ -78,6 +79,7 @@ public class LoginActivity_ extends BaseAppActivity {
                             userInfo.setAccount(data.getString("account"));
                             userInfo.setRealName(data.getString("realname"));
                             userInfo.setOrganization_name(data.getString("organization_name"));
+                            userInfo.setFansnamage_id(data.getString("fansnamage_id"));
                             saveUserInfo(userInfo);
                             //记住用账号
                             Account account = new Account();
@@ -123,17 +125,17 @@ public class LoginActivity_ extends BaseAppActivity {
     }
 
     private void initPosInfo() {
-//        Intent intent = new Intent("sunmi.payment.L3");
-//        String transId = System.currentTimeMillis() + "";
-//        intent.putExtra("transId", transId);
-//        intent.putExtra("transType", 13);
-//        intent.putExtra("appId", getPackageName());
-//        if (isIntentExisting(intent)) {
-//            startActivity(intent);
-//            AppSharePreferenceMgr.put(LoginActivity.this, "transType", "13");
-//        } else {
-//            Toast.makeText(this, "此机器上没有安装L3应用", Toast.LENGTH_SHORT).show();
-//        }
+        Intent intent = new Intent("sunmi.payment.L3");
+        String transId = System.currentTimeMillis() + "";
+        intent.putExtra("transId", transId);
+        intent.putExtra("transType", 13);
+        intent.putExtra("appId", getPackageName());
+        if (isIntentExisting(intent)) {
+            startActivity(intent);
+            AppSharePreferenceMgr.put(LoginActivity_.this, "transType", "13");
+        } else {
+            Toast.makeText(this, "此机器上没有安装L3应用", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -189,6 +191,19 @@ public class LoginActivity_ extends BaseAppActivity {
         Map<String, String> loginMap = new HashMap<String, String>();
         loginMap.put("account", user);
         loginMap.put("password", pwd);
+        //终端号
+        String terminalId = (String) AppSharePreferenceMgr.get(LoginActivity_.this, "terminalId", "");
+        //pos商户号
+        String merchantId = (String) AppSharePreferenceMgr.get(LoginActivity_.this, "merchantId", "");
+        //POS机终端号
+        if (terminalId == null && merchantId == null) {
+            Toast.makeText(LoginActivity_.this, "该机器没有绑定这个账户，请联系客服。", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Log.i("URL", "pos商户号=====" + merchantId + "终端号=====" + terminalId);
+        loginMap.put("terminal_num", terminalId);
+        //POS商户号
+        loginMap.put("sft_pos_num", merchantId);
         if (!NetworkUtil.isNetworkAvailable(mContext)) {
             Toast.makeText(mContext, "网络不可用，请检查", Toast.LENGTH_SHORT).show();
             return;
@@ -197,7 +212,6 @@ public class LoginActivity_ extends BaseAppActivity {
         loading_dailog.show();
         NetUtils.netWorkByMethodPost(mContext, loginMap, IpConfig.URL_LOGIN, handler, 0);
     }
-
     /**
      * 自定义对话框
      */
@@ -286,4 +300,5 @@ public class LoginActivity_ extends BaseAppActivity {
                         PackageManager.MATCH_DEFAULT_ONLY);
         return resolveInfo.size() > 0;
     }
+
 }

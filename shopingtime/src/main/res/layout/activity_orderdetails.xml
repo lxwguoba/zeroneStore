@@ -290,7 +290,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:fontFamily="Roboto-Medium"
-                android:text="23685266371222"
                 android:textColor="#000000"
                 android:textSize="14sp" />
 
@@ -316,7 +315,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:fontFamily="Roboto-Medium"
-                android:text="浮生如梦"
                 android:textColor="#000000"
                 android:textSize="14sp" />
 
@@ -342,7 +340,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:fontFamily="Roboto-Medium"
-                android:text="散客"
                 android:textColor="#000000"
                 android:textSize="14sp" />
 
@@ -371,7 +368,6 @@
                 android:ellipsize="end"
                 android:fontFamily="Roboto-Medium"
                 android:paddingRight="15dp"
-                android:text="老顾客8折优惠"
                 android:textColor="#000000"
                 android:textSize="14sp" />
 
