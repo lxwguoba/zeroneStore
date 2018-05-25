@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.zerone.store.shopingtimetest.Adapter.MyAdapter;
 import com.zerone.store.shopingtimetest.Adapter.cart_list.ListGoodsDetails_Adapter;
 import com.zerone.store.shopingtimetest.BaseActivity.BaseAppActivity;
+import com.zerone.store.shopingtimetest.Bean.SearchBean;
 import com.zerone.store.shopingtimetest.Bean.ShopBean;
 import com.zerone.store.shopingtimetest.Bean.refresh.SetDataGoodsOrder;
 import com.zerone.store.shopingtimetest.Bean.shoplistbean.ShopMessageBean;
@@ -154,9 +155,9 @@ public class SearchActivity extends BaseAppActivity {
                             smb.setSp_id(listBuy.get(tsIndex).getSp_id() + "");
                             smb.setCategory_id(listBuy.get(tsIndex).getCategory_id() + "");
                             smb.setSp_name(listBuy.get(tsIndex).getSp_name());
-                            smb.setSp_picture_url(IpConfig.URL_GETPICTURE + listBuy.get(tsIndex).getSp_picture_url());
+                            smb.setSp_picture_url(listBuy.get(tsIndex).getSp_picture_url());
                             smb.setSp_check(true);
-                            smb.setSp_discount(listBuy.get(tsIndex).getSp_discount());
+                            smb.setSp_Detail(listBuy.get(tsIndex).getSp_Detail());
                             smb.setSp_price(listBuy.get(tsIndex).getSp_price());
                             listBuy.set(tsIndex, smb);
                         } else {
@@ -174,12 +175,11 @@ public class SearchActivity extends BaseAppActivity {
                                 smb.setSp_picture_url("");
                             }
                             smb.setSp_check(true);
-                            smb.setSp_discount(shopBean.getDetails());
+                            smb.setSp_Detail(shopBean.getDetails());
                             smb.setSp_price(shopBean.getPrice());
                             listBuy.add(smb);
                         }
                     } else {
-
                         ShopBean shopBean = list.get(index);
                         ShopMessageBean smb = new ShopMessageBean();
                         smb.setSp_count("1");
@@ -192,7 +192,7 @@ public class SearchActivity extends BaseAppActivity {
                             smb.setSp_picture_url("");
                         }
                         smb.setSp_check(true);
-                        smb.setSp_discount(shopBean.getDetails());
+                        smb.setSp_Detail(shopBean.getDetails());
                         smb.setSp_price(shopBean.getPrice());
                         listBuy.add(smb);
                     }
@@ -211,7 +211,7 @@ public class SearchActivity extends BaseAppActivity {
                         showOrderList.setVisibility(View.INVISIBLE);
                     }
                     goodsCount.setText("" + dcount);
-                    search_money.setText("￥" + money);
+                    search_money.setText("￥" + DoubleUtils.setSSWRDouble(money));
                     break;
                 case 511:
                     Toast.makeText(SearchActivity.this, "网络超时，请重试", Toast.LENGTH_SHORT).show();
@@ -225,6 +225,7 @@ public class SearchActivity extends BaseAppActivity {
                     //同一个商品数量加一
                     boolean thesame = false;
                     Integer tindex = null;
+                    EventBus.getDefault().post(new SearchBean(200, listBuy.get(addIndex)));
                     for (int i = 0; i < listBuy.size(); i++) {
                         if (listBuy.get(addIndex).getSp_id().equals(listBuy.get(i).getSp_id())) {
                             thesame = true;
@@ -257,7 +258,7 @@ public class SearchActivity extends BaseAppActivity {
                     //减少
                     int aIndex = (int) msg.obj;
                     //同一个商品数量加一
-                    //
+                    EventBus.getDefault().post(new SearchBean(201, listBuy.get(aIndex)));
                     int acount = Integer.parseInt(listBuy.get(aIndex).getSp_count());
                     if (acount > 0) {
                         acount--;
@@ -278,7 +279,6 @@ public class SearchActivity extends BaseAppActivity {
                     pop_price.setText("￥" + DoubleUtils.setSSWRDouble(d));
                     if (listBuy.size() > 0) {
                         checkCount.setText("已选商品" + listBuy.size() + "种");
-
                     } else {
                         checkCount.setText("亲，没有商品了哦");
                     }
@@ -331,7 +331,7 @@ public class SearchActivity extends BaseAppActivity {
                 } else {
                     smb.setSp_picture_url("");
                 }
-                smb.setSp_discount(lists.get(i).getDetails());
+                smb.setSp_Detail(lists.get(i).getDetails());
                 smb.setSp_price(lists.get(i).getPrice());
                 listBuy.add(smb);
             }

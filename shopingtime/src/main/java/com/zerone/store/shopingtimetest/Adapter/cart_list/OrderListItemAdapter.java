@@ -83,8 +83,15 @@ public class OrderListItemAdapter extends BaseAdapter {
         holder.orderNumber.setText(list.get(position).getOrdersn());
         holder.orderTime.setText(list.get(position).getCreated_at());
         holder.orderMoney.setText(list.get(position).getOrder_price());
+
         holder.discountmoney.setText(list.get(position).getDiscount_price());
-        holder.paymoney.setText("￥" + list.get(position).getPayment_price());
+
+        if ("null".equals(list.get(position).getPayment_price())) {
+            holder.paymoney.setText("无实收");
+        } else {
+            holder.paymoney.setText("￥" + list.get(position).getPayment_price());
+        }
+
         //这个地方需要修改 根据不同的id去判断是什么订单
         //holder.orderStates.setText();
         if ("0".equals(list.get(position).getStatus())) {

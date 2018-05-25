@@ -17,7 +17,7 @@ public class DoubleUtils {
      * @return
      */
     public static String setDouble(double money) {
-        DecimalFormat df = new DecimalFormat("#.00");
+        DecimalFormat df = new DecimalFormat("#0.00");
         return df.format(money);
     }
 

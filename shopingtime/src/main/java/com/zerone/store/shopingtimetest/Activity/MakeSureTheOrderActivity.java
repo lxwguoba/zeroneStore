@@ -207,7 +207,6 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
                         JSONObject outJson = new JSONObject(outSignJson);
                         int return_code = outJson.getInt("return_code");
                         if (return_code == 1) {
-                            Toast.makeText(MakeSureTheOrderActivity.this, "签退成功", Toast.LENGTH_SHORT).show();
                             userHeadImg.setVisibility(View.GONE);
                             vip_.setText("");
                             if (out_dialog != null) {
@@ -482,6 +481,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
     }
 
     //================================客户签入=============================
+
     /**
      * 自定义对话框
      */
@@ -605,6 +605,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
         });
         out_dialog.show();
     }
+
     public void createTask() {
         timer = new Timer();
         task = new TimerTask() {

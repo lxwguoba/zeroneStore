@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -68,7 +67,6 @@ public class OrderDetailsYQXActivity extends AppCompatActivity {
             switch (msg.what) {
                 case 0:
                     String yqxJSon = (String) msg.obj;
-                    Log.i("URL", "AAAAAAAAAAAAAAAAA=" + yqxJSon);
                     loading_dailog.dismiss();
                     try {
                         JSONObject jsonObject = new JSONObject(yqxJSon);
@@ -91,8 +89,11 @@ public class OrderDetailsYQXActivity extends AppCompatActivity {
                             }
                             totalmoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price"));
                             discountmoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
-                            paymoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("payment_price"));
-
+                            if ("null".equals(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("payment_price"))) {
+                                paymoney.setText("无实收");
+                            } else {
+                                paymoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("payment_price"));
+                            }
                             String paytype = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("paytype");
                             int userid = jsonObject.getJSONObject("data").getJSONObject("orderdata").getInt("user_id");
                             if (userid == 0) {

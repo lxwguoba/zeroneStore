@@ -14,7 +14,7 @@ public class ShopMessageBean implements Serializable {
     //商品id
     private String sp_id;
     private String sp_name;
-    private String sp_discount;
+    private String sp_detail;
     private String sp_price;
     private String sp_count;
     private String sp_picture_url;
@@ -60,12 +60,12 @@ public class ShopMessageBean implements Serializable {
         this.sp_name = sp_name;
     }
 
-    public String getSp_discount() {
-        return sp_discount;
+    public String getSp_Detail() {
+        return sp_detail;
     }
 
-    public void setSp_discount(String sp_discount) {
-        this.sp_discount = sp_discount;
+    public void setSp_Detail(String sp_discount) {
+        this.sp_detail = sp_discount;
     }
 
     public String getSp_price() {
@@ -105,7 +105,7 @@ public class ShopMessageBean implements Serializable {
         return "ShopMessageBean{" +
                 "sp_id='" + sp_id + '\'' +
                 ", sp_name='" + sp_name + '\'' +
-                ", sp_discount='" + sp_discount + '\'' +
+                ", sp_discount='" + sp_detail + '\'' +
                 ", sp_price='" + sp_price + '\'' +
                 ", sp_count='" + sp_count + '\'' +
                 ", sp_picture_url='" + sp_picture_url + '\'' +

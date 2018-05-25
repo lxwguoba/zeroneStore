@@ -215,7 +215,7 @@ public class LoginActivity extends BaseAppActivity {
         loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "登录中。。。。");
         loading_dailog.show();
         NetUtils.netWorkByMethodPost(mContext, loginMap, IpConfig.URL_LOGIN, handler, 0);
-
+        String guoguo = "";
     }
 
     /**

@@ -58,17 +58,11 @@ public class UserInfoImpl extends AbstractDao {
             if (cur.moveToFirst()) {
                 do {
                     userInfo.setAccount(cur.getString(cur.getColumnIndex("account")));
-
                     userInfo.setAccount_id(cur.getString(cur.getColumnIndex("account_id")));
-
                     userInfo.setOrganization_id(cur.getString(cur.getColumnIndex("u_orgid")));
-
                     userInfo.setUuid(cur.getString(cur.getColumnIndex("u_uuid")));
-
                     userInfo.setOrganization_name(cur.getString(cur.getColumnIndex("organization_name")));
-
                     userInfo.setRealName(cur.getString(cur.getColumnIndex("realname")));
-
                     userInfo.setFansnamage_id(cur.getString(cur.getColumnIndex("fansnamage_id")));
                 } while (cur.moveToNext());
             }

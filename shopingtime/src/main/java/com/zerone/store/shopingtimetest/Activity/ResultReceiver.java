@@ -142,7 +142,9 @@ public class ResultReceiver extends BroadcastReceiver {
             if (action.equals("sunmi.payment.L3.RESULT")) {
                 //终端号
                 String terminalId = intent.getStringExtra("terminalId");
-                AppSharePreferenceMgr.put(context, "terminalId", terminalId);
+                //去除以0为开头的字符串0
+                String newStr = terminalId.replaceFirst("^0*", "");
+                AppSharePreferenceMgr.put(context, "terminalId", newStr);
                 //商户号
                 String merchantId = intent.getStringExtra("merchantId");
                 AppSharePreferenceMgr.put(context, "merchantId", merchantId);
@@ -150,10 +152,8 @@ public class ResultReceiver extends BroadcastReceiver {
                 String merchantName = intent.getStringExtra("merchantName");
                 //商户英文名
                 String merchantNameEn = intent.getStringExtra("merchantNameEn");
-                String msg = "terminalId=" + terminalId + " merchantId=" + merchantId + " merchantName=" + merchantName + " merchantNameEn" + merchantNameEn;
+                String msg = "terminalId=" + terminalId + " merchantId=" + merchantId + " merchantName=" + merchantName + " merchantNameEn=" + merchantNameEn;
                 Log.i("URL", msg);
-
-
             }
         }
     }

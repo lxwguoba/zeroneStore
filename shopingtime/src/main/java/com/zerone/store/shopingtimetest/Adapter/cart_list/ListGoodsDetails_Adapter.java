@@ -82,7 +82,7 @@ public class ListGoodsDetails_Adapter extends BaseAdapter {
         }
 //        holder.checkshop.setChecked(list.get(position).isSp_check());
         holder.shop_name.setText(list.get(position).getSp_name());
-        holder.shopdiscount.setText(list.get(position).getSp_discount());
+        holder.shopdiscount.setText(list.get(position).getSp_Detail());
         holder.shop_price.setText(list.get(position).getSp_price());
         holder.shop_count.setText(list.get(position).getSp_count());
         String url = list.get(position).getSp_picture_url();

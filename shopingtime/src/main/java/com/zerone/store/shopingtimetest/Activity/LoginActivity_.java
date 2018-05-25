@@ -1,4 +1,3 @@
-
 package com.zerone.store.shopingtimetest.Activity;
 
 import android.app.Dialog;
@@ -112,18 +111,17 @@ public class LoginActivity_ extends BaseAppActivity {
     private TextView agreement;
     private ImageView closeactivity;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_);
         mContext = LoginActivity_.this;
         //页面全屏显示
-//        SystemUIUtils.setStickFullScreen(getWindow().getDecorView());
         initPosInfo();
         initview();
         action();
     }
-
     private void initPosInfo() {
         Intent intent = new Intent("sunmi.payment.L3");
         String transId = System.currentTimeMillis() + "";
@@ -240,7 +238,6 @@ public class LoginActivity_ extends BaseAppActivity {
         });
         dialog.show();
     }
-
     /**
      * 保存账号信息到数据库 用来做返显
      *
@@ -284,12 +281,10 @@ public class LoginActivity_ extends BaseAppActivity {
                 userimpl.upDateUserInfo(userInfo);
             }
             Intent intent = new Intent(mContext, OrderListActvity.class);
-//            Intent intent = new Intent(LoginActivity.this, JavaText.class);
             startActivity(intent);
             LoginActivity_.this.finish();
         } catch (Exception e) {
             e.printStackTrace();
-            Log.i("BBBBB", "保存失败");
         }
     }
 
@@ -300,5 +295,4 @@ public class LoginActivity_ extends BaseAppActivity {
                         PackageManager.MATCH_DEFAULT_ONLY);
         return resolveInfo.size() > 0;
     }
-
 }
