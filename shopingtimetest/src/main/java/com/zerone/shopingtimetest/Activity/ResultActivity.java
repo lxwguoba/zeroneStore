@@ -62,10 +62,24 @@ public class ResultActivity extends BaseAppActivity {
                 case 0:
                     loading_dailog.dismiss();
                     String upDataStates = (String) msg.obj;
+                    try {
+                        JSONObject jsonObject = new JSONObject(upDataStates);
+                        int status = jsonObject.getInt("status");
+                        if (status == 1) {
+                            String order_id = jsonObject.getJSONObject("data").getString("order_id");
+                            gotoPrint(order_id);
+                        } else {
+                            //修改订单失
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                     AppSharePreferenceMgr.remove(ResultActivity.this, "orderid");
                     break;
                 case 2:
                     String upprint = (String) msg.obj;
+
                     loading_dailog.dismiss();
                     PrintBean printBean = new PrintBean();
                     printItemList = new ArrayList<>();
@@ -86,6 +100,10 @@ public class ResultActivity extends BaseAppActivity {
                                 printBean.setOrderTuype("待付款");
                             } else if (payStatus == 1) {
                                 printBean.setOrderTuype("已付款");
+                            }
+                            String discount_price = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price");
+                            if (discount_price != null && discount_price.length() > 0) {
+                                printBean.setPayment_price(discount_price);
                             }
                             printBean.setPmoney(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price"));
                             printBean.setRemark(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("remarks"));
@@ -168,9 +186,10 @@ public class ResultActivity extends BaseAppActivity {
             VoiceUtils.with(this).Play(dmoney + "", true);
             //打印小票  获取订单详情
             orderid = (String) AppSharePreferenceMgr.get(ResultActivity.this, "orderid", "");
-            if (orderid != null && orderid.length() > 0) {
-                gotoPrint(orderid);
-            }
+            goUpDataOrderState();
+//            if (orderid != null && orderid.length() > 0) {
+//                gotoPrint(orderid);
+//            }
         } else if (resultCode == -1) {
             // 交易失败
             Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
@@ -197,7 +216,6 @@ public class ResultActivity extends BaseAppActivity {
      * @param orderid
      */
     private void gotoPrint(String orderid) {
-
         if (userInfo == null) {
             return;
         }
@@ -232,7 +250,6 @@ public class ResultActivity extends BaseAppActivity {
         if (orderid != null && orderid.length() > 0) {
             loginMap.put("order_id", orderid);
         }
-        Log.i("URL", "paymentType=" + paymentType);
         loginMap.put("paytype", "5");
         loginMap.put("timestamp", timestamp);
         loginMap.put("payment_company", "盛付通支付");

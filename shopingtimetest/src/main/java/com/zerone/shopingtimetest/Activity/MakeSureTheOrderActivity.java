@@ -8,13 +8,16 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +49,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by on 2018/3/30 0030 11 36.
@@ -56,6 +61,9 @@ import java.util.Map;
 
 public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberPicker.OnValueChangeListener, NumberPicker.Formatter, NumberPicker.OnScrollListener {
 
+    //=========================定时器========================
+
+    int i = 0;
     private Intent intent;
     private ArrayList<ShopMessageBean> listObj;
     private RelativeLayout submitbtn;
@@ -78,6 +86,13 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
     private NumberPicker numberPicker;
     private EditText discountValue;
     private TextView zhekouValue;
+    private NumberPicker numberPicker1;
+    private String zkou = "";
+    private Button btn_signin;
+    private Dialog dialog;
+    private ScrollView scrollView;
+    private Timer timer;
+    private TimerTask task;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -130,11 +145,17 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
                         loading_dailog.dismiss();
                     }
                     break;
+                case 1100:
+                    int i = (int) msg.obj;
+
+                    if (i == 10) {
+                        stopTimer();
+
+                    }
+                    break;
             }
         }
     };
-    private NumberPicker numberPicker1;
-    private String zkou = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,7 +165,18 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
         initGetUserInfo();
         listObj = (ArrayList<ShopMessageBean>) getIntent().getSerializableExtra("listobj");
         initView();
+        initViewBtn();
         initAction();
+    }
+
+    private void initViewBtn() {
+        btn_signin = (Button) findViewById(R.id.btn_Signin);
+        btn_signin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setSignInCustomer();
+            }
+        });
     }
 
     /**
@@ -171,9 +203,18 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
             listObj.get(i).getSp_price();
             dSOMoney += Double.parseDouble(listObj.get(i).getSp_price()) * Integer.parseInt(listObj.get(i).getSp_count());
         }
-
+        scrollView = (ScrollView) findViewById(R.id.scrollView);
         zhekouValue = (TextView) findViewById(R.id.zhekouValue);
         goodslist = (ListView) findViewById(R.id.goodslist);
+        goodslist.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                //事件处理
+                scrollView.requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
+
         mAdapter = new MakeOrderDetialsListItemAdapter(MakeSureTheOrderActivity.this, listObj);
         goodslist.setAdapter(mAdapter);
         subMoney = (TextView) findViewById(R.id.subMoney);
@@ -266,17 +307,15 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
         if (!TextUtils.isEmpty(remarks)) {
             subMap.put("remarks", remarks);
         }
-
         for (int i = 0; i < listObj.size(); i++) {
             SubmitShopBean submitShopBean = new SubmitShopBean();
             submitShopBean.setId(listObj.get(i).getSp_id());
             submitShopBean.setNum(listObj.get(i).getSp_count());
             submitShopBean.setPrice(listObj.get(i).getSp_price());
             //商品规格
-//               submitShopBean.setSpec("0");
+            //submitShopBean.setSpec("0");
             subbeanlist.add(submitShopBean);
         }
-
         SubmitDataBean sdb = new SubmitDataBean(subbeanlist);
         String listJSOn = JSON.toJSONString(sdb);
         String goodsdata = null;
@@ -285,7 +324,6 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.i("URL", goodsdata);
         if (goodsdata != null) {
             subMap.put("goodsdata", goodsdata);
         }
@@ -329,6 +367,9 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
         });
         dialog.show();
     }
+
+
+    //================================客户签入=============================
 
     /**
      * 自定义对话框
@@ -380,7 +421,6 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
         dialog.show();
     }
 
-
     @Override
     public String format(int value) {
 
@@ -394,5 +434,60 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
 
+    }
+
+    /**
+     * 自定义用户签入的view
+     */
+    private void setSignInCustomer() {
+        dialog = new Dialog(this, R.style.NormalDialogStyle);
+        View view = View.inflate(this, R.layout.activity_dialog_signin_view, null);
+        TextView cancel = view.findViewById(R.id.cancel);
+        TextView confirm = view.findViewById(R.id.confirm);
+        dialog.setContentView(view);
+        //使得点击对话框外部不消失对话框
+        dialog.setCanceledOnTouchOutside(true);
+        //设置对话框的大小
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                stopTimer();
+            }
+        });
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                stopTimer();
+            }
+        });
+        dialog.show();
+        createTask();
+    }
+
+    public void createTask() {
+        timer = new Timer();
+        task = new TimerTask() {
+            @Override
+            public void run() {
+                Log.i("URL", ++i + "");
+                Message message = new Message();
+                message.what = 1100;
+                message.obj = i;
+                handler.sendMessage(message);
+            }
+        };
+        timer.schedule(task, 0, 1000);
+    }
+
+    public void stopTimer() {
+        i = 0;
+        timer.cancel();
+        timer = null;
+        task.cancel();
+        task = null;
+        Log.i("URL", "停止了吗");
+        dialog.dismiss();
     }
 }

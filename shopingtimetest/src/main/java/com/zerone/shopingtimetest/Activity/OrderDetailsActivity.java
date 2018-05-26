@@ -63,6 +63,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
     private List<PrintItem> printItemList;
     private PrintBean printBean;
     private String money;
+    private String discountmoney;
     private TextView listOrderMoney;
     private TextView ordertime;
     private TextView xiaofeizhe;
@@ -75,7 +76,6 @@ public class OrderDetailsActivity extends BaseAppActivity {
     private RelativeLayout relative_back;
     private TextView discount_price;
     Handler handler = new Handler() {
-
         private String discount_money;
 
         @Override
@@ -84,7 +84,6 @@ public class OrderDetailsActivity extends BaseAppActivity {
             switch (msg.what) {
                 case 0:
                     String dykJSon = (String) msg.obj;
-                    Log.i("URL", "dykJSon=" + dykJSon);
                     loading_dailog.dismiss();
                     printBean = new PrintBean();
                     printItemList = new ArrayList<>();
@@ -126,6 +125,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
                             money = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price");
                             listOrderMoney.setText("￥" + money);
                             discount_money = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price");
+                            discountmoney = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price");
                             discount_price.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
                             ordermoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
                             for (int i = 0; i < jsonArray.length(); i++) {
@@ -352,8 +352,8 @@ public class OrderDetailsActivity extends BaseAppActivity {
             public void onClick(View v) {
                 //调起其他支付方式  盛付通支付
                 //吊起支付
-                if (money != null) {
-                    PayUtils.LiftThePayment(money, OrderDetailsActivity.this);
+                if (discountmoney != null) {
+                    PayUtils.LiftThePayment(discountmoney, OrderDetailsActivity.this);
                     dialog1.dismiss();
                     OrderDetailsActivity.this.finish();
                 }

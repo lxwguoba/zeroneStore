@@ -76,7 +76,7 @@
                 android:layout_weight="1"
                 android:fontFamily="SourceHanSansCN-Medium"
                 android:gravity="right"
-                android:text="零壹时购管理系统"
+                android:text="零壹时购管理系统(通用版)"
                 android:textColor="#b8b8b8"
                 android:textSize="14sp" />
 

@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.zerone.shopingtimetest.Adapter.MyAdapter;
 import com.zerone.shopingtimetest.Adapter.cart_list.ListGoodsDetails_Adapter;
 import com.zerone.shopingtimetest.BaseActivity.BaseAppActivity;
+import com.zerone.shopingtimetest.Bean.SearchBean;
 import com.zerone.shopingtimetest.Bean.ShopBean;
 import com.zerone.shopingtimetest.Bean.refresh.SetDataGoodsOrder;
 import com.zerone.shopingtimetest.Bean.shoplistbean.ShopMessageBean;
@@ -222,6 +223,7 @@ public class SearchActivity extends BaseAppActivity {
                 case 200:
                     //添加
                     int addIndex = (int) msg.obj;
+                    EventBus.getDefault().post(new SearchBean(200, listBuy.get(addIndex)));
                     //同一个商品数量加一
                     boolean thesame = false;
                     Integer tindex = null;
@@ -256,6 +258,7 @@ public class SearchActivity extends BaseAppActivity {
                 case 201:
                     //减少
                     int aIndex = (int) msg.obj;
+                    EventBus.getDefault().post(new SearchBean(201, listBuy.get(aIndex)));
                     //同一个商品数量加一
                     //
                     int acount = Integer.parseInt(listBuy.get(aIndex).getSp_count());
@@ -449,6 +452,7 @@ public class SearchActivity extends BaseAppActivity {
         checkCount = shopview.findViewById(R.id.checkCount);
         checkCount.setText(listBuy.size() + "种商品");
         clear_cart = shopview.findViewById(R.id.clear_cart);
+        clear_cart.setVisibility(View.GONE);
         shoplistview = shopview.findViewById(R.id.shoplistview);
         pop_price = shopview.findViewById(R.id.pop_price);
         //结算

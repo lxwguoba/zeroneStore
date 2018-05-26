@@ -18,8 +18,7 @@ public class PrintBean implements Serializable {
     private String pmoney;
     //订单状态
     private String orderTuype;
-
-    //师父金额
+    //实收金额
     private String payment_price;
     //备注
     private String remark;
