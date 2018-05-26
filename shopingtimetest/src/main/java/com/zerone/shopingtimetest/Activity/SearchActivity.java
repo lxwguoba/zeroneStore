@@ -452,6 +452,7 @@ public class SearchActivity extends BaseAppActivity {
         checkCount = shopview.findViewById(R.id.checkCount);
         checkCount.setText(listBuy.size() + "种商品");
         clear_cart = shopview.findViewById(R.id.clear_cart);
+
         clear_cart.setVisibility(View.GONE);
         shoplistview = shopview.findViewById(R.id.shoplistview);
         pop_price = shopview.findViewById(R.id.pop_price);
