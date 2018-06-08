@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,7 +70,6 @@ public class GoodsListAdapter extends RecyclerView.Adapter<GoodsListAdapter.View
         }
         //设置商品图片
         String s = IpConfig.URL_GETPICTURE + dataList.get(position).getThumb().get(0).getThumb();
-        Log.i("URL", "picture::=" + s);
         Glide.with(mContext).load(IpConfig.URL_GETPICTURE + dataList.get(position).getThumb().get(0).getThumb()).centerCrop().placeholder(R.mipmap.app_logo).crossFade().into(holder.shop_picture);
         //通过判别对应位置的数量是否大于0来显示隐藏数量
         //加号按钮点击

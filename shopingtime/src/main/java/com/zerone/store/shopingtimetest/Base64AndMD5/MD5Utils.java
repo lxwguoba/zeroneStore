@@ -11,7 +11,6 @@ public class MD5Utils {
      * @return
      */
     public static String md5Password(String password) {
-
         try {
             // 得到一个信息摘要器
             MessageDigest digest = MessageDigest.getInstance("md5");

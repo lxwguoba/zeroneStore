@@ -132,9 +132,9 @@ public class UserInfoImpl extends AbstractDao {
         values.put("u_uuid", userInfo.getUuid());
         values.put("organization_name", userInfo.getOrganization_name());
         values.put("realname", userInfo.getRealName());
-        int count = db.update("customer", values, "u_id = ?", new String[]{"10"});
+//        new String[]{"10"}
+        int count = db.update("customer", values, "u_id = 10", null);
+        Log.i("URL", "修改数据成功了！！！！！" + count);
         values.clear();
-        Log.i("BBBB", "修改UserInfo的数据时的方式:::=" + count);
     }
-
 }

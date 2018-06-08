@@ -1,4 +1,4 @@
-package com.zerone.store.shopingtimetest.Activity;
+package com.zerone.store.shopingtimetest.Activity.details;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -121,7 +121,6 @@ public class OrderDetailsYQXActivity extends AppCompatActivity {
             }
         }
     };
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

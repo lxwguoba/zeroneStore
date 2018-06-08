@@ -1,4 +1,4 @@
-package com.zerone.store.shopingtimetest.Activity;
+package com.zerone.store.shopingtimetest.Activity.system;
 
 import android.app.Dialog;
 import android.graphics.Color;
@@ -177,6 +177,8 @@ public class SystemSettingsActivity extends BaseAppActivity {
     private Button systemout;
     private boolean remberChecked;
     private LinearLayout layout_back;
+    private TextView storename;
+    private TextView posid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -238,8 +240,12 @@ public class SystemSettingsActivity extends BaseAppActivity {
      */
     private void initView() {
 //        .put(SystemSettingsActivity.this,"remberChecked",isChecked);
-
+        String terminalId = (String) AppSharePreferenceMgr.get(mContext, "terminalId", "");
         layout_back = (LinearLayout) findViewById(R.id.layout_back);
+        storename = (TextView) findViewById(R.id.storename);
+        storename.setText(userInfo.getOrganization_name());
+        posid = (TextView) findViewById(R.id.posid);
+        posid.setText(terminalId);
         system_login_rember_account = (CheckBox) findViewById(R.id.system_login_rember_account);
         system_login_rember_account.setChecked(remberChecked);
         system_kaidan = (CheckBox) findViewById(R.id.system_kaidan);
@@ -277,15 +283,7 @@ public class SystemSettingsActivity extends BaseAppActivity {
             }
         });
 
-//        system_fkjkc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (isChecked) {
-//                    system_fkjkc.setClickable(false);
-//                    system_xdjkc.setClickable(true);
-//                }
-//            }
-//        });
+
         system_fkjkc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -343,6 +341,8 @@ public class SystemSettingsActivity extends BaseAppActivity {
      * 自定义对话框
      */
     private void customDialog() {
+        //终端号
+        final String terminalId = (String) AppSharePreferenceMgr.get(SystemSettingsActivity.this, "terminalId", "");
         final Dialog dialog = new Dialog(this, R.style.NormalDialogStyle);
         View view = View.inflate(this, R.layout.activity_dialog_out_view, null);
         TextView cancel = view.findViewById(R.id.cancel);
@@ -360,7 +360,7 @@ public class SystemSettingsActivity extends BaseAppActivity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SystemSettingsActivity.this.finish();
+                SystemSettingsActivity.this.removeALLActivity();
                 System.exit(0);
             }
         });

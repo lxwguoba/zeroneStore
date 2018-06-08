@@ -15,6 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.gson.Gson;
+import com.zerone.store.shopingtimetest.Activity.orderlist.TheOrderListActivity;
+import com.zerone.store.shopingtimetest.Activity.system.SystemSettingsActivity;
 import com.zerone.store.shopingtimetest.Adapter.SortAdapter;
 import com.zerone.store.shopingtimetest.Bean.SortBean;
 import com.zerone.store.shopingtimetest.Fragment.SortDetailFragment;
@@ -155,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements CheckListener {
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList("right", mSortBean.getCategoryOneArray());
         mSortDetailFragment.setArguments(bundle);
-        mSortDetailFragment.setListener((CheckListener) this);
+        mSortDetailFragment.setListener(this);
         fragmentTransaction.add(R.id.lin_fragment, mSortDetailFragment);
         fragmentTransaction.commit();
     }

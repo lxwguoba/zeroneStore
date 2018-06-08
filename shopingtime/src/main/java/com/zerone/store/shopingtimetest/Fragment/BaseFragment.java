@@ -15,12 +15,6 @@ import com.zerone.store.shopingtimetest.JavaClass.BasePresenter;
 import com.zerone.store.shopingtimetest.OverWriteView.FlexibleLayout;
 import com.zerone.store.shopingtimetest.R;
 
-/**
- * author pangchao
- * created on 2017/5/20
- * email fat_chao@163.com.
- */
-
 public abstract class BaseFragment<T extends BasePresenter, V> extends Fragment implements View.OnClickListener, ViewCallBack<V> {
     public T presenter;
     protected boolean isVisible;
@@ -92,8 +86,8 @@ public abstract class BaseFragment<T extends BasePresenter, V> extends Fragment 
 
     private ViewGroup initViewGroup(LayoutInflater inflater, ViewGroup parent) {
         ViewGroup view = (ViewGroup) inflater.inflate(getLayoutId(), parent, false);
-        tvTitle = (TextView) view.findViewById(R.id.tv_title);
-        tvRight = (TextView) view.findViewById(R.id.tv_right);
+        tvTitle = view.findViewById(R.id.tv_title);
+        tvRight = view.findViewById(R.id.tv_right);
         if (tvRight != null)
             tvRight.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -101,7 +95,7 @@ public abstract class BaseFragment<T extends BasePresenter, V> extends Fragment 
                     onRightClick();
                 }
             });
-        mLinearLayout = (LinearLayout) view.findViewById(R.id.top_layout);
+        mLinearLayout = view.findViewById(R.id.top_layout);
         initCustomView(view);
         return view;
     }

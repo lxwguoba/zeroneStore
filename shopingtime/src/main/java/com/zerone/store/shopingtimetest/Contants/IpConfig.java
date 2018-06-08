@@ -11,7 +11,7 @@ public class IpConfig {
     //测试版消费共富版
     public static final String URL_CS = "http://develop.01nnt.com/api/androidRetailApi/";
     //通用的接口
-    public static final String URL = URL_CS;
+    public static final String URL = URL_ZS;
     //登录接口
     public static final String URL_LOGIN = URL + "login";
     //分类接口
@@ -19,7 +19,7 @@ public class IpConfig {
     // 商品查询接口
     public static final String URL_SERACH = URL + "goodslist";
     //获取图片接口
-    public static final String URL_GETPICTURE = "http://develop.01nnt.com/";
+    public static final String URL_GETPICTURE = "http://o2o.01nnt.com/";
     public static final String URL_GOODSLIST = URL + "goodslist";
     //开启/关闭零库存开单接口
     public static final String URL_KQLKC = URL + "allow_zero_stock";

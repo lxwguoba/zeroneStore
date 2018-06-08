@@ -1,4 +1,4 @@
-package com.zerone.store.shopingtimetest.Activity;
+package com.zerone.store.shopingtimetest.Activity.resutl;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,6 +16,7 @@ import com.zerone.store.shopingtimetest.BaseActivity.BaseAppActivity;
 import com.zerone.store.shopingtimetest.Bean.UserInfo;
 import com.zerone.store.shopingtimetest.Bean.print.PrintBean;
 import com.zerone.store.shopingtimetest.Bean.print.PrintItem;
+import com.zerone.store.shopingtimetest.Bean.refresh.RefreshBean;
 import com.zerone.store.shopingtimetest.Contants.IpConfig;
 import com.zerone.store.shopingtimetest.DB.impl.UserInfoImpl;
 import com.zerone.store.shopingtimetest.R;
@@ -26,6 +27,7 @@ import com.zerone.store.shopingtimetest.Utils.UtilsTime;
 import com.zerone.store.shopingtimetest.Utils.printutils.PrintUtils;
 import com.zyao89.view.zloading.ZLoadingDialog;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,7 +56,6 @@ public class ResultActivity extends BaseAppActivity {
     private ResultActivity mContext;
     Handler handler = new Handler() {
         private List<PrintItem> printItemList;
-
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -64,6 +65,7 @@ public class ResultActivity extends BaseAppActivity {
                     String upDataStates = (String) msg.obj;
                     try {
                         JSONObject jsonObject = new JSONObject(upDataStates);
+                        Log.i("URL", jsonObject.toString());
                         int status = jsonObject.getInt("status");
                         if (status == 1) {
                             String order_id = jsonObject.getJSONObject("data").getString("order_id");
@@ -86,6 +88,7 @@ public class ResultActivity extends BaseAppActivity {
                         JSONObject jsonObject = new JSONObject(upprint);
                         int status = jsonObject.getInt("status");
                         if (status == 1) {
+                            EventBus.getDefault().post(new RefreshBean("收款通知刷新", 100));
                             //封装打印类 的数据
                             long aLong = jsonObject.getJSONObject("data").getJSONObject("orderdata").getLong("created_at");
                             //下单时间
@@ -126,7 +129,6 @@ public class ResultActivity extends BaseAppActivity {
                         } else if (status == 0) {
                             Toast.makeText(mContext, "没有这个订单，打印失败", Toast.LENGTH_SHORT).show();
                         }
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -221,6 +223,7 @@ public class ResultActivity extends BaseAppActivity {
         if (userInfo == null) {
             return;
         }
+
         String timestamp = System.currentTimeMillis() + "";
         String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
         Map<String, String> loginMap = new HashMap<String, String>();
@@ -234,7 +237,7 @@ public class ResultActivity extends BaseAppActivity {
         loginMap.put("paytype", "5");
         loginMap.put("timestamp", timestamp);
         loginMap.put("payment_company", "乐刷支付");
-        loading_dailog = LoadingUtils.getDailog(ResultActivity.this, Color.RED, "修改中。。。");
+        loading_dailog = LoadingUtils.getDailog(ResultActivity.this, Color.RED, "修改中...");
         loading_dailog.show();
         NetUtils.netWorkByMethodPost(ResultActivity.this, loginMap, IpConfig.URL_UPDATAPAY, handler, 0);
     }

@@ -1,4 +1,4 @@
-package com.zerone.store.shopingtimetest.Activity;
+package com.zerone.store.shopingtimetest.Activity.orderlist;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -6,10 +6,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,20 +16,26 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zerone.store.shopingtimetest.Activity.details.OrderDetailsDFKActivity;
 import com.zerone.store.shopingtimetest.Adapter.cart_list.OrderListItemAdapter;
 import com.zerone.store.shopingtimetest.Base64AndMD5.CreateToken;
+import com.zerone.store.shopingtimetest.BaseActivity.BaseAppActivity;
 import com.zerone.store.shopingtimetest.Bean.UserInfo;
 import com.zerone.store.shopingtimetest.Bean.order.OrderBean;
+import com.zerone.store.shopingtimetest.Bean.refresh.RefreshBean;
 import com.zerone.store.shopingtimetest.Contants.IpConfig;
-import com.zerone.store.shopingtimetest.DB.impl.UserInfoImpl;
 import com.zerone.store.shopingtimetest.R;
 import com.zerone.store.shopingtimetest.Utils.AppSharePreferenceMgr;
 import com.zerone.store.shopingtimetest.Utils.DoubleUtils;
+import com.zerone.store.shopingtimetest.Utils.GetUserInfo;
 import com.zerone.store.shopingtimetest.Utils.LoadingUtils;
 import com.zerone.store.shopingtimetest.Utils.NetUtils;
 import com.zerone.store.shopingtimetest.view.PullRefreshLayout;
 import com.zyao89.view.zloading.ZLoadingDialog;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,7 +53,7 @@ import java.util.Map;
  * 订单类表
  */
 
-public class TheOrderListActivity extends AppCompatActivity implements PullRefreshLayout.OnRefreshListener {
+public class TheOrderListActivity extends BaseAppActivity implements PullRefreshLayout.OnRefreshListener {
 
     private ListView orderlistview;
     private List<OrderBean> list;
@@ -93,47 +97,6 @@ public class TheOrderListActivity extends AppCompatActivity implements PullRefre
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-//                case 0:
-//                    list.clear();
-//                    String orderListJSon = (String) msg.obj;
-//                    Log.i("URL", orderListJSon);
-//                    loading_dailog.dismiss();
-//                    try {
-//                        JSONObject jsonObject = new JSONObject(orderListJSon);
-//                        int status = jsonObject.getInt("status");
-//                        if (status == 1) {
-//                            JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("orderlist");
-//                            for (int i = 0; i < jsonArray.length(); i++) {
-//                                JSONObject orderbean = jsonArray.getJSONObject(i);
-//                                OrderBean ob = new OrderBean();
-//                                ob.setId(orderbean.getString("id"));
-//                                ob.setStatus(orderbean.getString("status"));
-//                                ob.setOrder_price(orderbean.getString("order_price"));
-//                                ob.setOrdersn(orderbean.getString("ordersn"));
-//                                long created_at = Long.parseLong(orderbean.getString("created_at")) * 1000;
-//                                Date d = new Date(created_at);
-//                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                                ob.setCreated_at(sdf.format(d));
-//                                list.add(ob);
-//                            }
-//                            orderTotal.setText(jsonObject.getJSONObject("data").getString("total_num"));
-//                            orderTotalPrice.setText(DoubleUtils.setSSWRDouble(Double.parseDouble(jsonObject.getJSONObject("data").getString("total_amount"))));
-//                        } else if (status == 0) {
-//                            //获取失败
-//                            customDialog(jsonObject.getString("msg") + "，2秒后自动关闭");
-//                        }
-//                    } catch (JSONException e) {
-//                    } finally {
-//                        if (mSwipeLayout != null) {
-//                            if (mSwipeLayout.isRefreshing()) {
-//                                //关闭刷新动画
-//                                mSwipeLayout.setRefreshing(false);
-//                            }
-//                        }
-//                        orderListItemAdapter.notifyDataSetChanged();
-//                    }
-//                    break;
-
                 case 0:
                     list.clear();
                     String orderListJSon = (String) msg.obj;
@@ -246,13 +209,24 @@ public class TheOrderListActivity extends AppCompatActivity implements PullRefre
                         orderListItemAdapter.notifyDataSetChanged();
                     }
                     break;
+                case 100:
+                    try {
+                        if (post == 0) {
+                            initGetDataOrderList("");
+                        } else if (post == 1) {
+                            initGetDataOrderList("'0'");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
                 case 511:
                     Toast.makeText(TheOrderListActivity.this, "网络超时，请重试", Toast.LENGTH_SHORT).show();
                     loading_dailog.dismiss();
                     break;
                 case 20000:
                     int postion = (int) msg.obj;
-                    Intent intent = new Intent(TheOrderListActivity.this, OrderDetailsActivity.class);
+                    Intent intent = new Intent(TheOrderListActivity.this, OrderDetailsDFKActivity.class);
                     intent.putExtra("orderid", list.get(postion).getId());
                     startActivityForResult(intent, 1220);
                     break;
@@ -268,18 +242,20 @@ public class TheOrderListActivity extends AppCompatActivity implements PullRefre
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //去除标题栏
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        //去除状态栏
+        //去除状态栏
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_theorderlsit);
+        //注册广播接受器
+        EventBus.getDefault().register(this);
         list = new ArrayList<>();
         post = 0;
         mContext = this;
-        initGetUserInfo();
+        userInfo = GetUserInfo.initGetUserInfo(this);
         initView();
-        mSwipeLayout.setRefreshListener(this);
+        if (mSwipeLayout != null) {
+            mSwipeLayout.setRefreshListener(this);
+        }
         action();
         initGetDataOrderList("");
     }
@@ -294,13 +270,9 @@ public class TheOrderListActivity extends AppCompatActivity implements PullRefre
         orderTotalPrice = (TextView) findViewById(R.id.orderTotalPrice);
         //导航按钮============================
         allrelative = (RelativeLayout) findViewById(R.id.allrelative);
-
         allrelative_dfk = (RelativeLayout) findViewById(R.id.allrelative_dfk);
-
         allrelative_wc = (RelativeLayout) findViewById(R.id.allrelative_wc);
-
         allrelative_qx = (RelativeLayout) findViewById(R.id.allrelative_qx);
-
         alltvorder = (TextView) findViewById(R.id.alltvorder);
         alltvdfk = (TextView) findViewById(R.id.alltvdfk);
         alltvywc = (TextView) findViewById(R.id.alltvywc);
@@ -388,7 +360,6 @@ public class TheOrderListActivity extends AppCompatActivity implements PullRefre
                 orderState = "-1";
             }
         });
-
         layout_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -403,17 +374,21 @@ public class TheOrderListActivity extends AppCompatActivity implements PullRefre
      */
     private void initGetDataOrderList(String status) {
         //默认是没有开启的
-        String timestamp = System.currentTimeMillis() + "";
-        String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
-        Map<String, String> getOrderDetails = new HashMap<String, String>();
-        getOrderDetails.put("account_id", userInfo.getAccount_id());
-        getOrderDetails.put("organization_id", userInfo.getOrganization_id());
-        getOrderDetails.put("status", status);
-        getOrderDetails.put("token", token);
-        getOrderDetails.put("timestamp", timestamp);
-        loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取订单列表。。。。");
-        loading_dailog.show();
-        NetUtils.netWorkByMethodPost(mContext, getOrderDetails, IpConfig.URL_ORDERLIST, handler, 0);
+        try {
+            String timestamp = System.currentTimeMillis() + "";
+            String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
+            Map<String, String> getOrderDetails = new HashMap<String, String>();
+            getOrderDetails.put("account_id", userInfo.getAccount_id());
+            getOrderDetails.put("organization_id", userInfo.getOrganization_id());
+            getOrderDetails.put("status", status);
+            getOrderDetails.put("token", token);
+            getOrderDetails.put("timestamp", timestamp);
+            loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取订单列表。。。。");
+            loading_dailog.show();
+            NetUtils.netWorkByMethodPost(mContext, getOrderDetails, IpConfig.URL_ORDERLIST, handler, 0);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -433,7 +408,6 @@ public class TheOrderListActivity extends AppCompatActivity implements PullRefre
         }
         int page = Integer.parseInt(per_page);
         page++;
-        Log.i("URL", page + "");
         String timestamp = System.currentTimeMillis() + "";
         String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
         Map<String, String> getOrderDetails = new HashMap<String, String>();
@@ -446,18 +420,6 @@ public class TheOrderListActivity extends AppCompatActivity implements PullRefre
         loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "加载中。。。。");
         loading_dailog.show();
         NetUtils.netWorkByMethodPost(mContext, getOrderDetails, IpConfig.URL_ORDERLIST, handler, 1);
-    }
-
-    /**
-     * 获取用户信息
-     */
-    private void initGetUserInfo() {
-        UserInfoImpl userInfoImpl = new UserInfoImpl(mContext);
-        try {
-            userInfo = userInfoImpl.getUserInfo("10");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -517,5 +479,20 @@ public class TheOrderListActivity extends AppCompatActivity implements PullRefre
     @Override
     public void loadMoreFinished() {
         refreshpushdown(orderState);
+    }
+
+    /**
+     * 接收搜索框的添加数据的商品信息
+     *
+     * @param refreshBean
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void freshBuy(RefreshBean refreshBean) {
+        //接收到清空购车的信息了
+        if (refreshBean.getRefreshCode() == 100) {
+            Message message = new Message();
+            message.what = 100;
+            handler.sendMessage(message);
+        }
     }
 }

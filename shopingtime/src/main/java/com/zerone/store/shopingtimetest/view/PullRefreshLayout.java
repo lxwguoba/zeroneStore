@@ -140,8 +140,6 @@ public class PullRefreshLayout extends ViewGroup {
                 break;
             case MotionEvent.ACTION_MOVE:
                 int dy = mlastMoveY - y;
-
-
                 // 一直在下拉
                 if (getScrollY() <= 0 && dy <= 0) {
                     if (mStatus == Status.TRY_LOADMORE) {
@@ -215,7 +213,6 @@ public class PullRefreshLayout extends ViewGroup {
                 } else if (y < mLastYIntercept) {
                     View child = getChildAt(lastChildIndex);
                     intercept = getLoadMoreIntercept(child);
-
                     if (intercept) {
                         updateStatus(Status.TRY_LOADMORE);
                     }
@@ -237,7 +234,6 @@ public class PullRefreshLayout extends ViewGroup {
     /*汇总判断 刷新和加载是否拦截*/
     private boolean getRefreshIntercept(View child) {
         boolean intercept = false;
-
         if (child instanceof AdapterView) {
             intercept = adapterViewRefreshIntercept(child);
         } else if (child instanceof ScrollView) {
@@ -266,22 +262,34 @@ public class PullRefreshLayout extends ViewGroup {
     private boolean adapterViewRefreshIntercept(View child) {
         boolean intercept = true;
         AdapterView adapterChild = (AdapterView) child;
-        if (adapterChild.getFirstVisiblePosition() != 0
-                || adapterChild.getChildAt(0).getTop() != 0) {
-            intercept = false;
+        try {
+            if (adapterChild.getFirstVisiblePosition() != 0
+                    || adapterChild.getChildAt(0).getTop() != 0) {
+                intercept = false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            return intercept;
         }
-        return intercept;
     }
 
     // 判断AdapterView加载更多是否拦截
     private boolean adapterViewLoadMoreIntercept(View child) {
         boolean intercept = false;
-        AdapterView adapterChild = (AdapterView) child;
-        if (adapterChild.getLastVisiblePosition() == adapterChild.getCount() - 1 &&
-                (adapterChild.getChildAt(adapterChild.getChildCount() - 1).getBottom() >= getMeasuredHeight())) {
-            intercept = true;
+        try {
+            AdapterView adapterChild = (AdapterView) child;
+            if (adapterChild.getLastVisiblePosition() == adapterChild.getCount() - 1 &&
+                    (adapterChild.getChildAt(adapterChild.getChildCount() - 1).getBottom() >= getMeasuredHeight())) {
+                intercept = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            return intercept;
         }
-        return intercept;
+
+
     }
   /*汇总判断 刷新和加载是否拦截*/
 
@@ -337,12 +345,19 @@ public class PullRefreshLayout extends ViewGroup {
         scrollY = scrollY > mEffectiveHeaderHeight ? mEffectiveHeaderHeight : scrollY;
         float angle = (float) (scrollY * 1.0 / mEffectiveHeaderHeight * 180);
         mHeaderArrow.setRotation(angle);
-
-
         if (getScrollY() <= -mEffectiveHeaderHeight) {
             mHeaderText.setText("松开刷新");
         } else {
             mHeaderText.setText("下拉刷新");
+        }
+    }
+
+
+    public void setmFooterText() {
+        if (getScrollY() >= mEffectiveHeaderHeight) {
+            mFooterText.setText("没有更多了！");
+        } else {
+            mFooterText.setText("没有更多了！");
         }
     }
 

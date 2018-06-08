@@ -55,7 +55,6 @@
         android:layout_marginTop="13dp"
         android:background="#fff"
         android:orientation="vertical">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -78,7 +77,7 @@
                 android:layout_weight="1"
                 android:fontFamily="SourceHanSansCN-Medium"
                 android:gravity="right"
-                android:text="零壹时购管理系统(共富版)"
+                android:text="零壹坊管理系统(共富版)"
                 android:textColor="#b8b8b8"
                 android:textSize="14sp" />
 
@@ -125,6 +124,83 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="91dp"
+        android:layout_marginTop="10dp"
+        android:background="#fff"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingLeft="17dp"
+            android:paddingRight="17dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="SourceHanSansCN-Medium"
+                android:text="店铺名称"
+                android:textColor="#333333"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/storename"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="SourceHanSansCN-Medium"
+                android:gravity="right"
+                android:text="馨雨奶茶店"
+                android:textColor="#b8b8b8"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#f1f5f8" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingLeft="17dp"
+            android:paddingRight="17dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="SourceHanSansCN-Medium"
+                android:text="终端号"
+                android:textColor="#333333"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/posid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="SourceHanSansCN-Medium"
+                android:gravity="right"
+                android:text="V1.0版"
+                android:textColor="#b8b8b8"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:src="@mipmap/system_into" />
+
+        </LinearLayout>
+
+    </LinearLayout>
     <!--about us-->
     <LinearLayout
         android:layout_width="match_parent"
@@ -298,16 +374,14 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
+        android:layout_height="match_parent">
         <Button
             android:id="@+id/systemout"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:background="#fe4543"

@@ -13,10 +13,12 @@ public class UserInfo implements Serializable {
 
     private String account_id;
     private String account;
+    //店铺id
     private String organization_id;
     private String uuid;
     private String organization_name;
     private String realName;
+    //公众号id也称联盟id
     private String fansnamage_id;
 
 
@@ -87,6 +89,9 @@ public class UserInfo implements Serializable {
                 ", account='" + account + '\'' +
                 ", organization_id='" + organization_id + '\'' +
                 ", uuid='" + uuid + '\'' +
+                ", organization_name='" + organization_name + '\'' +
+                ", realName='" + realName + '\'' +
+                ", fansnamage_id='" + fansnamage_id + '\'' +
                 '}';
     }
 }

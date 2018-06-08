@@ -1,4 +1,4 @@
-package com.zerone.store.shopingtimetest.Activity;
+package com.zerone.store.shopingtimetest.Activity.login;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zerone.store.shopingtimetest.Activity.productlsit.OrderListActvity;
 import com.zerone.store.shopingtimetest.BaseActivity.BaseAppActivity;
 import com.zerone.store.shopingtimetest.Bean.UserInfo;
 import com.zerone.store.shopingtimetest.Bean.login.Account;
@@ -43,7 +44,6 @@ import java.util.Map;
  */
 
 public class LoginActivity extends BaseAppActivity {
-
     private ZLoadingDialog loading_dailog;
     private EditText username;
     private EditText password;
@@ -194,7 +194,6 @@ public class LoginActivity extends BaseAppActivity {
         Map<String, String> loginMap = new HashMap<String, String>();
         loginMap.put("account", user);
         loginMap.put("password", pwd);
-
         //终端号
         String terminalId = (String) AppSharePreferenceMgr.get(LoginActivity.this, "terminalId", "");
         //pos商户号
@@ -215,7 +214,7 @@ public class LoginActivity extends BaseAppActivity {
         loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "登录中。。。。");
         loading_dailog.show();
         NetUtils.netWorkByMethodPost(mContext, loginMap, IpConfig.URL_LOGIN, handler, 0);
-        String guoguo = "";
+
     }
 
     /**

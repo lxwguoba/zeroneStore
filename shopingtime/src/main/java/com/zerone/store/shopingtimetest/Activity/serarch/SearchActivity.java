@@ -1,4 +1,4 @@
-package com.zerone.store.shopingtimetest.Activity;
+package com.zerone.store.shopingtimetest.Activity.serarch;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zerone.store.shopingtimetest.Activity.makesureorder.MakeSureTheOrderActivity;
 import com.zerone.store.shopingtimetest.Adapter.MyAdapter;
 import com.zerone.store.shopingtimetest.Adapter.cart_list.ListGoodsDetails_Adapter;
 import com.zerone.store.shopingtimetest.BaseActivity.BaseAppActivity;
@@ -63,7 +64,6 @@ public class SearchActivity extends BaseAppActivity {
     private LinearLayoutManager mLayoutManager;
     private MyAdapter mAdapter;
     private RecyclerView goods_recycleView;
-
     private List<ShopMessageBean> listBuy;
     private RelativeLayout showOrderList;
     private TextView goodsCount;
@@ -449,6 +449,7 @@ public class SearchActivity extends BaseAppActivity {
         checkCount = shopview.findViewById(R.id.checkCount);
         checkCount.setText(listBuy.size() + "种商品");
         clear_cart = shopview.findViewById(R.id.clear_cart);
+        clear_cart.setVisibility(View.GONE);
         shoplistview = shopview.findViewById(R.id.shoplistview);
         pop_price = shopview.findViewById(R.id.pop_price);
         //结算
@@ -495,9 +496,7 @@ public class SearchActivity extends BaseAppActivity {
                 mPopupWindow.dismiss();
             }
         });
-
     }
-
     public void setPopWindow() {
 
         mPopupWindow = new PopupWindow(shopview, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);

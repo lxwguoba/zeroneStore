@@ -32,7 +32,6 @@ public class NetUtils {
      * @param responseID ���ܷ��返回码
      */
     public static void netWorkByMethodPost(final Context context, final Map<String, String> map, String url, final Handler handler, final int responseID) {
-//        RequestQueue mQueue = Volley.newRequestQueue(context);
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
                 url,
                 new Response.Listener<String>() {
@@ -49,8 +48,9 @@ public class NetUtils {
             public void onErrorResponse(VolleyError error) {
                 Message message = new Message();
                 message.what = 511;
-                message.obj = error.toString();
+                message.obj = error;
                 handler.sendMessage(message);
+
             }
         }) {
             @Override
@@ -143,5 +143,6 @@ public class NetUtils {
         MyApplication.getQueues().add(new ClearCacheRequest(cache, null));
         MyApplication.getQueues().add(stringRequest);
     }
+
 
 }

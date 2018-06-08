@@ -12,36 +12,48 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/relative_back"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginLeft="23dp"
             android:layout_marginRight="23dp">
 
-            <ImageView
-                android:id="@+id/back"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_centerVertical="true"
-                android:src="@mipmap/syste_reture" />
-
-            <TextView
+            <RelativeLayout
+                android:id="@+id/relative_back"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="30dp"
-                android:fontFamily="SourceHanSansCN-Medium"
-                android:text="订单详情"
-                android:textColor="#000000"
-                android:textSize="20sp" />
+                android:layout_height="match_parent">
 
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="4dp"
+                <ImageView
+                    android:id="@+id/back"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/syste_reture" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="30dp"
+                    android:fontFamily="SourceHanSansCN-Medium"
+                    android:text="订单详情"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/refresh_data"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@mipmap/pull_down_menu"
-                android:visibility="gone" />
+                android:gravity="right">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@mipmap/icon_refresh" />
+            </LinearLayout>
+
 
         </RelativeLayout>
 
@@ -221,7 +233,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="Roboto-Medium"
-                    android:text="￥500"
                     android:textColor="#f4545a"
                     android:textSize="14sp" />
 
@@ -239,7 +250,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="AdobeHeitiStd-Regular"
-                    android:text="折扣价："
+                    android:text="实收："
                     android:textColor="#333333"
                     android:textSize="14sp" />
 
@@ -248,7 +259,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="Roboto-Medium"
-                    android:text="￥500"
                     android:textColor="#f4545a"
                     android:textSize="14sp" />
 
@@ -370,19 +380,8 @@
                 android:paddingRight="15dp"
                 android:textColor="#000000"
                 android:textSize="14sp" />
-
-            <!--<ImageView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@mipmap/unpaid_into"-->
-            <!--android:layout_marginRight="15dp"-->
-            <!--/>-->
-
         </LinearLayout>
-
-
     </LinearLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -419,7 +418,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="SourceHanSansCN-Medium"
-                    android:text="￥560.00"
                     android:textColor="#ffffff"
                     android:textSize="16sp" />
             </LinearLayout>

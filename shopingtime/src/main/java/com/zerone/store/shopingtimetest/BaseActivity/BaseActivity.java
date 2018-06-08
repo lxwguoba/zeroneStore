@@ -37,6 +37,7 @@ public class BaseActivity extends Activity {
         oContext = this;
         // 调用添加方法
         addActivity();
+
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.zerone.store.shopingtimetest.Activity;
+package com.zerone.store.shopingtimetest.Activity.details;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,6 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.qzs.voiceannouncementlibrary.VoiceUtils;
+import com.android.volley.NetworkError;
+import com.android.volley.ParseError;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
 import com.zerone.store.shopingtimetest.Adapter.cart_list.OrderDetialsListItemAdapter;
 import com.zerone.store.shopingtimetest.Base64AndMD5.CreateToken;
 import com.zerone.store.shopingtimetest.BaseActivity.BaseAppActivity;
@@ -50,10 +54,10 @@ import java.util.Map;
  * Author  LiuXingWen
  */
 
-public class OrderDetailsActivity extends BaseAppActivity {
+public class OrderDetailsDFKActivity extends BaseAppActivity {
     private ListView listView;
     private UserInfo userInfo;
-    private OrderDetailsActivity mContext;
+    private OrderDetailsDFKActivity mContext;
     private ZLoadingDialog loading_dailog;
     private Intent intent;
     private List<GoodsBean> list;
@@ -76,6 +80,9 @@ public class OrderDetailsActivity extends BaseAppActivity {
     private Dialog dialog1;
     private RelativeLayout relative_back;
     private TextView discount_price;
+    private String orderid;
+    private LinearLayout refresh_data;
+    private Dialog dpay;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -83,7 +90,6 @@ public class OrderDetailsActivity extends BaseAppActivity {
             switch (msg.what) {
                 case 0:
                     String dykJSon = (String) msg.obj;
-                    Log.i("URL", "dykJSon=" + dykJSon);
                     loading_dailog.dismiss();
                     printBean = new PrintBean();
                     printItemList = new ArrayList<>();
@@ -132,6 +138,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
                             } else {
                                 xiaofeizhe.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("nickname"));
                             }
+                            list.clear();
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 GoodsBean gb = new GoodsBean();
                                 gb.setGoods_total(jsonArray.getJSONObject(i).getString("total"));
@@ -162,17 +169,16 @@ public class OrderDetailsActivity extends BaseAppActivity {
                     break;
                 case 1:
                     String qxJSOn = (String) msg.obj;
-                    Log.i("URL", "qxJSOn==" + qxJSOn);
                     try {
                         JSONObject jsonObject = new JSONObject(qxJSOn);
                         int status = jsonObject.getInt("status");
                         if (status == 1) {
-                            Toast.makeText(OrderDetailsActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(OrderDetailsDFKActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                             setResult(RESULT_OK, intent);
                             dialog.dismiss();
-                            OrderDetailsActivity.this.finish();
+                            OrderDetailsDFKActivity.this.finish();
                         } else if (status == 0) {
-                            Toast.makeText(OrderDetailsActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(OrderDetailsDFKActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -184,22 +190,12 @@ public class OrderDetailsActivity extends BaseAppActivity {
                     }
                     break;
                 case 2:
-                    /**
-                     * {
-                     status: "1",
-                     msg: "现金付款成功",
-                     data: {
-                     order_id: "98"
-                     }
-                     }
-                     */
                     String cashJSon = (String) msg.obj;
-                    Log.i("URL", "cashJSon=" + cashJSon);
                     try {
                         JSONObject jsonObject = new JSONObject(cashJSon);
                         int status = jsonObject.getInt("status");
                         if (status == 1) {
-                            Toast.makeText(OrderDetailsActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(OrderDetailsDFKActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                             //吊起打印机
                             if (printBean != null) {
                                 if (printBean != null) {
@@ -211,34 +207,60 @@ public class OrderDetailsActivity extends BaseAppActivity {
                                 }
                             }
                             //语音播报
-                            VoiceUtils.with(OrderDetailsActivity.this).Play(jsonObject.getJSONObject("data").getString("payment_price"), true);
+                            VoiceUtils.with(OrderDetailsDFKActivity.this).Play(jsonObject.getJSONObject("data").getString("payment_price"), true);
                             setResult(300, intent);
-                            OrderDetailsActivity.this.finish();
+                            OrderDetailsDFKActivity.this.finish();
                         } else {
-                            Toast.makeText(OrderDetailsActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(OrderDetailsDFKActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } finally {
-                        loading_dailog.dismiss();
-                        dialog1.dismiss();
+                        if (loading_dailog != null) {
+                            loading_dailog.dismiss();
+                        }
+                        if (dpay != null) {
+                            dpay.dismiss();
+                        }
                         subSurePay.setEnabled(true);
                     }
                     break;
                 case 511:
-                    Toast.makeText(OrderDetailsActivity.this, "网络超时，请重试", Toast.LENGTH_SHORT).show();
-                    loading_dailog.dismiss();
+                    VolleyError error = (VolleyError) msg.obj;
+                    if (error != null) {
+                        if (error instanceof TimeoutError) {
+                            Toast.makeText(OrderDetailsDFKActivity.this, "网络请求超时，请重试！", Toast.LENGTH_SHORT).show();
+                            loading_dailog.dismiss();
+                            return;
+                        }
+                        if (error instanceof ServerError) {
+                            Toast.makeText(OrderDetailsDFKActivity.this, "服务器异常", Toast.LENGTH_SHORT).show();
+                            loading_dailog.dismiss();
+                            return;
+                        }
+                        if (error instanceof NetworkError) {
+                            Toast.makeText(OrderDetailsDFKActivity.this, "请检查网络，或点击右上角的刷新", Toast.LENGTH_SHORT).show();
+                            loading_dailog.dismiss();
+                            return;
+                        }
+                        if (error instanceof ParseError) {
+                            Toast.makeText(OrderDetailsDFKActivity.this, "数据格式错误", Toast.LENGTH_SHORT).show();
+                            loading_dailog.dismiss();
+                            return;
+                        }
+                        Toast.makeText(OrderDetailsDFKActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                        loading_dailog.dismiss();
+                    }
                     break;
             }
         }
     };
-    private String orderid;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orderdetails);
-        mContext = OrderDetailsActivity.this;
+        mContext = OrderDetailsDFKActivity.this;
         list = new ArrayList<>();
         intent = getIntent();
         orderid = intent.getStringExtra("orderid");
@@ -261,11 +283,14 @@ public class OrderDetailsActivity extends BaseAppActivity {
             @Override
             public void onClick(View v) {
                 if (orderid != null) {
-                    subSurePay.setEnabled(false);
-                    AppSharePreferenceMgr.put(OrderDetailsActivity.this, "orderid", orderid);
-                    payDialog();
+                    if (money != null && money.length() > 0) {
+                        AppSharePreferenceMgr.put(OrderDetailsDFKActivity.this, "orderid", orderid);
+                        payDialog();
+                    } else {
+                        Toast.makeText(OrderDetailsDFKActivity.this, "获取订单失败，请刷新页面", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(OrderDetailsActivity.this, "订单不存在哦", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrderDetailsDFKActivity.this, "订单不存在哦", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -273,7 +298,14 @@ public class OrderDetailsActivity extends BaseAppActivity {
         relative_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OrderDetailsActivity.this.finish();
+                OrderDetailsDFKActivity.this.finish();
+            }
+        });
+
+        refresh_data.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initCheckBoxStates();
             }
         });
     }
@@ -299,6 +331,7 @@ public class OrderDetailsActivity extends BaseAppActivity {
         beizhu = (TextView) findViewById(R.id.beizhu);
         relative_back = (RelativeLayout) findViewById(R.id.relative_back);
         back = (ImageView) findViewById(R.id.back);
+        refresh_data = (LinearLayout) findViewById(R.id.refresh_data);
     }
 
     /**
@@ -323,10 +356,8 @@ public class OrderDetailsActivity extends BaseAppActivity {
         if (orderid != null) {
             getOrderDetails.put("order_id", orderid);
         } else {
-
             return;
         }
-
         getOrderDetails.put("token", token);
         getOrderDetails.put("timestamp", timestamp);
         loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取订单中。。。。");
@@ -366,8 +397,8 @@ public class OrderDetailsActivity extends BaseAppActivity {
         cashPay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //点击启动现金支付接口调试
-                docashPay();
+                dialog1.dismiss();
+                spayDialog();
             }
         });
 
@@ -377,13 +408,48 @@ public class OrderDetailsActivity extends BaseAppActivity {
                 //调起其他支付方式  盛付通支付
                 //吊起支付
                 if (discount_mone != null) {
-                    PayUtils.LiftThePayment(discount_mone, OrderDetailsActivity.this);
+//                  discount_monediscount_mone
+                    PayUtils.LiftThePayment("0.01", OrderDetailsDFKActivity.this);
                     dialog1.dismiss();
-                    OrderDetailsActivity.this.finish();
+                    OrderDetailsDFKActivity.this.finish();
                 }
             }
         });
         dialog1.show();
+    }
+
+
+    /**
+     * 自定义对话框
+     * 支付对话框
+     */
+    private void spayDialog() {
+        dpay = new Dialog(this, R.style.NormalDialogStyle);
+        View view = View.inflate(this, R.layout.activity_dialog_pay_cash_view, null);
+        TextView cancel = view.findViewById(R.id.cancel);
+        TextView confirm = view.findViewById(R.id.confirm);
+        RelativeLayout cashPay = view.findViewById(R.id.cashPay);
+        RelativeLayout otherPay = view.findViewById(R.id.otherPay);
+        dpay.setContentView(view);
+        //使得点击对话框外部不消失对话框
+        dpay.setCanceledOnTouchOutside(false);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dpay.dismiss();
+            }
+        });
+
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //点击启动现金支付接口调试
+                docashPay();
+
+            }
+        });
+
+        dpay.show();
     }
 
     /**
@@ -420,7 +486,6 @@ public class OrderDetailsActivity extends BaseAppActivity {
                 loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "取消订单中。。。。");
                 loading_dailog.show();
                 NetUtils.netWorkByMethodPost(mContext, getOrderDetails, IpConfig.URL_QXORDER, handler, 1);
-
             }
         });
         dialog.show();

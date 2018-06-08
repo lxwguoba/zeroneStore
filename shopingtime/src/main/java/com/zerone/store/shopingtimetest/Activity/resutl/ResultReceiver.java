@@ -1,4 +1,4 @@
-package com.zerone.store.shopingtimetest.Activity;
+package com.zerone.store.shopingtimetest.Activity.resutl;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,8 +21,6 @@ public class ResultReceiver extends BroadcastReceiver {
     private int errorCode;
     private int paymentType;
     private String answerCode;
-
-
     @Override
     public void onReceive(final Context context, Intent intent) {
         String action = intent.getAction();

@@ -3,14 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
     <!--top-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3"
-        android:background="@mipmap/index_bg">
-
+        android:background="@mipmap/icon_index_bg">
         <ImageView
             android:id="@+id/closeactivity"
             android:layout_width="16dp"
@@ -18,12 +16,8 @@
             android:layout_marginLeft="15dp"
             android:layout_marginTop="15dp"
             android:src="@mipmap/icon_login_out" />
-
     </LinearLayout>
-
-
     <!--body-->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -45,7 +39,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/account"
                 android:textSize="13sp" />
-
             <EditText
                 android:id="@+id/username"
                 style="@style/login_text_sizeandcolor"

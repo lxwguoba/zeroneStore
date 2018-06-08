@@ -22,7 +22,6 @@ public class UserInfoVip implements Serializable {
     private String device_num;
     private String fansmanage_user_id;
 
-
     public String getFansmanage_user_id() {
         return fansmanage_user_id;
     }

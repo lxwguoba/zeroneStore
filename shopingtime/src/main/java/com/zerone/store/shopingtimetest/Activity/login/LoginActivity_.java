@@ -1,4 +1,4 @@
-package com.zerone.store.shopingtimetest.Activity;
+package com.zerone.store.shopingtimetest.Activity.login;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -12,11 +12,18 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkError;
+import com.android.volley.ParseError;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.zerone.store.shopingtimetest.Activity.productlsit.OrderListActvity;
 import com.zerone.store.shopingtimetest.BaseActivity.BaseAppActivity;
 import com.zerone.store.shopingtimetest.Bean.UserInfo;
 import com.zerone.store.shopingtimetest.Bean.login.Account;
@@ -52,6 +59,10 @@ public class LoginActivity_ extends BaseAppActivity {
     private boolean checkboolen = false;
     private ImageView showpassword;
     private boolean showBoolean = false;
+    private TextView agreement;
+    private ImageView closeactivity;
+    private boolean remberChecked = true;
+
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -59,10 +70,10 @@ public class LoginActivity_ extends BaseAppActivity {
             switch (msg.what) {
                 case 0:
                     String loginJson = (String) msg.obj;
-                    Log.i("URL", "loginJson=" + loginJson);
                     loading_dailog.dismiss();
                     try {
                         JSONObject jsonObject = new JSONObject(loginJson);
+                        Log.i("URL", "jsonObject=" + jsonObject);
                         int status = jsonObject.getInt("status");
                         if (status == 0) {
                             //失败
@@ -84,7 +95,7 @@ public class LoginActivity_ extends BaseAppActivity {
                             Account account = new Account();
                             account.setAccount_name(username.getText().toString());
                             account.setAccount_pwd(password.getText().toString());
-                            if (checkboolen) {
+                            if (remberChecked) {
                                 saveAccountIntoTable(account);
                             } else {
                                 clearAccount();
@@ -102,14 +113,35 @@ public class LoginActivity_ extends BaseAppActivity {
                     }
                     break;
                 case 511:
-                    Toast.makeText(mContext, "网络超时，请重试", Toast.LENGTH_SHORT).show();
-                    loading_dailog.dismiss();
+                    VolleyError error = (VolleyError) msg.obj;
+                    if (error != null) {
+                        if (error instanceof TimeoutError) {
+                            Toast.makeText(LoginActivity_.this, "网络请求超时，请重试！", Toast.LENGTH_SHORT).show();
+                            loading_dailog.dismiss();
+                            return;
+                        }
+                        if (error instanceof ServerError) {
+                            Toast.makeText(LoginActivity_.this, "服务器异常", Toast.LENGTH_SHORT).show();
+                            loading_dailog.dismiss();
+                            return;
+                        }
+                        if (error instanceof NetworkError) {
+                            Toast.makeText(LoginActivity_.this, "请检查网络", Toast.LENGTH_SHORT).show();
+                            loading_dailog.dismiss();
+                            return;
+                        }
+                        if (error instanceof ParseError) {
+                            Toast.makeText(LoginActivity_.this, "数据格式错误", Toast.LENGTH_SHORT).show();
+                            loading_dailog.dismiss();
+                            return;
+                        }
+                        Toast.makeText(LoginActivity_.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                        loading_dailog.dismiss();
+                    }
                     break;
             }
         }
     };
-    private TextView agreement;
-    private ImageView closeactivity;
 
 
     @Override
@@ -117,17 +149,20 @@ public class LoginActivity_ extends BaseAppActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_);
         mContext = LoginActivity_.this;
+        remberChecked = (boolean) AppSharePreferenceMgr.get(mContext, "remberChecked", false);
         //页面全屏显示
         initPosInfo();
         initview();
         action();
     }
+
     private void initPosInfo() {
         Intent intent = new Intent("sunmi.payment.L3");
         String transId = System.currentTimeMillis() + "";
         intent.putExtra("transId", transId);
         intent.putExtra("transType", 13);
         intent.putExtra("appId", getPackageName());
+        //判断intent是否存在
         if (isIntentExisting(intent)) {
             startActivity(intent);
             AppSharePreferenceMgr.put(LoginActivity_.this, "transType", "13");
@@ -135,7 +170,6 @@ public class LoginActivity_ extends BaseAppActivity {
             Toast.makeText(this, "此机器上没有安装L3应用", Toast.LENGTH_SHORT).show();
         }
     }
-
     /**
      * 控件的点击事件处理
      */
@@ -155,8 +189,13 @@ public class LoginActivity_ extends BaseAppActivity {
                 mContext.finish();
             }
         });
+        login_rember_account.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                AppSharePreferenceMgr.put(mContext, "remberChecked", isChecked);
+            }
+        });
     }
-
     private void initview() {
         closeactivity = (ImageView) findViewById(R.id.closeactivity);
         agreement = (TextView) findViewById(R.id.agreement);
@@ -165,7 +204,7 @@ public class LoginActivity_ extends BaseAppActivity {
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
         login_rember_account = (CheckBox) findViewById(R.id.login_rember_account);
-        checkboolen = login_rember_account.isChecked();
+        login_rember_account.setChecked(remberChecked);
         try {
             if (accountInfoDao != null) {
                 Account account = accountInfoDao.getAccount("10");
@@ -182,7 +221,6 @@ public class LoginActivity_ extends BaseAppActivity {
             }
         });
     }
-
     private void intoLoginAction() {
         String user = username.getText().toString();
         String pwd = password.getText().toString();
@@ -198,7 +236,6 @@ public class LoginActivity_ extends BaseAppActivity {
             Toast.makeText(LoginActivity_.this, "该机器没有绑定这个账户，请联系客服。", Toast.LENGTH_SHORT).show();
             return;
         }
-        Log.i("URL", "pos商户号=====" + merchantId + "终端号=====" + terminalId);
         loginMap.put("terminal_num", terminalId);
         //POS商户号
         loginMap.put("sft_pos_num", merchantId);
@@ -246,12 +283,12 @@ public class LoginActivity_ extends BaseAppActivity {
     private void saveAccountIntoTable(Account account) {
         try {
             Account ac = accountInfoDao.getAccount("10");
-            if (ac != null) {
-                accountInfoDao.update(account);
+            if (ac == null) {
+                accountInfoDao.saveAccount(account);
             } else {
+                accountInfoDao.deltable();
                 accountInfoDao.saveAccount(account);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -267,7 +304,6 @@ public class LoginActivity_ extends BaseAppActivity {
             e.printStackTrace();
         }
     }
-
     /**
      * 保存用户信息
      */
@@ -276,9 +312,11 @@ public class LoginActivity_ extends BaseAppActivity {
         try {
             UserInfo user = userimpl.getUserInfo("10");
             if (user == null) {
+                Log.i("URL", "第一次向数据库里填写东西");
                 userimpl.saveUserInfo(userInfo);
             } else {
-                userimpl.upDateUserInfo(userInfo);
+                userimpl.deltable();
+                userimpl.saveUserInfo(userInfo);
             }
             Intent intent = new Intent(mContext, OrderListActvity.class);
             startActivity(intent);

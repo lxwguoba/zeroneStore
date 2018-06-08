@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="firstText" format="string"></attr>
+    <attr name="firstTextColor" format="color"></attr>
+    <attr name="firstTextSize" format="dimension"></attr>
+    <attr name="firstBackGround" format="reference"></attr>
+
+    <attr name="secondText" format="string"></attr>
+    <attr name="secondTextColor" format="color"></attr>
+    <attr name="secondTextSize" format="dimension"></attr>
+    <attr name="secondBackGround" format="reference"></attr>
+
+    <declare-styleable name="FrameButton">
+        <attr name="firstText"></attr>
+        <attr name="firstTextColor"></attr>
+        <attr name="firstTextSize"></attr>
+        <attr name="firstBackGround"></attr>
+        <attr name="secondText"></attr>
+        <attr name="secondTextColor"></attr>
+        <attr name="secondTextSize"></attr>
+        <attr name="secondBackGround"></attr>
+    </declare-styleable>
+</resources>

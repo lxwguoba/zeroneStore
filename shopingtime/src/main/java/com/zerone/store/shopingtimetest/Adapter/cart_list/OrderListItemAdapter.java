@@ -12,8 +12,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.zerone.store.shopingtimetest.Activity.OrderDetailsYFKActivity;
-import com.zerone.store.shopingtimetest.Activity.OrderDetailsYQXActivity;
+import com.zerone.store.shopingtimetest.Activity.details.OrderDetailsYFKActivity;
+import com.zerone.store.shopingtimetest.Activity.details.OrderDetailsYQXActivity;
 import com.zerone.store.shopingtimetest.Bean.order.OrderBean;
 import com.zerone.store.shopingtimetest.R;
 
@@ -129,13 +129,10 @@ public class OrderListItemAdapter extends BaseAdapter {
                     intent03.putExtra("orderid", list.get(position).getId());
                     context.startActivity(intent03);
                 }
-
-
             }
         });
 
-
-//        Glide.with(context).load(list.get(position).getThumb()).centerCrop().placeholder(R.mipmap.ic_launcher).crossFade().into(holder.shop_img);
+//       Glide.with(context).load(list.get(position).getThumb()).centerCrop().placeholder(R.mipmap.ic_launcher).crossFade().into(holder.shop_img);
         return convertView;
     }
 

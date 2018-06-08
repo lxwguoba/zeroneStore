@@ -94,17 +94,6 @@ public class PrintUtils {
             int[] width = new int[]{3, 2, 1};
             ti.setWidth(width);
             datalist.add(ti);
-//            Log.i("ULRL",pb.getList().get(i).getOptions());
-//            if (!"null".equals(pb.getList().get(i).getOptions())){
-//                TableItem  ti0 = new TableItem();
-//                String[] str0={"规格：",pb.getList().get(i).getOptions(),""};
-//                ti0.setText(str0);
-//                int[] al0={0,0,2};
-//                ti0.setAlign(al0);
-//                int[] width0 = new int[]{2,5,0};
-//                ti0.setWidth(width0);
-//                datalist.add(ti0);
-//            }
         }
         TableItem tcontent = new TableItem();
         String[] tcon = {"", "-------------------------", ""};
@@ -117,7 +106,11 @@ public class PrintUtils {
 
         LinkedList<TableItem> beizhulist = new LinkedList<>();
         TableItem beizhulistBean = new TableItem();
-        String[] beizhuBeanCont = {"备注", pb.getRemark(), ""};
+        String rmsg = "";
+        if (pb.getRemark() != null && pb.getRemark().length() > 0 && !"null".equals(pb.getRemark())) {
+            rmsg = pb.getRemark();
+        }
+        String[] beizhuBeanCont = {"备注", rmsg, ""};
         int[] beizhuBeanalt = {0, 0, 2};
         int[] beizhuBeanwide = new int[]{1, 3, 0};
         beizhulistBean.setText(beizhuBeanCont);
@@ -149,16 +142,16 @@ public class PrintUtils {
         TableItem monTi = new TableItem();
         String[] monTiCon = {"原价：", "", "￥" + pb.getPmoney()};
         int[] monTialt = {0, 2, 2};
-        int[] monTiwid = {1, 0, 2};
+        int[] monTiwid = {2, 0, 3};
         monTi.setText(monTiCon);
         monTi.setAlign(monTialt);
         monTi.setWidth(monTiwid);
         moneylist.add(monTi);
 
         TableItem monT = new TableItem();
-        String[] monTiCo = {"实收金额", "", "￥" + pb.getPayment_price()};
+        String[] monTiCo = {"实收：", "", "￥" + pb.getPayment_price()};
         int[] monTial = {0, 2, 2};
-        int[] monTiwi = {1, 0, 1};
+        int[] monTiwi = {2, 0, 3};
         monT.setText(monTiCo);
         monT.setAlign(monTial);
         monT.setWidth(monTiwi);
@@ -166,7 +159,7 @@ public class PrintUtils {
         //---------------------------金额----------------------------------
         AidlUtil.getInstance().printTable(head, 40, true);
         AidlUtil.getInstance().printTable(title, 36, true);
-        AidlUtil.getInstance().printTable(datalist, 30, false);
+        AidlUtil.getInstance().printTable(datalist, 26, false);
         AidlUtil.getInstance().printTable(orderprint, 26, false);
         AidlUtil.getInstance().printTable(beizhulist, 30, false);
         AidlUtil.getInstance().printTable(flinelist, 40, false);

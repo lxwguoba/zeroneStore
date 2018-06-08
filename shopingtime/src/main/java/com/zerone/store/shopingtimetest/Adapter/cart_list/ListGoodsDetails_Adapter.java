@@ -3,12 +3,12 @@ package com.zerone.store.shopingtimetest.Adapter.cart_list;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -86,7 +86,7 @@ public class ListGoodsDetails_Adapter extends BaseAdapter {
         holder.shop_price.setText(list.get(position).getSp_price());
         holder.shop_count.setText(list.get(position).getSp_count());
         String url = list.get(position).getSp_picture_url();
-        Log.i("URL", "搜索：：：" + url);
+//        Log.i("URL", "搜索：：：" + url);
         Glide.with(mContext).load(url).centerCrop().placeholder(R.mipmap.app_logo).crossFade().into(holder.shop_img);
 
         /**
@@ -119,17 +119,6 @@ public class ListGoodsDetails_Adapter extends BaseAdapter {
                 handler.sendMessage(message);
             }
         });
-
-//        holder.checkshop.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Message message = new Message();
-//                message.what = 202;
-//                message.obj = position;
-//                handler.sendMessage(message);
-//            }
-//        });
-
         return convertView;
     }
 
@@ -173,7 +162,7 @@ public class ListGoodsDetails_Adapter extends BaseAdapter {
         TextView shop_count;
         TextView shopdiscount;
         TextView shop_price;
-        TextView decrease_shop;
-        TextView add_shop;
+        LinearLayout decrease_shop;
+        LinearLayout add_shop;
     }
 }

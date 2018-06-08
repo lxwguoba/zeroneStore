@@ -258,7 +258,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:fontFamily="Roboto-Medium"
-                android:text="散客"
                 android:textColor="#333333"
                 android:textSize="14sp" />
 
@@ -398,7 +397,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="AdobeHeitiStd-Regular"
-                    android:text="折扣价："
+                    android:text="折后价："
                     android:textColor="#333333"
                     android:textSize="14sp" />
 

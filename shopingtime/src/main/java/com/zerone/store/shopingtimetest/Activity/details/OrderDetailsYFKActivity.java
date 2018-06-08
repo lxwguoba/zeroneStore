@@ -1,4 +1,4 @@
-package com.zerone.store.shopingtimetest.Activity;
+package com.zerone.store.shopingtimetest.Activity.details;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -68,7 +67,6 @@ public class OrderDetailsYFKActivity extends AppCompatActivity {
             switch (msg.what) {
                 case 0:
                     String yfkJSon = (String) msg.obj;
-                    Log.i("URL", "BBBBBBBBBBBBBB=" + yfkJSon);
                     loading_dailog.dismiss();
                     try {
                         JSONObject jsonObject = new JSONObject(yfkJSon);

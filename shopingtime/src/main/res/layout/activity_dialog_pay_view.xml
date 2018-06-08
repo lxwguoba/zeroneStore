@@ -114,7 +114,8 @@
                 android:gravity="center"
                 android:text="确定"
                 android:textColor="#000"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:visibility="gone" />
 
         </LinearLayout>
 

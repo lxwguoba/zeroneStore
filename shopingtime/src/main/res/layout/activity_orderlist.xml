@@ -215,7 +215,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/jiesaun"
+                android:id="@+id/settlement_btn"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_gravity="bottom"
@@ -223,7 +223,7 @@
                 android:gravity="center">
 
                 <TextView
-                    android:id="@+id/settlement_"
+                    android:id="@+id/settlement_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="结算"

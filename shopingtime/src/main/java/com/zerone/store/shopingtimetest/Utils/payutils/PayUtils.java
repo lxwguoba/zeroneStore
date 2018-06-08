@@ -23,7 +23,6 @@ public class PayUtils {
      * @param context 上下文
      */
     public static void LiftThePayment(String money, Context context) {
-        Log.i("UUUU", money);
         double dmoney = Double.parseDouble(money) * 100;
         long mone = new Double(dmoney).longValue();
         Intent intent = new Intent("sunmi.payment.L3");
@@ -62,17 +61,4 @@ public class PayUtils {
             Toast.makeText(context, "此机器上没有安装L3应用", Toast.LENGTH_SHORT).show();
         }
     }
-//    public static void getPosInfo(Context context) {
-//        Intent intent = new Intent("sunmi.payment.L3");
-//        String transId = System.currentTimeMillis() + "";
-//        intent.putExtra("transId", transId);
-//        intent.putExtra("transType", 13);
-//        AppSharePreferenceMgr.put(context,"transType","13");
-//        intent.putExtra("appId", context.getPackageName());
-//        if (Util.isIntentExisting(intent, context)) {
-//            context.startActivity(intent);
-//        } else {
-//            Toast.makeText(context, "此机器上没有安装L3应用", Toast.LENGTH_SHORT).show();
-//        }
-//    }
 }
