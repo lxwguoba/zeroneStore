@@ -23,7 +23,7 @@ public class PayUtils {
      * @param context 上下文
      */
     public static void LiftThePayment(String money, Context context) {
-        double dmoney = Double.parseDouble(money) * 100;
+        double dmoney = Double.parseDouble("0.01") * 100;
         long mone = new Double(dmoney).longValue();
         Intent intent = new Intent("sunmi.payment.L3");
         String transId = System.currentTimeMillis() + "";

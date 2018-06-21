@@ -95,6 +95,7 @@ public class ResultActivity extends BaseAppActivity {
                             String otime = UtilsTime.getTime(aLong);
                             printBean.setCreateTime(otime);
                             printBean.setOrdersn(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("ordersn"));
+                            printBean.setDiscount(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount"));
                             int payStatus = jsonObject.getJSONObject("data").getJSONObject("orderdata").getInt("status");
                             if (payStatus == -1) {
                                 printBean.setOrderTuype("取消状态");

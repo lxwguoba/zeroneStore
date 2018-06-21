@@ -9,7 +9,7 @@ public class IpConfig {
     //正式版a
     public static final String URL_ZS = "http://o2o.01nnt.com/api/androidRetailApi/";
     //测试版消费共富版
-    public static final String URL_CS = "http://develop.01nnt.com/api/androidRetailApi/";
+    public static final String URL_CS = "http://develop.01nnt.com/o2o_platform/api/androidRetailApi/";
     //通用的接口
     public static final String URL = URL_ZS;
     //登录接口

@@ -19,8 +19,10 @@ public class PrintBean implements Serializable {
     //订单状态
     private String orderTuype;
 
-    //师父金额
+    //实付金额
     private String payment_price;
+    //折扣
+    private String discount;
     //备注
     private String remark;
     private List<PrintItem> list;
@@ -80,5 +82,13 @@ public class PrintBean implements Serializable {
 
     public void setList(List<PrintItem> list) {
         this.list = list;
+    }
+
+    public String getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(String discount) {
+        this.discount = discount;
     }
 }

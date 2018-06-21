@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -83,6 +84,7 @@ public class OrderDetailsDFKActivity extends BaseAppActivity {
     private String orderid;
     private LinearLayout refresh_data;
     private Dialog dpay;
+    private TextView discount;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -95,6 +97,7 @@ public class OrderDetailsDFKActivity extends BaseAppActivity {
                     printItemList = new ArrayList<>();
                     try {
                         JSONObject jsonObject = new JSONObject(dykJSon);
+                        Log.i("URL", jsonObject.toString());
                         int status = jsonObject.getInt("status");
                         if (status == 1) {
                             //封装打印类 的数据
@@ -126,10 +129,12 @@ public class OrderDetailsDFKActivity extends BaseAppActivity {
                                 printItemList.add(printItem);
                             }
                             printBean.setPayment_price(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
+                            printBean.setDiscount(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount"));
                             printBean.setList(printItemList);
                             money = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price");
                             listOrderMoney.setText("￥" + money);
                             discount_mone = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price");
+                            discount.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount") + "折");
                             discount_price.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
                             ordermoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
                             int userid = jsonObject.getJSONObject("data").getJSONObject("orderdata").getInt("user_id");
@@ -332,6 +337,7 @@ public class OrderDetailsDFKActivity extends BaseAppActivity {
         relative_back = (RelativeLayout) findViewById(R.id.relative_back);
         back = (ImageView) findViewById(R.id.back);
         refresh_data = (LinearLayout) findViewById(R.id.refresh_data);
+        discount = (TextView) findViewById(R.id.discount);
     }
 
     /**
@@ -408,8 +414,7 @@ public class OrderDetailsDFKActivity extends BaseAppActivity {
                 //调起其他支付方式  盛付通支付
                 //吊起支付
                 if (discount_mone != null) {
-//                  discount_monediscount_mone
-                    PayUtils.LiftThePayment("0.01", OrderDetailsDFKActivity.this);
+                    PayUtils.LiftThePayment(discount_mone, OrderDetailsDFKActivity.this);
                     dialog1.dismiss();
                     OrderDetailsDFKActivity.this.finish();
                 }

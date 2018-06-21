@@ -382,12 +382,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="AdobeHeitiStd-Regular"
-                    android:text="折后价："
+                    android:text="折扣："
                     android:textColor="#333333"
                     android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/discountmoney"
+                    android:id="@+id/discount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="Roboto-Medium"
@@ -402,6 +402,30 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="AdobeHeitiStd-Regular"
+                    android:text="折后价："
+                    android:textColor="#333333"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/discountmoney"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="Roboto-Medium"
+                    android:textColor="#f4545a"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"

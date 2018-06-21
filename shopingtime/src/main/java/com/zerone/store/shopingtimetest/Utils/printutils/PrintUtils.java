@@ -24,12 +24,11 @@ public class PrintUtils {
         fline.setAlign(flinealt);
         fline.setWidth(flinewid);
         flinelist.add(fline);
-
         //-------------------标题的打印------------------------
         LinkedList<TableItem> head = new LinkedList<>();
         TableItem ti01 = new TableItem();
         String[] headti01 = {name, "", ""};
-        int[] headalt = {0, 2, 2};
+        int[] headalt = {1, 2, 2};
         int[] headwid = new int[]{1, 0, 0};
         ti01.setText(headti01);
         ti01.setAlign(headalt);
@@ -109,6 +108,8 @@ public class PrintUtils {
         String rmsg = "";
         if (pb.getRemark() != null && pb.getRemark().length() > 0 && !"null".equals(pb.getRemark())) {
             rmsg = pb.getRemark();
+        } else {
+            rmsg = "没有备注";
         }
         String[] beizhuBeanCont = {"备注", rmsg, ""};
         int[] beizhuBeanalt = {0, 0, 2};
@@ -147,7 +148,22 @@ public class PrintUtils {
         monTi.setAlign(monTialt);
         monTi.setWidth(monTiwid);
         moneylist.add(monTi);
-
+        TableItem dislist = new TableItem();
+        String dis = "";
+        if ("10.00".equals(pb.getDiscount())) {
+            dis = "无";
+        } else {
+            dis = pb.getDiscount() + "折";
+        }
+        String[] dmonTiCo = {"折扣：", "", dis};
+        int[] dmonTial = {0, 2, 2};
+        int[] dmonTiwi = {2, 0, 3};
+        dislist.setText(dmonTiCo);
+        dislist.setAlign(dmonTial);
+        dislist.setWidth(dmonTiwi);
+        if (!"10.00".equals(pb.getDiscount())) {
+            moneylist.add(dislist);
+        }
         TableItem monT = new TableItem();
         String[] monTiCo = {"实收：", "", "￥" + pb.getPayment_price()};
         int[] monTial = {0, 2, 2};
@@ -161,11 +177,11 @@ public class PrintUtils {
         AidlUtil.getInstance().printTable(title, 36, true);
         AidlUtil.getInstance().printTable(datalist, 26, false);
         AidlUtil.getInstance().printTable(orderprint, 26, false);
-        AidlUtil.getInstance().printTable(beizhulist, 30, false);
+        AidlUtil.getInstance().printTable(beizhulist, 26, false);
         AidlUtil.getInstance().printTable(flinelist, 40, false);
-        AidlUtil.getInstance().printTable(moneylist, 42, true);
-        AidlUtil.getInstance().printTable(flinelist, 40, false);
-        AidlUtil.getInstance().printQr("www.01nnt.com", 10, 2);
+        AidlUtil.getInstance().printTable(moneylist, 38, true);
+//        AidlUtil.getInstance().printTable(flinelist, 40, false);
+//        AidlUtil.getInstance().printQr("www.01nnt.com", 10, 2);
         AidlUtil.getInstance().print3Line();
     }
 }

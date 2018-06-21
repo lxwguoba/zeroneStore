@@ -60,6 +60,7 @@ public class OrderDetailsYFKActivity extends AppCompatActivity {
     private TextView ordertime;
     private TextView discountmoney;
     private TextView paymoney;
+    private TextView discount;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -91,6 +92,7 @@ public class OrderDetailsYFKActivity extends AppCompatActivity {
                             }
                             totalmoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price"));
                             discountmoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
+                            discount.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount") + "折");
                             paymoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("payment_price"));
 
                             String paytype = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("paytype");
@@ -163,6 +165,7 @@ public class OrderDetailsYFKActivity extends AppCompatActivity {
      */
     private void initView() {
         totalmoney = (TextView) findViewById(R.id.totalmoney);
+        discount = (TextView) findViewById(R.id.discount);
         discountmoney = (TextView) findViewById(R.id.discountmoney);
         paymoney = (TextView) findViewById(R.id.paymoney);
         zhifufangshi = (TextView) findViewById(R.id.zhifufangshi);

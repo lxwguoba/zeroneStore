@@ -440,12 +440,13 @@ public class OrderListActvity extends BaseAppActivity {
                 case 12:
                     //扫描结果获取服务器获取商品的处理
                     loading_dailog.dismiss();
-                    plist.clear();
+
                     String scanJson = (String) msg.obj;
                     try {
                         JSONObject jsonObject = new JSONObject(scanJson);
                         int status = jsonObject.getInt("status");
                         if (status == 1) {
+                            plist.clear();
                             //判断这个商品在clist的哪个位置
                             JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("goodslist");
                             int category_id = jsonArray.getJSONObject(0).getInt("category_id");
