@@ -3,15 +3,15 @@ package com.zerone.store.shopingtimetest.Contants;
 /**
  * Created by Administrator on 2017/10/10 0010.
  * <p>
- * 用来保存域名 就是链接
+ * 用来保存链接
  */
 public class IpConfig {
     //正式版a
     public static final String URL_ZS = "http://o2o.01nnt.com/api/androidRetailApi/";
     //测试版消费共富版
-    public static final String URL_CS = "http://develop.01nnt.com/o2o_platform/api/androidRetailApi/";
+    public static final String URL_CS = "http://develop2.01nnt.com/api/androidRetailApi/";
     //通用的接口
-    public static final String URL = URL_ZS;
+    public static final String URL = URL_CS;
     //登录接口
     public static final String URL_LOGIN = URL + "login";
     //分类接口
@@ -19,7 +19,7 @@ public class IpConfig {
     // 商品查询接口
     public static final String URL_SERACH = URL + "goodslist";
     //获取图片接口
-    public static final String URL_GETPICTURE = "http://o2o.01nnt.com/";
+    public static final String URL_GETPICTURE = "http://develop2.01nnt.com/";
     public static final String URL_GOODSLIST = URL + "goodslist";
     //开启/关闭零库存开单接口
     public static final String URL_KQLKC = URL + "allow_zero_stock";

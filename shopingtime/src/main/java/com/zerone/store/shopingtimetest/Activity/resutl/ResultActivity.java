@@ -123,7 +123,7 @@ public class ResultActivity extends BaseAppActivity {
                             if (printBean != null) {
                                 if (userInfo != null) {
                                     if (userInfo.getOrganization_name().length() > 0 && userInfo.getOrganization_name() != null) {
-                                        PrintUtils.print(userInfo.getOrganization_name(), printBean);
+                                        PrintUtils.print(ResultActivity.this, userInfo.getOrganization_name(), printBean);
                                     }
                                 }
                             }

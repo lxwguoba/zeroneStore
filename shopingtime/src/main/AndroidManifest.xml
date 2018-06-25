@@ -36,6 +36,7 @@
         <activity android:name=".Activity.details.OrderDetailsYFKActivity" />
         <activity android:name=".Activity.details.OrderDetailsYQXActivity" />
         <activity android:name=".Activity.resutl.ResultActivity" />
+        <activity android:name=".Activity.resutl.Success_Status_Activity" />
         <activity
             android:name=".Activity.serarch.SearchActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />

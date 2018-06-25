@@ -22,6 +22,7 @@ import com.android.volley.ParseError;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.zerone.store.shopingtimetest.Activity.resutl.Success_Status_Activity;
 import com.zerone.store.shopingtimetest.Adapter.cart_list.OrderDetialsListItemAdapter;
 import com.zerone.store.shopingtimetest.Base64AndMD5.CreateToken;
 import com.zerone.store.shopingtimetest.BaseActivity.BaseAppActivity;
@@ -134,7 +135,12 @@ public class OrderDetailsDFKActivity extends BaseAppActivity {
                             money = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price");
                             listOrderMoney.setText("￥" + money);
                             discount_mone = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price");
-                            discount.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount") + "折");
+                            if ("10.00".equals(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount"))) {
+                                discount.setText("无折扣");
+                            } else {
+                                discount.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount") + "折");
+                            }
+
                             discount_price.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
                             ordermoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
                             int userid = jsonObject.getJSONObject("data").getJSONObject("orderdata").getInt("user_id");
@@ -206,7 +212,7 @@ public class OrderDetailsDFKActivity extends BaseAppActivity {
                                 if (printBean != null) {
                                     if (userInfo != null) {
                                         if (userInfo.getOrganization_name().length() > 0 && userInfo.getOrganization_name() != null) {
-                                            PrintUtils.print(userInfo.getOrganization_name(), printBean);
+                                            PrintUtils.print(OrderDetailsDFKActivity.this, userInfo.getOrganization_name(), printBean);
                                         }
                                     }
                                 }
@@ -214,6 +220,8 @@ public class OrderDetailsDFKActivity extends BaseAppActivity {
                             //语音播报
                             VoiceUtils.with(OrderDetailsDFKActivity.this).Play(jsonObject.getJSONObject("data").getString("payment_price"), true);
                             setResult(300, intent);
+                            Intent intent = new Intent(OrderDetailsDFKActivity.this, Success_Status_Activity.class);
+                            startActivity(intent);
                             OrderDetailsDFKActivity.this.finish();
                         } else {
                             Toast.makeText(OrderDetailsDFKActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
@@ -314,6 +322,7 @@ public class OrderDetailsDFKActivity extends BaseAppActivity {
             }
         });
     }
+
     /**
      * 初始化view
      */

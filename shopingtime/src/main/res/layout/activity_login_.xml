@@ -54,14 +54,16 @@
                 android:id="@+id/clearusername"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@mipmap/icon_login_close" />
+                android:background="@mipmap/icon_login_close"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/noneinfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:background="@mipmap/icon_login_down" />
+                android:background="@mipmap/icon_login_down"
+                android:visibility="gone" />
         </LinearLayout>
 
         <View
@@ -127,20 +129,29 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <CheckBox
-                android:id="@+id/login_rember_account"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:background="@drawable/login_check_btn_drawable"
-                android:button="@null"
-                android:checked="true" />
-
-            <TextView
-                style="@style/login_text_sizeandcolor"
+            <LinearLayout
+                android:id="@+id/btn_layout_rember"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
-                android:text="@string/remberaccount" />
+                android:gravity="center">
+
+                <CheckBox
+                    android:id="@+id/login_rember_account"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:background="@drawable/login_check_btn_drawable"
+                    android:button="@null"
+                    android:checked="true" />
+
+                <TextView
+                    style="@style/login_text_sizeandcolor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:text="@string/remberaccount" />
+
+            </LinearLayout>
+
 
             <TextView
                 style="@style/login_text_sizeandcolor"
@@ -148,7 +159,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:text="@string/login_error" />
+                android:text="@string/login_error"
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
     <!--bottom-->
@@ -163,11 +175,12 @@
         <RelativeLayout
             android:id="@+id/xiyi"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="26dp"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tongyi"
@@ -178,7 +191,8 @@
                 android:gravity="center"
                 android:text="@string/xiyi"
                 android:textColor="#bbbbbb"
-                android:textSize="10sp" />
+                android:textSize="10sp"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/agreement"
@@ -189,7 +203,8 @@
                 android:text="@string/xiyicontnent"
                 android:textColor="#999999"
                 android:textSize="10sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <View
                 android:layout_width="wrap_content"
@@ -211,6 +226,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@id/xiyi"
+            android:layout_alignParentBottom="true"
             android:layout_marginBottom="12dp"
             android:fontFamily="SourceHanSansCN-Medium"
             android:gravity="center"

@@ -1,8 +1,11 @@
 package com.zerone.store.shopingtimetest.Utils.printutils;
 
 
+import android.content.Context;
+
 import com.zerone.store.shopingtimetest.Bean.print.PrintBean;
 import com.zerone.store.shopingtimetest.Bean.print.TableItem;
+import com.zerone.store.shopingtimetest.Utils.AppSharePreferenceMgr;
 
 import java.util.LinkedList;
 
@@ -12,8 +15,14 @@ import java.util.LinkedList;
  */
 
 public class PrintUtils {
+    public static void print(Context context, String name, PrintBean pb) {
+        String nmber = (String) AppSharePreferenceMgr.get(context, "numberGroup", "1");
+        for (int i = 0; i < Integer.parseInt(nmber); i++) {
+            print(name, pb, i + 1);
+        }
+    }
 
-    public static void print(String name, PrintBean pb) {
+    public static void print(String name, PrintBean pb, int nmber) {
         //-----------------------------最大分割线-----------------------
         LinkedList<TableItem> flinelist = new LinkedList<>();
         TableItem fline = new TableItem();
@@ -43,13 +52,12 @@ public class PrintUtils {
         ti02.setWidth(headwid02);
         //------------------------
         TableItem ti03 = new TableItem();
-        String[] headti03 = {"", "现场订单", ""};
+        String[] headti03 = {"", "现场订单", "第" + nmber + "联"};
         int[] headalt03 = {1, 1, 2};
-        int[] headwid03 = new int[]{0, 4, 0};
+        int[] headwid03 = new int[]{0, 4, 2};
         ti03.setText(headti03);
         ti03.setAlign(headalt03);
         ti03.setWidth(headwid03);
-
         TableItem ti05 = new TableItem();
         String[] headti05 = {"", "已付款", ""};
         int[] headalt05 = {1, 1, 2};

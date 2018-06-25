@@ -152,7 +152,6 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
                     break;
                 case 3:
                     String qrcodeJson = (String) msg.obj;
-                    Log.i("URL", qrcodeJson);
                     try {
                         JSONObject jsonObject = new JSONObject(qrcodeJson);
                         int return_code = jsonObject.getInt("return_code");
@@ -164,6 +163,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        Toast.makeText(MakeSureTheOrderActivity.this, qrcodeJson.toString(), Toast.LENGTH_SHORT).show();
                     } finally {
                         if (get_qrcode_loading != null) {
                             get_qrcode_loading.dismiss();

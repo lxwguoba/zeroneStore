@@ -1,15 +1,19 @@
 package com.zerone.store.shopingtimetest.Activity.system;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,15 +22,21 @@ import android.widget.Toast;
 import com.githang.statusbar.StatusBarCompat;
 import com.zerone.store.shopingtimetest.Base64AndMD5.CreateToken;
 import com.zerone.store.shopingtimetest.BaseActivity.BaseAppActivity;
+import com.zerone.store.shopingtimetest.Bean.SignCompleteStatus;
 import com.zerone.store.shopingtimetest.Bean.UserInfo;
 import com.zerone.store.shopingtimetest.Contants.IpConfig;
 import com.zerone.store.shopingtimetest.DB.impl.UserInfoImpl;
 import com.zerone.store.shopingtimetest.R;
 import com.zerone.store.shopingtimetest.Utils.AppSharePreferenceMgr;
+import com.zerone.store.shopingtimetest.Utils.IsIntentExite;
 import com.zerone.store.shopingtimetest.Utils.LoadingUtils;
 import com.zerone.store.shopingtimetest.Utils.NetUtils;
+import com.zerone.store.shopingtimetest.Utils.UtilsTime;
 import com.zyao89.view.zloading.ZLoadingDialog;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,6 +58,23 @@ public class SystemSettingsActivity extends BaseAppActivity {
     private CheckBox system_xdjkc;
     private ZLoadingDialog loading_dailog;
     private SystemSettingsActivity mContext;
+    private UserInfo userInfo;
+    private ImageView system_back;
+    private Button systemout;
+    private boolean remberChecked;
+    private LinearLayout layout_back;
+    private TextView storename;
+    private TextView posid;
+    private LinearLayout setPrintData;
+    private CheckBox first;
+    private CheckBox second;
+    private CheckBox triple;
+    private CheckBox fourth;
+    private EditText otherGroup;
+    private TextView group;
+    private LinearLayout sign;
+    private long firsttime;
+    private TextView signTime;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -165,6 +192,27 @@ public class SystemSettingsActivity extends BaseAppActivity {
                         e.printStackTrace();
                     }
                     break;
+                case 10:
+                    String gnum = (String) msg.obj;
+                    group.setText(gnum + "联");
+                    break;
+                case 11:
+                    SignCompleteStatus signCompleteStatus = (SignCompleteStatus) msg.obj;
+//                    String datePoor = UtilsTime.getDatePoor(firsttime, secondtime);
+//                    Toast.makeText(SystemSettingsActivity.this,datePoor,Toast.LENGTH_SHORT).show();
+                    try {
+                        int resultCode = signCompleteStatus.getResultCode();
+//                          if (resultCode==0){
+//                              //签到成功
+//
+//                          }else if (resultCode==1){
+//                              //签到失败
+//                          }
+                        setMsgDialog(signCompleteStatus);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
                 case 511:
                     Toast.makeText(SystemSettingsActivity.this, "网络超时，请重试", Toast.LENGTH_SHORT).show();
                     loading_dailog.dismiss();
@@ -172,19 +220,15 @@ public class SystemSettingsActivity extends BaseAppActivity {
             }
         }
     };
-    private UserInfo userInfo;
-    private ImageView system_back;
-    private Button systemout;
-    private boolean remberChecked;
-    private LinearLayout layout_back;
-    private TextView storename;
-    private TextView posid;
+    private long secondtime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_systemsettings);
         StatusBarCompat.setStatusBarColor(this, Color.parseColor("#ffffff"));
+        //注册广播接受器
+        EventBus.getDefault().register(this);
         mContext = SystemSettingsActivity.this;
         remberChecked = (boolean) AppSharePreferenceMgr.get(mContext, "remberChecked", false);
         initGetUserInfo();
@@ -205,6 +249,23 @@ public class SystemSettingsActivity extends BaseAppActivity {
             @Override
             public void onClick(View v) {
                 customDialog();
+            }
+        });
+
+        /**
+         * 启动打印机设置页面
+         */
+        setPrintData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setPrintDataDialog();
+            }
+        });
+        //签到
+        sign.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initPosInfo();
             }
         });
     }
@@ -239,8 +300,10 @@ public class SystemSettingsActivity extends BaseAppActivity {
      * view的初始
      */
     private void initView() {
-//        .put(SystemSettingsActivity.this,"remberChecked",isChecked);
+        String nmber = (String) AppSharePreferenceMgr.get(SystemSettingsActivity.this, "numberGroup", "1");
         String terminalId = (String) AppSharePreferenceMgr.get(mContext, "terminalId", "");
+        group = (TextView) findViewById(R.id.group);
+        group.setText(nmber + "联");
         layout_back = (LinearLayout) findViewById(R.id.layout_back);
         storename = (TextView) findViewById(R.id.storename);
         storename.setText(userInfo.getOrganization_name());
@@ -253,6 +316,15 @@ public class SystemSettingsActivity extends BaseAppActivity {
         system_xdjkc = (CheckBox) findViewById(R.id.system_xdjkc);
         system_back = (ImageView) findViewById(R.id.system_back);
         systemout = (Button) findViewById(R.id.systemout);
+        setPrintData = (LinearLayout) findViewById(R.id.set_print_number);
+        sign = (LinearLayout) findViewById(R.id.sign);
+        signTime = (TextView) findViewById(R.id.signTime);
+        Long firsttime = (long) AppSharePreferenceMgr.get(SystemSettingsActivity.this, "firsttime", 0l);
+        if (firsttime == 0l) {
+            signTime.setText("您还没有签到");
+        } else {
+            signTime.setText("上次签到时间为：" + UtilsTime.setTime(firsttime));
+        }
     }
 
     /**
@@ -283,7 +355,6 @@ public class SystemSettingsActivity extends BaseAppActivity {
             }
         });
 
-
         system_fkjkc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -306,7 +377,6 @@ public class SystemSettingsActivity extends BaseAppActivity {
                 NetUtils.netWorkByMethodPost(mContext, kdMap, IpConfig.URL_FKJKC, handler, 2);
             }
         });
-
         system_xdjkc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -328,7 +398,6 @@ public class SystemSettingsActivity extends BaseAppActivity {
                 NetUtils.netWorkByMethodPost(mContext, kdMap, IpConfig.URL_FKJKC, handler, 3);
             }
         });
-
         system_login_rember_account.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -367,5 +436,216 @@ public class SystemSettingsActivity extends BaseAppActivity {
         dialog.show();
     }
 
+    /**
+     * 打印机联数设置
+     */
+    private void setPrintDataDialog() {
+        //终端号
+        final Dialog dialog = new Dialog(this, R.style.NormalDialogStyle);
+        View view = View.inflate(this, R.layout.activity_system_set_print_data, null);
+        TextView cancel = view.findViewById(R.id.dbtn);
+        TextView confirm = view.findViewById(R.id.sbtn);
+        first = view.findViewById(R.id.the_first_group);
+        second = view.findViewById(R.id.the_second_group);
+        triple = view.findViewById(R.id.the_first_triple);
+        fourth = view.findViewById(R.id.the_fourth_group);
+        otherGroup = view.findViewById(R.id.other_group);
+        setCheckBoxSelected();
+        dialog.setContentView(view);
+        //使得点击对话框外部不消失对话框
+        dialog.setCanceledOnTouchOutside(true);
+        //设置对话框的大小
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Integer integer;
+                integer = findNumbers();
+                Message message = new Message();
+                if (integer == null) {
+                    String numberGroup = otherGroup.getText().toString().trim();
+                    AppSharePreferenceMgr.put(SystemSettingsActivity.this, "numberGroup", numberGroup);
+                    message.obj = numberGroup + "";
+                } else {
+                    AppSharePreferenceMgr.put(SystemSettingsActivity.this, "numberGroup", integer + "");
+                    message.obj = integer + "";
+                }
+                message.what = 10;
+                handler.sendMessage(message);
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
 
+    /**
+     * 提示消息
+     */
+    private void setMsgDialog(SignCompleteStatus signCompleteStatus) {
+        //终端号
+        final Dialog dialog = new Dialog(this, R.style.NormalDialogStyle);
+        View view = View.inflate(this, R.layout.activity_dialog_msg_view, null);
+        TextView cancel = view.findViewById(R.id.cancel);
+        TextView confirm = view.findViewById(R.id.confirm);
+        TextView msg = view.findViewById(R.id.msg);
+        msg.setText(signCompleteStatus.getMsg());
+        dialog.setContentView(view);
+        //使得点击对话框外部不消失对话框
+        dialog.setCanceledOnTouchOutside(true);
+        //设置对话框的大小
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        if (firsttime == 0l) {
+            signTime.setText("您还没有签到");
+        } else {
+            signTime.setText("上次签到时间为：" + UtilsTime.setTime(firsttime));
+        }
+        dialog.show();
+    }
+
+    /**
+     * 看看那个是被选中的
+     *
+     * @return
+     */
+    private Integer findNumbers() {
+        if (first.isChecked()) {
+            return 1;
+        }
+        if (second.isChecked()) {
+            return 2;
+        }
+        if (triple.isChecked()) {
+            return 3;
+        }
+        if (fourth.isChecked()) {
+            return 4;
+        }
+        return null;
+    }
+
+    /**
+     * 设置设置checkbox的选择
+     */
+    private void setCheckBoxSelected() {
+        first.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                first.setChecked(true);
+                second.setChecked(false);
+                triple.setChecked(false);
+                fourth.setChecked(false);
+            }
+        });
+        second.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                first.setChecked(false);
+                second.setChecked(true);
+                triple.setChecked(false);
+                fourth.setChecked(false);
+            }
+        });
+        triple.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                first.setChecked(false);
+                second.setChecked(false);
+                triple.setChecked(true);
+                fourth.setChecked(false);
+            }
+        });
+        fourth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                first.setChecked(false);
+                second.setChecked(false);
+                triple.setChecked(false);
+                fourth.setChecked(true);
+            }
+        });
+        otherGroup.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (start == 0) {
+                    changeCheckBox();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+    }
+
+
+    private void changeCheckBox() {
+        first.setChecked(false);
+        second.setChecked(false);
+        triple.setChecked(false);
+        fourth.setChecked(false);
+    }
+
+    /**
+     * 签到
+     */
+    private void initPosInfo() {
+        Intent intent = new Intent("sunmi.payment.L3");
+        String transId = System.currentTimeMillis() + "";
+        intent.putExtra("transId", transId);
+        intent.putExtra("transType", 8);
+        intent.putExtra("appId", getPackageName());
+        //判断intent是否存在
+        if (IsIntentExite.isIntentExisting(intent, SystemSettingsActivity.this)) {
+            startActivity(intent);
+            AppSharePreferenceMgr.put(SystemSettingsActivity.this, "transType", "8");
+            int signtime = (int) AppSharePreferenceMgr.get(SystemSettingsActivity.this, "signtime", 1);
+            if (signtime == 1) {
+                firsttime = System.currentTimeMillis();
+                AppSharePreferenceMgr.put(SystemSettingsActivity.this, "firsttime", firsttime);
+            } else if (signtime == 2) {
+                firsttime = (long) AppSharePreferenceMgr.get(SystemSettingsActivity.this, "firsttime", 0l);
+                secondtime = System.currentTimeMillis();
+                AppSharePreferenceMgr.put(SystemSettingsActivity.this, "firsttime", secondtime);
+
+                AppSharePreferenceMgr.put(SystemSettingsActivity.this, "signtime", 2);
+            }
+        } else {
+            Toast.makeText(this, "此机器上没有安装L3应用", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * 接收到签到返回来的信息
+     *
+     * @param scs
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void signCompleteStatus(SignCompleteStatus scs) {
+        //接收到清空购车的信息了
+        Message message = new Message();
+        message.what = 11;
+        message.obj = scs;
+        handler.sendMessage(message);
+
+    }
 }

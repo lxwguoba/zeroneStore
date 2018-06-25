@@ -92,7 +92,12 @@ public class OrderDetailsYFKActivity extends AppCompatActivity {
                             }
                             totalmoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price"));
                             discountmoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
-                            discount.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount") + "折");
+                            if ("10.00".equals(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount"))) {
+                                discount.setText("无折扣");
+                            } else {
+                                discount.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount") + "折");
+                            }
+
                             paymoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("payment_price"));
 
                             String paytype = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("paytype");

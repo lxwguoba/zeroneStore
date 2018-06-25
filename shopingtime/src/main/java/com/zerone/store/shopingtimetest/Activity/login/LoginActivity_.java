@@ -2,8 +2,6 @@ package com.zerone.store.shopingtimetest.Activity.login;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +31,7 @@ import com.zerone.store.shopingtimetest.DB.impl.AccountInfoDao;
 import com.zerone.store.shopingtimetest.DB.impl.UserInfoImpl;
 import com.zerone.store.shopingtimetest.R;
 import com.zerone.store.shopingtimetest.Utils.AppSharePreferenceMgr;
+import com.zerone.store.shopingtimetest.Utils.IsIntentExite;
 import com.zerone.store.shopingtimetest.Utils.LoadingUtils;
 import com.zerone.store.shopingtimetest.Utils.NetUtils;
 import com.zerone.store.shopingtimetest.Utils.NetworkUtil;
@@ -41,7 +41,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -142,6 +141,7 @@ public class LoginActivity_ extends BaseAppActivity {
             }
         }
     };
+    private LinearLayout btn_layout_rember;
 
 
     @Override
@@ -163,7 +163,7 @@ public class LoginActivity_ extends BaseAppActivity {
         intent.putExtra("transType", 13);
         intent.putExtra("appId", getPackageName());
         //判断intent是否存在
-        if (isIntentExisting(intent)) {
+        if (IsIntentExite.isIntentExisting(intent, LoginActivity_.this)) {
             startActivity(intent);
             AppSharePreferenceMgr.put(LoginActivity_.this, "transType", "13");
         } else {
@@ -198,6 +198,7 @@ public class LoginActivity_ extends BaseAppActivity {
     }
     private void initview() {
         closeactivity = (ImageView) findViewById(R.id.closeactivity);
+        btn_layout_rember = (LinearLayout) findViewById(R.id.btn_layout_rember);
         agreement = (TextView) findViewById(R.id.agreement);
         accountInfoDao = new AccountInfoDao(mContext);
         showpassword = (ImageView) findViewById(R.id.showpassword);
@@ -218,6 +219,13 @@ public class LoginActivity_ extends BaseAppActivity {
             @Override
             public void onClick(View v) {
                 intoLoginAction();
+            }
+        });
+
+        btn_layout_rember.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                login_rember_account.setChecked(!login_rember_account.isChecked());
             }
         });
     }
@@ -326,11 +334,4 @@ public class LoginActivity_ extends BaseAppActivity {
         }
     }
 
-    public boolean isIntentExisting(Intent intent) {
-        final PackageManager packageManager = getPackageManager();
-        List<ResolveInfo> resolveInfo =
-                packageManager.queryIntentActivities(intent,
-                        PackageManager.MATCH_DEFAULT_ONLY);
-        return resolveInfo.size() > 0;
-    }
 }

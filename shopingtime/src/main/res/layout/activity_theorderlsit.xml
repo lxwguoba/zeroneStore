@@ -14,13 +14,13 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginLeft="23dp"
             android:layout_marginRight="23dp">
 
             <LinearLayout
                 android:id="@+id/layout_back"
-                android:layout_width="70dp"
-                android:layout_height="match_parent">
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:gravity="center">
 
                 <ImageView
                     android:id="@+id/back"
@@ -274,14 +274,12 @@
         android:layout_marginLeft="14dp"
         android:layout_marginRight="14dp"
         android:layout_marginTop="14dp"
-
         >
 
         <com.zerone.store.shopingtimetest.view.PullRefreshLayout
             android:id="@+id/swipe_ly"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
             <ListView
                 android:id="@+id/orderlistview"
                 android:layout_width="match_parent"

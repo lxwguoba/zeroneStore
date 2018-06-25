@@ -8,7 +8,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.zerone.store.shopingtimetest.Bean.SignCompleteStatus;
 import com.zerone.store.shopingtimetest.Utils.AppSharePreferenceMgr;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * 结果接收者
@@ -21,6 +24,7 @@ public class ResultReceiver extends BroadcastReceiver {
     private int errorCode;
     private int paymentType;
     private String answerCode;
+
     @Override
     public void onReceive(final Context context, Intent intent) {
         String action = intent.getAction();
@@ -152,6 +156,18 @@ public class ResultReceiver extends BroadcastReceiver {
                 String merchantNameEn = intent.getStringExtra("merchantNameEn");
                 String msg = "terminalId=" + terminalId + " merchantId=" + merchantId + " merchantName=" + merchantName + " merchantNameEn=" + merchantNameEn;
                 Log.i("URL", msg);
+            }
+        } else if ("8".equals(transType)) {
+            if (action.equals("sunmi.payment.L3.RESULT")) {
+
+                int resultCode = intent.getIntExtra("resultCode", -1);
+                if (resultCode == 0) {
+                    //签到成功
+                    EventBus.getDefault().post(new SignCompleteStatus("签到到成功", 0));
+                } else if (resultCode == 1) {
+                    //签到失败
+                    EventBus.getDefault().post(new SignCompleteStatus("签到到失败", 1));
+                }
             }
         }
     }
