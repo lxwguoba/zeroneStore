@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center_vertical">
+
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/order_item_check"
+            android:button="@null"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/goodsname"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:ellipsize="end"
+            android:fontFamily="PingFang-SC-Medium"
+            android:text="亮片休闲T恤"
+            android:textColor="#242429"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/goodscount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:fontFamily="Roboto-Medium"
+            android:gravity="center"
+            android:text="x1"
+            android:textColor="#a8a8a8"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/goodsmoney"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:ellipsize="end"
+            android:fontFamily="Roboto-Medium"
+            android:gravity="right"
+            android:text="￥598.00"
+            android:textColor="#333333"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+</LinearLayout>
