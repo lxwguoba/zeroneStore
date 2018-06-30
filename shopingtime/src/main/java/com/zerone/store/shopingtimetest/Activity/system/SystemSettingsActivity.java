@@ -198,8 +198,6 @@ public class SystemSettingsActivity extends BaseAppActivity {
                     break;
                 case 11:
                     SignCompleteStatus signCompleteStatus = (SignCompleteStatus) msg.obj;
-//                    String datePoor = UtilsTime.getDatePoor(firsttime, secondtime);
-//                    Toast.makeText(SystemSettingsActivity.this,datePoor,Toast.LENGTH_SHORT).show();
                     try {
                         int resultCode = signCompleteStatus.getResultCode();
 //                          if (resultCode==0){
@@ -469,8 +467,13 @@ public class SystemSettingsActivity extends BaseAppActivity {
                 Message message = new Message();
                 if (integer == null) {
                     String numberGroup = otherGroup.getText().toString().trim();
-                    AppSharePreferenceMgr.put(SystemSettingsActivity.this, "numberGroup", numberGroup);
-                    message.obj = numberGroup + "";
+                    if (numberGroup.length() > 0) {
+                        AppSharePreferenceMgr.put(SystemSettingsActivity.this, "numberGroup", numberGroup);
+                        message.obj = numberGroup + "";
+                    } else {
+                        Toast.makeText(SystemSettingsActivity.this, "联数不能为空", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                 } else {
                     AppSharePreferenceMgr.put(SystemSettingsActivity.this, "numberGroup", integer + "");
                     message.obj = integer + "";
@@ -626,7 +629,6 @@ public class SystemSettingsActivity extends BaseAppActivity {
                 firsttime = (long) AppSharePreferenceMgr.get(SystemSettingsActivity.this, "firsttime", 0l);
                 secondtime = System.currentTimeMillis();
                 AppSharePreferenceMgr.put(SystemSettingsActivity.this, "firsttime", secondtime);
-
                 AppSharePreferenceMgr.put(SystemSettingsActivity.this, "signtime", 2);
             }
         } else {
@@ -646,6 +648,5 @@ public class SystemSettingsActivity extends BaseAppActivity {
         message.what = 11;
         message.obj = scs;
         handler.sendMessage(message);
-
     }
 }

@@ -45,14 +45,12 @@ public class PayUtils {
             Toast.makeText(context, "此机器上没有安装L3应用", Toast.LENGTH_SHORT).show();
         }
     }
-
     public static void print(Context context) {
         Intent intent = new Intent("sunmi.payment.L3");
         String transId = System.currentTimeMillis() + "";
         intent.putExtra("transId", transId);
         intent.putExtra("transType", 11);
         intent.putExtra("isLastTrade", true);
-
         intent.putExtra("appId", context.getPackageName());
         if (Util.isIntentExisting(intent, context)) {
             context.startActivity(intent);

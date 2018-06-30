@@ -31,7 +31,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp">
+            android:layout_height="50dp">
 
             <RelativeLayout
                 android:layout_width="0dp"
@@ -46,8 +46,8 @@
 
                     <CheckBox
                         android:id="@+id/the_first_group"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:background="@drawable/order_item_check"
                         android:button="@null"
                         android:checked="true" />
@@ -75,8 +75,8 @@
 
                     <CheckBox
                         android:id="@+id/the_second_group"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:background="@drawable/order_item_check"
                         android:button="@null" />
 
@@ -94,7 +94,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp">
+            android:layout_height="50dp">
 
             <RelativeLayout
                 android:layout_width="0dp"
@@ -109,8 +109,8 @@
 
                     <CheckBox
                         android:id="@+id/the_first_triple"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:background="@drawable/order_item_check"
                         android:button="@null" />
 
@@ -137,8 +137,8 @@
 
                     <CheckBox
                         android:id="@+id/the_fourth_group"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:background="@drawable/order_item_check"
                         android:button="@null" />
 
@@ -196,15 +196,11 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
             android:background="#f1f1f1" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
             android:layout_marginTop="10dp"
             android:focusable="true"
             android:focusableInTouchMode="true">

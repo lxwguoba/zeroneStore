@@ -401,7 +401,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
         if (token != null) {
             subMap.put("token", token);
         }
-        String user_id = userinfovip.getFansmanage_user_id();
+        String user_id = userinfovip.getUser_id();
         if (user_id != null && user_id.length() > 0) {
             subMap.put("user_id", user_id);
         } else {
