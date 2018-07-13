@@ -12,7 +12,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.zerone_catering.R;
-import com.zerone_catering.avtivity.details.Order_Details_Print_Activity;
+import com.zerone_catering.avtivity.details.OrderDetailsDFKActivity;
 import com.zerone_catering.domain.payorderlistbean.OrderCashierListBean;
 import com.zerone_catering.utils.UtilsTime;
 
@@ -86,7 +86,7 @@ public class OrderItemCashierListAdapter extends RecyclerView.Adapter<OrderItemC
         holder.lookover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, Order_Details_Print_Activity.class);
+                Intent intent = new Intent(mContext, OrderDetailsDFKActivity.class);
                 intent.putExtra("orderInfo", clist.get(position));
                 mContext.startActivity(intent);
             }

@@ -17,7 +17,7 @@ public class DoubleUtils {
      * @return
      */
     public static String setDouble(double money) {
-        DecimalFormat df = new DecimalFormat("#0.00");
+        DecimalFormat df = new DecimalFormat("#.00");
         return df.format(money);
     }
 
@@ -32,5 +32,24 @@ public class DoubleUtils {
         // 2是显示的小数点后的显示的最多位,显示的最后位是舍入的
         nf.setMaximumFractionDigits(2);
         return nf.format(money);
+    }
+
+    /**
+     * 把钱的后面的小数点保留2位。多余的删除
+     *
+     * @param price
+     * @return
+     */
+    public static String subMoney(String price) {
+        String behind = "00";
+        String[] split = price.split("\\.");
+        if (split.length > 1) {
+            if (split[1].length() > 3) {
+                behind = split[1].substring(0, 2);
+            } else {
+                behind = split[1];
+            }
+        }
+        return split[0] + "." + behind;
     }
 }

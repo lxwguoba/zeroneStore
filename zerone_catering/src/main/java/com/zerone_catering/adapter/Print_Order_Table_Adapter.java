@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zerone_catering.R;
@@ -52,7 +53,13 @@ public class Print_Order_Table_Adapter extends RecyclerView.Adapter<Print_Order_
         holder.table_name.setText(list.get(position).getTable_name());
         holder.onopaynum.setText(list.get(position).getOrder_unpaid() + "单");
         holder.onum.setText(list.get(position).getOrder_num() + "单");
-
+        if (list.get(position).getNum() > 0) {
+            holder.neworderrelat.setVisibility(View.VISIBLE);
+            holder.ordercountnew.setText("新" + list.get(position).getNum() + "单");
+        } else if (list.get(position).getNum() == 0) {
+            holder.neworderrelat.setVisibility(View.GONE);
+            holder.ordercountnew.setText("");
+        }
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,12 +100,16 @@ public class Print_Order_Table_Adapter extends RecyclerView.Adapter<Print_Order_
         public final View root;
         private final TextView onum;
         private final TextView onopaynum;
+        private final RelativeLayout neworderrelat;
+        private final TextView ordercountnew;
 
         public ViewHolder(View root) {
             super(root);
             table_name = root.findViewById(R.id.table_name);
             onum = root.findViewById(R.id.orderNumber);
             onopaynum = root.findViewById(R.id.ordernopay);
+            neworderrelat = root.findViewById(R.id.neworderrelat);
+            ordercountnew = root.findViewById(R.id.newt);
             this.root = root;
         }
     }

@@ -44,7 +44,7 @@
 
                 <TextView
                     android:id="@+id/shopdiscount"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:ellipsize="end"
@@ -52,7 +52,8 @@
                     android:lines="1"
                     android:text="新品/8折"
                     android:textColor="#999999"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:visibility="gone" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

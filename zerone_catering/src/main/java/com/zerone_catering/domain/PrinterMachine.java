@@ -11,7 +11,9 @@ public class PrinterMachine implements Serializable {
     private String MaName;
     private String MaId;
     private boolean chblen;
-
+    private String type; //1为前台打印机
+    //每台打印机打印的联数
+    private int printNum;
     /**
      * @param maName 打印机名称
      * @param maId   打印机ID
@@ -21,6 +23,25 @@ public class PrinterMachine implements Serializable {
         MaName = maName;
         MaId = maId;
         this.chblen = chblen;
+    }
+
+    public PrinterMachine() {
+    }
+
+    public int getPrintNum() {
+        return printNum;
+    }
+
+    public void setPrintNum(int printNum) {
+        this.printNum = printNum;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getMaName() {
@@ -53,6 +74,8 @@ public class PrinterMachine implements Serializable {
                 "MaName='" + MaName + '\'' +
                 ", MaId='" + MaId + '\'' +
                 ", chblen=" + chblen +
+                ", type='" + type + '\'' +
+                ", printNum=" + printNum +
                 '}';
     }
 }

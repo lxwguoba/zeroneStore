@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -21,18 +22,25 @@ import com.zerone_catering.adapter.RecycleProductCategoryListAdapter;
 import com.zerone_catering.adapter.Recycleview_Table_Adapter;
 import com.zerone_catering.avtivity.BaseSet.BaseActvity;
 import com.zerone_catering.domain.UserInfo;
+import com.zerone_catering.domain.colse.CloseActivity;
 import com.zerone_catering.domain.tablefinal.TableCatBeanFinal;
 import com.zerone_catering.domain.tablefinal.TableInfoBeanFianl;
 import com.zerone_catering.recycleview.GridSpacingItemDecoration;
+import com.zerone_catering.retrofitIp.CateringIp;
+import com.zerone_catering.retrofitIp.ResponseUtils;
 import com.zerone_catering.utils.GetUserInfo;
 import com.zerone_catering.utils.LoadingUtils;
 import com.zerone_catering.utils.NetUtils;
 import com.zerone_catering.utils.NetworkUtil;
 import com.zyao89.view.zloading.ZLoadingDialog;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +49,10 @@ import java.util.Map;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by on 2018/6/14 0014 14 48.
@@ -115,6 +127,7 @@ public class CheckTableActivity extends BaseActvity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.check_table_acticity);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
         mContext = CheckTableActivity.this;
         userInfo = GetUserInfo.initGetUserInfo(this);
         initData();
@@ -124,7 +137,8 @@ public class CheckTableActivity extends BaseActvity {
     private void initData() {
         tCList = new ArrayList<>();
         tBList = new ArrayList<>();
-        getTableData();
+//        getTableData();
+        retrofit_getTable();
     }
 
     private void initView() {
@@ -158,7 +172,6 @@ public class CheckTableActivity extends BaseActvity {
                 Intent intent = new Intent(CheckTableActivity.this, OrderListActvity.class);
                 intent.putExtra("tableid", tBList.get(position).getId() + "");
                 startActivity(intent);
-                CheckTableActivity.this.finish();
             }
         });
     }
@@ -186,8 +199,60 @@ public class CheckTableActivity extends BaseActvity {
             Toast.makeText(mContext, "网络不可用，请检查", Toast.LENGTH_SHORT).show();
             return;
         }
-        loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "登录中。。。。");
+        loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取桌子中...");
         loading_dailog.show();
         NetUtils.netWorkByMethodPost(mContext, tMap, IpConfig.URL_TABLE, handler, 0);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    /**
+     * 关闭页面
+     *
+     * @param ca
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void closeActivity(CloseActivity ca) {
+        //接收到清空购车的信息了
+        if (ca.getCode() == 1000 && "open".equals(ca.getMsg())) {
+            CheckTableActivity.this.finish();
+        }
+    }
+
+
+    public void retrofit_getTable() {
+        String timestamp = System.currentTimeMillis() + "";
+        String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
+        Map<String, String> tMap = new HashMap<String, String>();
+        tMap.put("account_id", userInfo.getAccount_id());
+        tMap.put("timestamp", timestamp);
+        tMap.put("organization_id", userInfo.getOrganization_id());
+        tMap.put("token", token);
+        CateringIp cateringIp = ResponseUtils.getCateringIp();
+        Call<ResponseBody> userInfo = cateringIp.getTables(tMap);
+        loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取桌子中...");
+        loading_dailog.show();
+        userInfo.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    Message message = new Message();
+                    message.obj = response.body().string();
+                    message.what = 0;
+                    handler.sendMessage(message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.i("URL", call.toString());
+            }
+        });
     }
 }

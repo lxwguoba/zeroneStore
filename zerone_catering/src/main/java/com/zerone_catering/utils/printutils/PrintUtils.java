@@ -13,7 +13,7 @@ import java.util.LinkedList;
 
 public class PrintUtils {
 
-    public static void print(String name, PrintBean pb) {
+    public static void print(String name, PrintBean pb, int b) {
         //-----------------------------最大分割线-----------------------
         LinkedList<TableItem> flinelist = new LinkedList<>();
         TableItem fline = new TableItem();
@@ -43,9 +43,9 @@ public class PrintUtils {
         ti02.setWidth(headwid02);
         //------------------------
         TableItem ti03 = new TableItem();
-        String[] headti03 = {"", "现场订单", ""};
+        String[] headti03 = {"", "现场订单", "第" + (b + 1) + "联"};
         int[] headalt03 = {1, 1, 2};
-        int[] headwid03 = new int[]{0, 4, 0};
+        int[] headwid03 = new int[]{0, 4, 2};
         ti03.setText(headti03);
         ti03.setAlign(headalt03);
         ti03.setWidth(headwid03);
@@ -144,37 +144,37 @@ public class PrintUtils {
         //---------------------------金额--餐位费--------------------------------------
         LinkedList<TableItem> moneylist = new LinkedList<>();
         TableItem monTi = new TableItem();
-        String[] monTiCon = {"原价：", "", "￥" + pb.getPmoney()};
+        String[] monTiCon = {"价格：", "", "￥" + pb.getPmoney()};
         int[] monTialt = {0, 2, 2};
         int[] monTiwid = {2, 0, 3};
         monTi.setText(monTiCon);
         monTi.setAlign(monTialt);
         monTi.setWidth(monTiwid);
         moneylist.add(monTi);
-        TableItem dislist = new TableItem();
-        String dis = "";
-        if ("10.00".equals(pb.getDiscount())) {
-            dis = "无";
-        } else {
-            dis = pb.getDiscount() + "折";
-        }
-        String[] dmonTiCo = {"折扣：", "", dis};
-        int[] dmonTial = {0, 2, 2};
-        int[] dmonTiwi = {2, 0, 3};
-        dislist.setText(dmonTiCo);
-        dislist.setAlign(dmonTial);
-        dislist.setWidth(dmonTiwi);
-        if (!"10.00".equals(pb.getDiscount())) {
-            moneylist.add(dislist);
-        }
-        TableItem monT = new TableItem();
-        String[] monTiCo = {"实收：", "", "￥" + pb.getPayment_price()};
-        int[] monTial = {0, 2, 2};
-        int[] monTiwi = {2, 0, 3};
-        monT.setText(monTiCo);
-        monT.setAlign(monTial);
-        monT.setWidth(monTiwi);
-        moneylist.add(monT);
+//        TableItem dislist = new TableItem();
+//        String dis = "";
+//        if ("10.00".equals(pb.getDiscount())) {
+//            dis = "无";
+//        } else {
+//            dis = pb.getDiscount() + "折";
+//        }
+//        String[] dmonTiCo = {"折扣：", "", dis};
+//        int[] dmonTial = {0, 2, 2};
+//        int[] dmonTiwi = {2, 0, 3};
+//        dislist.setText(dmonTiCo);
+//        dislist.setAlign(dmonTial);
+//        dislist.setWidth(dmonTiwi);
+//        if (!"10.00".equals(pb.getDiscount())) {
+//            moneylist.add(dislist);
+//        }
+//        TableItem monT = new TableItem();
+//        String[] monTiCo = {"实收：", "", "￥" + pb.getPayment_price()};
+//        int[] monTial = {0, 2, 2};
+//        int[] monTiwi = {2, 0, 3};
+//        monT.setText(monTiCo);
+//        monT.setAlign(monTial);
+//        monT.setWidth(monTiwi);
+//        moneylist.add(monT);
         //---------------------------金额----------------------------------
         AidlUtil.getInstance().printTable(head, 40, true);
         AidlUtil.getInstance().printTable(title, 36, true);
@@ -184,7 +184,7 @@ public class PrintUtils {
         AidlUtil.getInstance().printTable(flinelist, 40, false);
         AidlUtil.getInstance().printTable(moneylist, 38, true);
 //        AidlUtil.getInstance().printTable(flinelist, 40, false);
-        AidlUtil.getInstance().printQr("www.01nnt.com", 10, 2);
+//        AidlUtil.getInstance().printQr("www.01nnt.com", 10, 2);
         AidlUtil.getInstance().print3Line();
     }
 }

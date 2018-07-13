@@ -37,7 +37,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="30dp"
                     android:fontFamily="SourceHanSansCN-Medium"
-                    android:text="确认订单"
+                    android:text="确认点餐订单"
                     android:textColor="#000000"
                     android:textSize="20sp" />
 
@@ -152,7 +152,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:fontFamily="SourceHanSansCN-Medium"
-                    android:text="取消订单"
+                    android:text="返回"
                     android:textColor="#000000"
                     android:textSize="16sp" />
             </LinearLayout>
@@ -390,10 +390,11 @@
                 android:layout_centerInParent="true">
 
                 <TextView
+                    android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="SourceHanSansCN-Medium"
-                    android:text="提交订单"
+                    android:text="提交点餐订单"
                     android:textColor="#ffffff"
                     android:textSize="16sp" />
 
@@ -402,7 +403,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="SourceHanSansCN-Medium"
-                    android:text="￥560.00"
                     android:textColor="#ffffff"
                     android:textSize="16sp" />
             </LinearLayout>

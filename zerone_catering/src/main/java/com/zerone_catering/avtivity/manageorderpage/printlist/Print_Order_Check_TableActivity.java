@@ -22,6 +22,8 @@ import com.zerone_catering.adapter.Print_Order_Table_Adapter;
 import com.zerone_catering.adapter.shopplistadapter.RecycleTableCategoryListAdapter;
 import com.zerone_catering.avtivity.BaseSet.BaseActvity;
 import com.zerone_catering.domain.UserInfo;
+import com.zerone_catering.domain.colse.CloseActivity;
+import com.zerone_catering.domain.refresh.RefreshBean;
 import com.zerone_catering.domain.tablefinal.cashiertable.TableCatCashierFinal;
 import com.zerone_catering.domain.tablefinal.cashiertable.TableListInfoCashierFinal;
 import com.zerone_catering.recycleview.GridSpacingItemDecoration;
@@ -31,6 +33,9 @@ import com.zerone_catering.utils.NetUtils;
 import com.zerone_catering.utils.NetworkUtil;
 import com.zyao89.view.zloading.ZLoadingDialog;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,6 +67,7 @@ public class Print_Order_Check_TableActivity extends BaseActvity {
     private RecyclerView table_det_recycleView;
     private UserInfo userInfo;
     private ZLoadingDialog loading_dailog;
+    private String resh = "0";
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -83,6 +89,7 @@ public class Print_Order_Check_TableActivity extends BaseActvity {
                                 tlicf.setTable_sort(jsonArray.getJSONObject(i).getInt("table_sort"));
                                 tlicf.setTable_name(jsonArray.getJSONObject(i).getString("table_name"));
                                 tlicf.setId(jsonArray.getJSONObject(i).getInt("id"));
+                                tlicf.setNum(jsonArray.getJSONObject(i).getInt("num"));
                                 tlicf.setOrder_num(jsonArray.getJSONObject(i).getInt("order_num"));
                                 tlicf.setOrder_unpaid(jsonArray.getJSONObject(i).getInt("order_unpaid"));
                                 tlicf.setRoom_id(jsonArray.getJSONObject(i).getInt("room_id"));
@@ -95,6 +102,11 @@ public class Print_Order_Check_TableActivity extends BaseActvity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } finally {
+                        if (!Print_Order_Check_TableActivity.this.isFinishing()) {
+                            if (loading_dailog != null) {
+                                loading_dailog.dismiss();
+                            }
+                        }
                     }
                     break;
                 case 1:
@@ -103,6 +115,7 @@ public class Print_Order_Check_TableActivity extends BaseActvity {
                         JSONObject jsonObject = new JSONObject(ctableJson);
                         int status = jsonObject.getInt("status");
                         if (status == 1) {
+                            list.clear();
                             JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("roomlist");
                             Map<String, List<TableListInfoCashierFinal>> map = new HashMap<>();
                             for (int i = 0; i < jsonArray.length(); i++) {
@@ -126,7 +139,9 @@ public class Print_Order_Check_TableActivity extends BaseActvity {
                             for (int s = 0; s < tableListInfoCashierFinals.size(); s++) {
                                 listtable.add(tableListInfoCashierFinals.get(s));
                             }
-                            insertDataToListView();
+                            rcpAdapter.notifyDataSetChanged();
+                            rcpAdapter.setCheckPosition(0);
+                            tableAdapter.notifyDataSetChanged();
                         } else if (status == 0) {
                         }
                     } catch (JSONException e) {
@@ -147,16 +162,18 @@ public class Print_Order_Check_TableActivity extends BaseActvity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.check_table_acticity);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
         mContext = Print_Order_Check_TableActivity.this;
         userInfo = GetUserInfo.initGetUserInfo(this);
         initData();
         initView();
+        insertDataToListView();
     }
 
     private void initData() {
         list = new ArrayList<>();
         listtable = new ArrayList<>();
-        getTableDataList();
+        getTableDataList("0");
     }
 
     private void initView() {
@@ -187,17 +204,20 @@ public class Print_Order_Check_TableActivity extends BaseActvity {
             Toast.makeText(mContext, "网络不可用，请检查", Toast.LENGTH_SHORT).show();
             return;
         }
-        loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取桌子分类。。。。");
-        if (!Print_Order_Check_TableActivity.this.isFinishing()) {
-            loading_dailog.show();
+        if (!"1".equals(resh)) {
+            loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取桌子分类。。。。");
+            if (!Print_Order_Check_TableActivity.this.isFinishing()) {
+                loading_dailog.show();
+            }
         }
+
         NetUtils.netWorkByMethodPost(mContext, tMap, IpConfig.URL_CASHIERTABLE, handler, 1);
     }
 
     /**
      * 获取桌的数据
      */
-    public void getTableDataList() {
+    public void getTableDataList(String str) {
         if (userInfo == null) {
             return;
         }
@@ -212,10 +232,13 @@ public class Print_Order_Check_TableActivity extends BaseActvity {
             Toast.makeText(mContext, "网络不可用，请检查", Toast.LENGTH_SHORT).show();
             return;
         }
-        loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取桌子列表。。。。");
-        if (!Print_Order_Check_TableActivity.this.isFinishing()) {
-            loading_dailog.show();
+        if (!"1".equals(resh)) {
+            loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取桌子列表。。。。");
+            if (!Print_Order_Check_TableActivity.this.isFinishing()) {
+                loading_dailog.show();
+            }
         }
+
         NetUtils.netWorkByMethodPost(mContext, tMap, IpConfig.URL_CASHIERTABLELIST, handler, 0);
     }
 
@@ -223,7 +246,6 @@ public class Print_Order_Check_TableActivity extends BaseActvity {
      * 将数据放入列表中
      */
     private void insertDataToListView() {
-
         table_category_list = (RecyclerView) findViewById(R.id.table_category_list);
         rcpAdapter = new RecycleTableCategoryListAdapter(list, Print_Order_Check_TableActivity.this);
         table_category_list.setLayoutManager(new LinearLayoutManager(Print_Order_Check_TableActivity.this));
@@ -242,7 +264,7 @@ public class Print_Order_Check_TableActivity extends BaseActvity {
         tableAdapter = new Print_Order_Table_Adapter(listtable, Print_Order_Check_TableActivity.this);
         table_det_recycleView.setLayoutManager(gridLayoutManager);
         table_det_recycleView.setAdapter(tableAdapter);
-        table_det_recycleView.addItemDecoration(new GridSpacingItemDecoration(2, 20, false));
+        table_det_recycleView.addItemDecoration(new GridSpacingItemDecoration(1, 20, false));
         tableAdapter.setOnItemClickListener(new Print_Order_Table_Adapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -266,4 +288,37 @@ public class Print_Order_Check_TableActivity extends BaseActvity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    /**
+     * 刷新页面的数据
+     *
+     * @param refreshBean
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void refresh(RefreshBean refreshBean) {
+        //接收到清空购车的信息了
+        if (refreshBean.getRefreshCode() == 100) {
+            resh = "1";
+            getTableDataList("1");
+
+        }
+    }
+
+    /**
+     * 关闭页面
+     *
+     * @param ca
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void closeActivity(CloseActivity ca) {
+        //接收到清空购车的信息了
+        if (ca.getCode() == 1000 && "print".equals(ca.getMsg())) {
+            Print_Order_Check_TableActivity.this.finish();
+        }
+    }
 }

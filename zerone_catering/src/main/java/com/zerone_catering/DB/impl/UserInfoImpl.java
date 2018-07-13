@@ -30,7 +30,7 @@ public class UserInfoImpl extends AbstractDao {
         try {
             db = baseDao.getWritableDatabase();
             String sql = "insert into customer (u_id, account_id,account,u_orgid,u_uuid,organization_name,realname,fansnamage_id) values (?,?,?,?,?,?,?,?)";
-            String[] param = new String[]{"10", userInfo.getAccount_id(), userInfo.getAccount(), userInfo.getOrganization_id(), userInfo.getUuid(), userInfo.getOrganization_name(), userInfo.getRealName(), userInfo.getFansnamage_id()};
+            String[] param = new String[]{"10", userInfo.getAccount_id(), userInfo.getAccount(), userInfo.getOrganization_id(), userInfo.getUuid(), userInfo.getOrganization_name(), userInfo.getRealName(), userInfo.getFansmanage_id()};
             db.execSQL(sql, param);
             Log.i("URL", "保存用户信息成功");
         } catch (Exception e) {
@@ -63,7 +63,7 @@ public class UserInfoImpl extends AbstractDao {
                     userInfo.setUuid(cur.getString(cur.getColumnIndex("u_uuid")));
                     userInfo.setOrganization_name(cur.getString(cur.getColumnIndex("organization_name")));
                     userInfo.setRealName(cur.getString(cur.getColumnIndex("realname")));
-                    userInfo.setFansnamage_id(cur.getString(cur.getColumnIndex("fansnamage_id")));
+                    userInfo.setFansmanage_id(cur.getString(cur.getColumnIndex("fansnamage_id")));
                 } while (cur.moveToNext());
             }
             return userInfo;

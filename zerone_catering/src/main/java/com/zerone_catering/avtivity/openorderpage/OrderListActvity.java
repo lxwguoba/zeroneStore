@@ -151,7 +151,7 @@ public class OrderListActvity extends BaseActvity {
                                 shopBean.setName(shopObject.getString("name"));
                                 shopBean.setId(shopObject.getInt("id"));
                                 shopBean.setCategory_id(shopObject.getInt("category_id"));
-                                shopBean.setDetails(shopObject.getString("details"));
+//                                shopBean.setDetails(shopObject.getString("details"));
                                 shopBean.setPrice(shopObject.getString("price"));
                                 shopBean.setProductCount(0);
                                 List<ProductBean.ThumbBean> Tlist = new ArrayList<ProductBean.ThumbBean>();
@@ -571,9 +571,8 @@ public class OrderListActvity extends BaseActvity {
                     if (buycartshoplist.size() > 0) {
                         inten.putExtra("listobj", (Serializable) buycartshoplist);
                         inten.putExtra("tableid", tableId);
+                        startActivity(inten);
                     }
-                    startActivity(inten);
-                    OrderListActvity.this.finish();
                     plAdapter.notifyDataSetChanged();
                     break;
                 case 200:
@@ -841,6 +840,12 @@ public class OrderListActvity extends BaseActvity {
                 plAdapter.notifyDataSetChanged();
             }
         });
+        plAdapter.setOnItemClickListener(new ProductListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+
+            }
+        });
     }
 
     private void action() {
@@ -1068,19 +1073,6 @@ public class OrderListActvity extends BaseActvity {
     }
 
     /**
-     * 接收到关闭页面的通知
-     *
-     * @param closeActivity
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void closeActivity(CloseActivity closeActivity) {
-        //接收到清空购车的信息了
-        if (closeActivity.getCode() == 200) {
-            OrderListActvity.this.finish();
-        }
-    }
-
-    /**
      * 接收到搜索框里的加减按钮
      *
      * @param searchBean
@@ -1137,6 +1129,20 @@ public class OrderListActvity extends BaseActvity {
         } else {
             settlement_name.setTextColor(Color.parseColor("#000000"));
             cashier.setTextColor(Color.parseColor("#383638"));
+        }
+    }
+
+    /**
+     * 关闭页面
+     *
+     * @param ca
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void closeActivity(CloseActivity ca) {
+        //接收到清空购车的信息了
+        if (ca.getCode() == 1000 && "open".equals(ca.getMsg())) {
+            OrderListActvity.this.finish();
+            Log.i("EEEE", "111111111111111111111111111111111");
         }
     }
 }

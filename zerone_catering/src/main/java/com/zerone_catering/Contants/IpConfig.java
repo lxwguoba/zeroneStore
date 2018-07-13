@@ -37,7 +37,31 @@ public class IpConfig {
     public static final String URL_CANCEL_GOODS = URL + "order_delete_goods";
     //删除商品
     public static final String URL_ORDER_GOODS_LIST = URL + "order_goods_list";
-
+    //提交收银订单接口
+    public static final String URL_SUBMIT_CASHIER = URL + "order_merge";
+    //收银订单的详情接口
+    public static final String URL_ORDER_MERGE_DETAIL = URL + "order_merge_detail";
+    //收银订单的详情接口
+    public static final String URL_CASH_PAYMENT = URL + "cash_payment";
+    public static final String URL_OTHER_PAYMENT = URL + "other_payment";
+    public static final String URL_GETCODE = "http://develop2.01nnt.com/api/androidRetailApi/" + "code";
+    public static final String URL_GETUSERINFO = "http://develop2.01nnt.com/api/androidRetailApi/" + "deviceInfo";
+    //设备信息签出接口
+    public static final String URL_SINGOUT = "http://develop2.01nnt.com/api/androidRetailApi/" + "deviceCheckOut";
+    //订单收银列表
+    public static final String URL_ORDER_MERGE_LIST = URL + "order_merge_list";
+    //商品详情
+    public static final String URL_GOODS_DETAIL = URL + "goods_detail";
+    //获取打印机列表
+    public static final String URL_PRINTER_LIST = URL + "printer_list";
+    //获取打印转态
+    public static final String URL_ORDER_PRINTER = URL + "order_printer";
+    //查看是否有新的订单
+    public static final String URL_ORDER_NEWS = URL + "order_news";
+    //取消订单
+    public static final String URL_CANCEL_ORDER = URL + "cancel_order";
+    //取消合并订单
+    public static final String URL_CANCEL_ORDER_MERGE = URL + "cancel_order_merge";
 
     //====================================================================
     //分类接口
@@ -58,13 +82,9 @@ public class IpConfig {
     //提交订单
     public static final String URL_SUBMITORDER = URL + "order_check";
     //修改订单支付状态接口（现金除外）
-    public static final String URL_UPDATAPAY = URL + "other_payment";
+
     //现金支付方式
     public static final String URL_CASHPAY = URL + "cash_payment";
     //获取签入二维码
-    public static final String URL_GETCODE = URL + "code";
-    //获取签入信息
-    public static final String URL_GETUSERINFO = URL + "deviceInfo";
-    //设备信息签出接口
-    public static final String URL_SINGOUT = URL + "deviceCheckOut";
+
 }

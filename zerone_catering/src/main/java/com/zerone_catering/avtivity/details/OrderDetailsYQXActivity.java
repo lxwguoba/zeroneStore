@@ -1,198 +1,234 @@
-//package com.zerone_catering.avtivity.details;
-//
-//import android.content.Intent;
-//import android.graphics.Color;
-//import android.os.Bundle;
-//import android.os.Handler;
-//import android.os.Message;
-//import android.support.annotation.Nullable;
-//import android.support.v7.app.AppCompatActivity;
-//import android.view.View;
-//import android.widget.ListView;
-//import android.widget.RelativeLayout;
-//import android.widget.TextView;
-//import android.widget.Toast;
-//
-//import com.githang.statusbar.StatusBarCompat;
-//import com.zerone.store.shopingtimetest.Adapter.cart_list.OrderDetialsListItemAdapter;
-//import com.zerone.store.shopingtimetest.Base64AndMD5.CreateToken;
-//import com.zerone.store.shopingtimetest.Bean.UserInfo;
-//import com.zerone.store.shopingtimetest.Bean.order.GoodsBean;
-//import com.zerone.store.shopingtimetest.Contants.IpConfig;
-//import com.zerone.store.shopingtimetest.DB.impl.UserInfoImpl;
-//import com.zerone.store.shopingtimetest.R;
-//import com.zerone.store.shopingtimetest.Utils.LoadingUtils;
-//import com.zerone.store.shopingtimetest.Utils.NetUtils;
-//import com.zyao89.view.zloading.ZLoadingDialog;
-//
-//import org.json.JSONArray;
-//import org.json.JSONException;
-//import org.json.JSONObject;
-//
-//import java.text.SimpleDateFormat;
-//import java.util.ArrayList;
-//import java.util.Date;
-//import java.util.HashMap;
-//import java.util.List;
-//import java.util.Map;
-//
-///**
-// * Created by on 2018/4/2 0002 19 32.
-// * Author  LiuXingWen
-// */
-//
-//public class OrderDetailsYQXActivity extends AppCompatActivity {
-//
-//    private ListView listView;
-//    private OrderDetailsYQXActivity mContext;
-//    private UserInfo userInfo;
-//    private ZLoadingDialog loading_dailog;
-//    private Intent intent;
-//    private OrderDetialsListItemAdapter odlia;
-//    private List<GoodsBean> list;
-//    private TextView totalmoney;
-//    //    private TextView zhifufangshi;
-//    private TextView xiaofeizhe;
-//    private TextView jiedaiy;
-//    private TextView ordersn;
-//    private TextView beizhu;
-//    private RelativeLayout back;
-//    private TextView discountmoney;
-//    private TextView paymoney;
-//    private TextView ordertime;
-//    Handler handler = new Handler() {
-//        @Override
-//        public void handleMessage(Message msg) {
-//            super.handleMessage(msg);
-//            switch (msg.what) {
-//                case 0:
-//                    String yqxJSon = (String) msg.obj;
-//                    loading_dailog.dismiss();
-//                    try {
-//                        JSONObject jsonObject = new JSONObject(yqxJSon);
-//                        int status = jsonObject.getInt("status");
-//                        if (status == 1) {
-//                            long aLong = jsonObject.getJSONObject("data").getJSONObject("orderdata").getLong("created_at") * 1000;
-//                            //下单时间
-//                            Date d = new Date(aLong);
-//                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                            JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("ordergoods");
-//                            for (int i = 0; i < jsonArray.length(); i++) {
-//                                GoodsBean gb = new GoodsBean();
-//                                gb.setGoods_total(jsonArray.getJSONObject(i).getString("total"));
-//                                gb.setGoods_price(jsonArray.getJSONObject(i).getString("price"));
-//                                gb.setGoods_title(jsonArray.getJSONObject(i).getString("title"));
-//                                gb.setGoods_details(jsonArray.getJSONObject(i).getString("details"));
-//                                gb.setGoods_id(jsonArray.getJSONObject(i).getString("goods_id"));
-//                                gb.setGoods_thumb(jsonArray.getJSONObject(i).getString("thumb"));
-//                                list.add(gb);
-//                            }
-//                            totalmoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price"));
-//                            discountmoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
-//                            discount.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount")+"折");
-//                            if ("null".equals(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("payment_price"))) {
-//                                paymoney.setText("无实收");
-//                            } else {
-//                                paymoney.setText("￥" + jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("payment_price"));
-//                            }
-//                            String paytype = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("paytype");
-//                            int userid = jsonObject.getJSONObject("data").getJSONObject("orderdata").getInt("user_id");
-//                            if (userid == 0) {
-//                                xiaofeizhe.setText("散客");
-//                            } else {
-//                                xiaofeizhe.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("nickname"));
-//                            }
-//                            ordertime.setText(sdf.format(d));
-//                            jiedaiy.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("realname"));
-//                            ordersn.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("ordersn"));
-//                            beizhu.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("remarks"));
-//                        } else if (status == 0) {
-//
-//                        }
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    } finally {
-//                        odlia.notifyDataSetChanged();
-//                    }
-//                    break;
-//                case 511:
-//                    Toast.makeText(OrderDetailsYQXActivity.this, "网络超时，请重试", Toast.LENGTH_SHORT).show();
-//                    loading_dailog.dismiss();
-//                    break;
-//            }
-//        }
-//    };
-//    private TextView discount;
-//
-//    @Override
-//    protected void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_orderdetails_yqx);
-//        StatusBarCompat.setStatusBarColor(this, Color.parseColor("#ffffff"));
-//        intent = getIntent();
-//        list = new ArrayList<>();
-//        mContext = this;
-//        initGetUserInfo();
-//        initView();
-//        initGetDataOrderDetails();
-//        action();
-//
-//    }
-//
-//    private void action() {
-//        back.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                OrderDetailsYQXActivity.this.finish();
-//            }
-//        });
-//    }
-//
-//    /**
-//     * 初始化view
-//     */
-//    private void initView() {
-//        totalmoney = (TextView) findViewById(R.id.totalmoney);
-//        discountmoney = (TextView) findViewById(R.id.discountmoney);
-//        paymoney = (TextView) findViewById(R.id.paymoney);
-//        discount = (TextView) findViewById(R.id.discount);
-////        zhifufangshi = (TextView) findViewById(R.id.zhifufangshi);
-//        xiaofeizhe = (TextView) findViewById(R.id.xiaofeizhe);
-//        jiedaiy = (TextView) findViewById(R.id.jiedaiy);
-//        ordersn = (TextView) findViewById(R.id.ordersn);
-//        beizhu = (TextView) findViewById(R.id.beizhu);
-//        back = (RelativeLayout) findViewById(R.id.back);
-//        ordertime = (TextView) findViewById(R.id.ordertime);
-//        listView = (ListView) findViewById(R.id.goodslist);
-//        odlia = new OrderDetialsListItemAdapter(this, list);
-//        listView.setAdapter(odlia);
-//
-//    }
-//
-//    /**
-//     * 获取用户信息
-//     */
-//    private void initGetUserInfo() {
-//        UserInfoImpl userInfoImpl = new UserInfoImpl(mContext);
-//        try {
-//            userInfo = userInfoImpl.getUserInfo("10");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private void initGetDataOrderDetails() {
-//        //默认是没有开启的
-//        String timestamp = System.currentTimeMillis() + "";
-//        String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
-//        Map<String, String> getOrderDetails = new HashMap<String, String>();
-//        getOrderDetails.put("account_id", userInfo.getAccount_id());
-//        getOrderDetails.put("organization_id", userInfo.getOrganization_id());
-//        getOrderDetails.put("order_id", intent.getStringExtra("orderid"));
-//        getOrderDetails.put("token", token);
-//        getOrderDetails.put("timestamp", timestamp);
-//        loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取订单详情中。。。。");
-//        loading_dailog.show();
-//        NetUtils.netWorkByMethodPost(mContext, getOrderDetails, IpConfig.URL_ORDERDETAILS, handler, 0);
-//    }
-//}
+package com.zerone_catering.avtivity.details;
+
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.Nullable;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.zerone_catering.Base64AndMD5.CreateToken;
+import com.zerone_catering.Contants.IpConfig;
+import com.zerone_catering.DB.impl.UserInfoImpl;
+import com.zerone_catering.R;
+import com.zerone_catering.adapter.cart_list.CheckCancel_OrderListItemAdapter;
+import com.zerone_catering.avtivity.BaseSet.BaseActvity;
+import com.zerone_catering.domain.UserInfo;
+import com.zerone_catering.domain.order.Order_Cashier_Details_Bean;
+import com.zerone_catering.utils.DoubleUtils;
+import com.zerone_catering.utils.LoadingUtils;
+import com.zerone_catering.utils.NetUtils;
+import com.zerone_catering.utils.NetworkUtil;
+import com.zerone_catering.utils.UtilsTime;
+import com.zerone_catering.utils.view.ListViewSetHightUtils;
+import com.zyao89.view.zloading.ZLoadingDialog;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+/**
+ * Created by on 2018/4/2 0002 19 32.
+ * Author  LiuXingWen
+ */
+
+public class OrderDetailsYQXActivity extends BaseActvity {
+    @Bind(R.id.back)
+    ImageView back;
+    @Bind(R.id.relative_back)
+    RelativeLayout relativeBack;
+    @Bind(R.id.refresh_data)
+    LinearLayout refreshData;
+    @Bind(R.id.head)
+    LinearLayout head;
+    @Bind(R.id.ordertime)
+    TextView ordertime;
+    @Bind(R.id.exit)
+    LinearLayout exit;
+    @Bind(R.id.daohang)
+    LinearLayout daohang;
+    @Bind(R.id.cancel_goods)
+    TextView cancelGoods;
+    @Bind(R.id.goodslist)
+    ListView listView;
+    @Bind(R.id.listOrderMoney)
+    TextView listOrderMoney;
+    @Bind(R.id.discount)
+    TextView discount;
+    @Bind(R.id.discount_price)
+    TextView discountPrice;
+    @Bind(R.id.mingxi)
+    LinearLayout mingxi;
+    @Bind(R.id.ordersn)
+    TextView ordersn;
+    @Bind(R.id.jiedaiyuan)
+    TextView jiedaiyuan;
+    @Bind(R.id.xiaofeizhe)
+    TextView xiaofeizhe;
+    @Bind(R.id.beizhu)
+    TextView beizhu;
+    @Bind(R.id.title)
+    TextView title;
+    private OrderDetailsYQXActivity mContext;
+    private UserInfo userInfo;
+    private ZLoadingDialog loading_dailog;
+    private Intent intent;
+    private List<Order_Cashier_Details_Bean> list;
+    private CheckCancel_OrderListItemAdapter codlia;
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 0:
+                    try {
+                        String detailsJson = (String) msg.obj;
+                        JSONObject jsonObject = new JSONObject(detailsJson);
+                        int status = jsonObject.getInt("status");
+                        if (status == 1) {
+                            list.clear();
+                            JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("ordergoods");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject object = jsonArray.getJSONObject(i);
+                                Order_Cashier_Details_Bean ocdb = new Order_Cashier_Details_Bean();
+                                ocdb.setGoods_id(object.getInt("goods_id"));
+                                ocdb.setPrice(object.getString("price"));
+                                ocdb.setThumb(object.getString("thumb"));
+                                ocdb.setTitle(object.getString("title"));
+                                ocdb.setTotal(object.getInt("total"));
+                                ocdb.setGoods_ckeck(false);
+                                list.add(ocdb);
+                            }
+                            ordertime.setText(UtilsTime.getTime(Long.parseLong(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("created_at"))));
+
+                            ordersn.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("ordersn"));
+                            xiaofeizhe.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("nickname"));
+                            jiedaiyuan.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("realname"));
+                            String remarks = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("remarks");
+                            if ("null".equals(remarks) && remarks.length() > 0) {
+                                beizhu.setText("没有备注");
+                            } else {
+                                beizhu.setText(remarks);
+                            }
+                            String nmoney = DoubleUtils.setDouble(Double.parseDouble(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price")));
+                            listOrderMoney.setText("￥" + DoubleUtils.subMoney(nmoney));
+                            String discoun = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount");
+                            if ("10.00".equals(discoun)) {
+                                discount.setText("没有打折");
+                            } else {
+                                discount.setText(discoun);
+                            }
+
+                            String payment_price = DoubleUtils.setDouble(Double.parseDouble(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("payment_price")));
+                            if ("null".equals(payment_price)) {
+                                discountPrice.setText("您还没有收钱");
+                            } else {
+                                discountPrice.setText(payment_price);
+                            }
+                            codlia.notifyDataSetChanged();
+                            ListViewSetHightUtils.setListViewHeightBasedOnChildren(listView);
+                        } else if (status == 0) {
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        if (!OrderDetailsYQXActivity.this.isFinishing()) {
+                            loading_dailog.dismiss();
+                        }
+                    }
+                    break;
+            }
+        }
+    };
+    private String order_id;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_orderdetails_paymented);
+        ButterKnife.bind(this);
+        intent = getIntent();
+        order_id = intent.getStringExtra("order_id");
+        mContext = this;
+        initGetUserInfo();
+        initView();
+        initGetDataOrderDetails();
+    }
+
+    /**
+     * 初始化view
+     */
+    private void initView() {
+        title.setText("已取消");
+        list = new ArrayList<>();
+        codlia = new CheckCancel_OrderListItemAdapter(this, list);
+        listView.setAdapter(codlia);
+        ListViewSetHightUtils.setListViewHeightBasedOnChildren(listView);
+    }
+
+    /**
+     * 获取用户信息
+     */
+    private void initGetUserInfo() {
+        UserInfoImpl userInfoImpl = new UserInfoImpl(mContext);
+        try {
+            userInfo = userInfoImpl.getUserInfo("10");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initGetDataOrderDetails() {
+        //默认是没有开启的
+        if (userInfo == null) {
+            return;
+        }
+        String timestamp = System.currentTimeMillis() + "";
+        String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
+        Map<String, String> tMap = new HashMap<String, String>();
+        tMap.put("account_id", userInfo.getAccount_id());
+        tMap.put("timestamp", timestamp);
+        tMap.put("organization_id", userInfo.getOrganization_id());
+        tMap.put("token", token);
+        tMap.put("order_id", order_id + "");
+        if (!NetworkUtil.isNetworkAvailable(mContext)) {
+            Toast.makeText(mContext, "网络不可用，请检查", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取详情中...");
+        if (!OrderDetailsYQXActivity.this.isFinishing()) {
+            loading_dailog.show();
+        }
+        NetUtils.netWorkByMethodPost(mContext, tMap, IpConfig.URL_ORDER_MERGE_DETAIL, handler, 0);
+    }
+
+    @OnClick({R.id.relative_back, R.id.refresh_data, R.id.exit})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.relative_back:
+                OrderDetailsYQXActivity.this.finish();
+                break;
+            case R.id.refresh_data:
+                initGetDataOrderDetails();
+                break;
+            case R.id.exit:
+                OrderDetailsYQXActivity.this.finish();
+                break;
+        }
+    }
+}

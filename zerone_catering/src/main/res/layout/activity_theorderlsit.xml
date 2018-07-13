@@ -8,6 +8,8 @@
         android:id="@+id/head"
         android:layout_width="match_parent"
         android:layout_height="204dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:background="@mipmap/order_list_topbg"
         android:orientation="vertical">
 
@@ -36,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:fontFamily="SourceHanSansCN-Medium"
-                android:text="订单列表"
+                android:text="订单收银列表"
                 android:textColor="#ffffff"
                 android:textSize="24sp" />
 
@@ -72,19 +74,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="SourceHanSansCN-Medium"
-                        android:text="订单总计金额"
+                        android:text="总计金额"
                         android:textColor="#ffffff"
                         android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/orderTotalPrice"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="31dp"
                         android:layout_marginTop="17dp"
                         android:fontFamily="Roboto-Medium"
                         android:gravity="left"
-                        android:lines="1"
                         android:text="0"
                         android:textColor="#ffffff"
                         android:textSize="20sp" />
@@ -117,7 +117,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="SourceHanSansCN-Medium"
-                        android:text="当前订单数量"
+                        android:text="全部订单数量"
                         android:textColor="#ffffff"
                         android:textSize="14sp" />
 
@@ -277,19 +277,25 @@
 
         >
 
-        <com.zerone_catering.view.PullRefreshLayout
-            android:id="@+id/swipe_ly"
+        <!--<android.support.v4.widget.SwipeRefreshLayout-->
+        <!--android:id="@+id/swRefresh"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+        <cn.bingoogolapple.refreshlayout.BGARefreshLayout
+            android:id="@+id/rl_modulename_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
             <ListView
                 android:id="@+id/orderlistview"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:background="#fff"
                 android:divider="#f1f5f8"
                 android:dividerHeight="10dp"
                 android:scrollbars="none" />
-        </com.zerone_catering.view.PullRefreshLayout>
+        </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
+        <!--</android.support.v4.widget.SwipeRefreshLayout>-->
+
     </LinearLayout>
 </RelativeLayout>

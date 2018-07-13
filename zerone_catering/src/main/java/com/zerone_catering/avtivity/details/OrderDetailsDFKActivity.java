@@ -9,6 +9,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,6 +29,8 @@ import com.zerone_catering.domain.PrinterMachine;
 import com.zerone_catering.domain.UserInfo;
 import com.zerone_catering.domain.order.Order_Cashier_Details_Bean;
 import com.zerone_catering.domain.payorderlistbean.OrderCashierListBean;
+import com.zerone_catering.domain.refresh.RefreshBean;
+import com.zerone_catering.utils.DoubleUtils;
 import com.zerone_catering.utils.GetUserInfo;
 import com.zerone_catering.utils.LoadingUtils;
 import com.zerone_catering.utils.NetUtils;
@@ -36,7 +39,9 @@ import com.zerone_catering.utils.UtilsTime;
 import com.zerone_catering.utils.view.ListViewSetHightUtils;
 import com.zyao89.view.zloading.ZLoadingDialog;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -89,9 +94,11 @@ public class OrderDetailsDFKActivity extends BaseActvity {
                 case 0:
                     try {
                         String detailsJson = (String) msg.obj;
+                        Log.i("URL", "detailsJson=" + detailsJson);
                         JSONObject jsonObject = new JSONObject(detailsJson);
                         int status = jsonObject.getInt("status");
                         if (status == 1) {
+                            list.clear();
                             JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("ordergoods");
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject object = jsonArray.getJSONObject(i);
@@ -105,11 +112,17 @@ public class OrderDetailsDFKActivity extends BaseActvity {
                                 list.add(ocdb);
                             }
                             ordertime.setText(UtilsTime.getTime(Long.parseLong(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("created_at"))));
-                            customer.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("realname"));
                             ordersn.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("ordersn"));
-                            receptionist.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("nickname"));
-                            remarks.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("remarks"));
-                            listOrderMoney.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price") + " 元");
+                            customer.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("nickname"));
+                            receptionist.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("realname"));
+                            String remark = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("remarks");
+                            if ("null".equals(remark) && remark.length() > 0) {
+                                remarks.setText("没有备注");
+                            } else {
+                                remarks.setText(remark);
+                            }
+                            String nmoney = DoubleUtils.setDouble(Double.parseDouble(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price")));
+                            listOrderMoney.setText("￥" + DoubleUtils.subMoney(nmoney));
                             codlia.notifyDataSetChanged();
                             ListViewSetHightUtils.setListViewHeightBasedOnChildren(listView);
                         } else if (status == 0) {
@@ -120,6 +133,22 @@ public class OrderDetailsDFKActivity extends BaseActvity {
                         if (!OrderDetailsDFKActivity.this.isFinishing()) {
                             loading_dailog.dismiss();
                         }
+                    }
+                    break;
+                case 1:
+                    try {
+                        String cancelJson = (String) msg.obj;
+                        JSONObject jsonObject = new JSONObject(cancelJson);
+                        int status = jsonObject.getInt("status");
+                        if (status == 1) {
+                            Toast.makeText(OrderDetailsDFKActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                            EventBus.getDefault().post(new RefreshBean("fresh", 80));
+                            OrderDetailsDFKActivity.this.finish();
+                        } else if (status == 0) {
+                            Toast.makeText(OrderDetailsDFKActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                     break;
             }
@@ -157,13 +186,7 @@ public class OrderDetailsDFKActivity extends BaseActvity {
                 outDialog();
             }
         });
-        //打开对话框
-        subSurePay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkMachine();
-            }
-        });
+
         relative_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -228,7 +251,6 @@ public class OrderDetailsDFKActivity extends BaseActvity {
     private void checkMachine() {
         dpay = new Dialog(this, R.style.NormalDialogStyle);
         View view = View.inflate(this, R.layout.activity_dialog_check_p_view, null);
-        initDataTest();
         RecyclerView TheprinterList = view.findViewById(R.id.TheprinterList);
         final Print_Choose_Item_Adapter pchooseAdapter = new Print_Choose_Item_Adapter(printList, OrderDetailsDFKActivity.this);
         TheprinterList.setLayoutManager(new LinearLayoutManager(OrderDetailsDFKActivity.this));
@@ -265,15 +287,6 @@ public class OrderDetailsDFKActivity extends BaseActvity {
         dpay.show();
     }
 
-    private void initDataTest() {
-        printList = new ArrayList<PrinterMachine>();
-        printList.add(new PrinterMachine("前台打印", "12", false));
-        printList.add(new PrinterMachine("后厨打印", "12", false));
-        printList.add(new PrinterMachine("酒水打印", "12", false));
-        printList.add(new PrinterMachine("小菜打印", "12", false));
-        printList.add(new PrinterMachine("仓库打印", "12", false));
-    }
-
     /**
      * 自定义对话框
      */
@@ -282,6 +295,8 @@ public class OrderDetailsDFKActivity extends BaseActvity {
         View view = View.inflate(this, R.layout.activity_dialog_qx_order_view, null);
         TextView cancel = view.findViewById(R.id.cancel);
         TextView confirm = view.findViewById(R.id.confirm);
+        TextView title = view.findViewById(R.id.title);
+        title.setText("取消订单");
         dialog.setContentView(view);
         //使得点击对话框外部不消失对话框
         dialog.setCanceledOnTouchOutside(false);
@@ -290,16 +305,45 @@ public class OrderDetailsDFKActivity extends BaseActvity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                subSurePay.setEnabled(true);
             }
         });
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //取消接口
+                cancelTheOrder();
             }
         });
         dialog.show();
+    }
+
+    /**
+     * 取消订单接口
+     */
+    private void cancelTheOrder() {
+        if (userInfo == null) {
+            return;
+        }
+        String timestamp = System.currentTimeMillis() + "";
+        String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
+        Map<String, String> tMap = new HashMap<String, String>();
+        tMap.put("account_id", userInfo.getAccount_id());
+        tMap.put("timestamp", timestamp);
+        tMap.put("organization_id", userInfo.getOrganization_id());
+        tMap.put("token", token);
+        if (orderInfo != null) {
+            tMap.put("order_id", orderInfo.getId() + "");
+        }
+        if (!NetworkUtil.isNetworkAvailable(mContext)) {
+            Toast.makeText(mContext, "网络不可用，请检查", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "订单取消中...");
+        if (!OrderDetailsDFKActivity.this.isFinishing()) {
+            loading_dailog.show();
+        }
+        NetUtils.netWorkByMethodPost(mContext, tMap, IpConfig.URL_CANCEL_ORDER, handler, 1);
+
     }
 
     /**
@@ -316,7 +360,9 @@ public class OrderDetailsDFKActivity extends BaseActvity {
         tMap.put("timestamp", timestamp);
         tMap.put("organization_id", userInfo.getOrganization_id());
         tMap.put("token", token);
-        tMap.put("order_id", orderInfo.getId() + "");
+        if (orderInfo != null) {
+            tMap.put("order_id", orderInfo.getId() + "");
+        }
         if (!NetworkUtil.isNetworkAvailable(mContext)) {
             Toast.makeText(mContext, "网络不可用，请检查", Toast.LENGTH_SHORT).show();
             return;

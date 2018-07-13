@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zerone_catering.R;
@@ -43,10 +44,31 @@ public class Print_Choose_Item_Adapter extends RecyclerView.Adapter<Print_Choose
     public void onBindViewHolder(ViewHolder holder, final int position) {
         holder.machineName.setText(list.get(position).getMaName());
         holder.checkBox.setChecked(list.get(position).isChblen());
-        holder.root.setOnClickListener(new View.OnClickListener() {
+        holder.printCount.setText(list.get(position).getPrintNum() + "");
+        holder.layout_check.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mOnItemClickListener.onItemClick(v, position);
+            }
+        });
+        holder.decrease_num.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int printNum = list.get(position).getPrintNum();
+                if (printNum > 1) {
+                    printNum--;
+                    list.get(position).setPrintNum(printNum);
+                }
+                notifyDataSetChanged();
+            }
+        });
+        holder.add_num.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int printNum = list.get(position).getPrintNum();
+                printNum++;
+                list.get(position).setPrintNum(printNum);
+                notifyDataSetChanged();
             }
         });
 
@@ -79,12 +101,20 @@ public class Print_Choose_Item_Adapter extends RecyclerView.Adapter<Print_Choose
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView machineName;
         public final CheckBox checkBox;
+        public final LinearLayout layout_check;
+        public final LinearLayout decrease_num;
+        public final LinearLayout add_num;
+        public final TextView printCount;
         public final View root;
 
         public ViewHolder(View root) {
             super(root);
             machineName = root.findViewById(R.id.machineName);
             checkBox = root.findViewById(R.id.choice_lean);
+            layout_check = root.findViewById(R.id.layout_check);
+            decrease_num = root.findViewById(R.id.decrease_shop);
+            add_num = root.findViewById(R.id.add_shop);
+            printCount = root.findViewById(R.id.shopCount);
             this.root = root;
         }
     }

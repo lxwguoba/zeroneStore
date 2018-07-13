@@ -415,6 +415,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
         android:background="#fff"
         android:gravity="center_vertical"
         android:paddingLeft="12dp"
@@ -435,7 +436,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="SourceHanSansCN-Medium"
-                    android:text="提交订单"
+                    android:text="提交收银订单"
                     android:textColor="#ffffff"
                     android:textSize="16sp" />
 
@@ -444,7 +445,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="SourceHanSansCN-Medium"
-                    android:text="￥560.00"
                     android:textColor="#ffffff"
                     android:textSize="16sp" />
             </LinearLayout>

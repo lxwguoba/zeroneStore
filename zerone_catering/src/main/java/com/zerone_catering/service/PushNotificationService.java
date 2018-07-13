@@ -6,7 +6,6 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.zerone_catering.avtivity.MainActivity;
-import com.zerone_catering.domain.push.OrderBeanPush;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -46,11 +45,11 @@ public class PushNotificationService extends Service {
         task = new TimerTask() {
             @Override
             public void run() {
-                intent.putExtra("count", ++count);
-                intent.putExtra("bean", new OrderBeanPush(count, "锅巴"));
+                intent.putExtra("code", 1);
                 sendBroadcast(intent);
             }
         };
-        timer.schedule(task, 1000, 2000);
+        timer.schedule(task, 1000, 10000);
     }
+
 }

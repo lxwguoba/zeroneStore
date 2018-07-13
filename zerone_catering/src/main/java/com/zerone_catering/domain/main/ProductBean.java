@@ -33,8 +33,6 @@ public class ProductBean implements Serializable {
     private List<ThumbBean> thumb;
     //商品数量
     private int productCount;
-
-
     public int getCategory_pos() {
         return category_pos;
     }
@@ -131,7 +129,7 @@ public class ProductBean implements Serializable {
                 '}';
     }
 
-    public static class ThumbBean {
+    public static class ThumbBean implements Serializable {
         /**
          * thumb : uploads/simple/20180504030852200.jpg
          */

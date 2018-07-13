@@ -70,7 +70,7 @@ public class PullRefreshLayout extends ViewGroup {
         lastChildIndex = getChildCount() - 1;
 
         addHeader();
-        addFooter();
+//        addFooter();
     }
 
     private void addHeader() {
@@ -159,7 +159,7 @@ public class PullRefreshLayout extends ViewGroup {
                     scrollBy(0, dy / 3);
                 }
                 beforeRefreshing(dy);
-                beforeLoadMore();
+//                beforeLoadMore();
                 break;
             case MotionEvent.ACTION_UP:
                 // 下拉刷新，并且到达有效长度
@@ -169,16 +169,16 @@ public class PullRefreshLayout extends ViewGroup {
                         mRefreshListener.refreshFinished();
                     }
                 }
-                // 上拉加载更多，达到有效长度
-                else if (getScrollY() >= mEffictiveFooterHeight) {
-                    releaseWithStatusLoadMore();
-                    if (mRefreshListener != null) {
-                        mRefreshListener.loadMoreFinished();
-                    }
-                } else {
-                    releaseWithStatusTryRefresh();
-                    releaseWithStatusTryLoadMore();
-                }
+//                // 上拉加载更多，达到有效长度
+//                else if (getScrollY() >= mEffictiveFooterHeight) {
+//                    releaseWithStatusLoadMore();
+//                    if (mRefreshListener != null) {
+//                        mRefreshListener.loadMoreFinished();
+//                    }
+//                } else {
+//                    releaseWithStatusTryRefresh();
+//                    releaseWithStatusTryLoadMore();
+//                }
                 break;
         }
         mlastMoveY = y;
@@ -379,10 +379,10 @@ public class PullRefreshLayout extends ViewGroup {
     }
 
     public void loadMoreFinished() {
-        mFooterText.setText("上拉加载");
-        mFooterProgressBar.setVisibility(GONE);
-        scrollTo(0, 0);
-        updateStatus(Status.NORMAL);
+//        mFooterText.setText("上拉加载");
+//        mFooterProgressBar.setVisibility(GONE);
+//        scrollTo(0, 0);
+//        updateStatus(Status.NORMAL);
     }
 
     private void releaseWithStatusTryRefresh() {

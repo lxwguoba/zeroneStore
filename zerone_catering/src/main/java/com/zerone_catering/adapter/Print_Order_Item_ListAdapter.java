@@ -1,6 +1,7 @@
 package com.zerone_catering.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.RecyclerView;
@@ -57,6 +58,14 @@ public class Print_Order_Item_ListAdapter extends RecyclerView.Adapter<Print_Ord
         holder.order_number.setText(clist.get(position).getOrdersn());
         holder.orderTime.setText(JavaUtilsNormal.getTime(Long.parseLong(clist.get(position).getCreated_at())));
         holder.order_money.setText("￥：" + clist.get(position).getOrder_price());
+        if (clist.get(position).getType() == 1) {
+            holder.orderstatus.setTextColor(Color.parseColor("#46c1fa"));
+            holder.orderstatus.setText("已查看");
+        } else if (clist.get(position).getType() == 0) {
+            holder.orderstatus.setTextColor(Color.parseColor("#ff0000"));
+            holder.orderstatus.setText("未查看");
+        }
+
         /**
          * 对外开放点击接口
          */
@@ -77,7 +86,6 @@ public class Print_Order_Item_ListAdapter extends RecyclerView.Adapter<Print_Ord
                 handler.sendMessage(message);
             }
         });
-
     }
 
     public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {
@@ -111,6 +119,7 @@ public class Print_Order_Item_ListAdapter extends RecyclerView.Adapter<Print_Ord
         public final View root;
         public final TextView order_money;
         public final TextView lookover;
+        public final TextView orderstatus;
 
         public ViewHolder(View root) {
             super(root);
@@ -119,6 +128,7 @@ public class Print_Order_Item_ListAdapter extends RecyclerView.Adapter<Print_Ord
             orderTime = root.findViewById(R.id.create_ordertime);
             order_money = root.findViewById(R.id.order_money);
             lookover = root.findViewById(R.id.lookover);
+            orderstatus = root.findViewById(R.id.orderstatus);
             this.root = root;
         }
     }

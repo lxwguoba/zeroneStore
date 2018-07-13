@@ -24,8 +24,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.zerone_catering.Base64AndMD5.CreateToken;
 import com.zerone_catering.Contants.ContantData;
 import com.zerone_catering.Contants.IpConfig;
@@ -33,17 +33,19 @@ import com.zerone_catering.R;
 import com.zerone_catering.adapter.cart_list.MakeOrderDetialsCashierListItemAdapter;
 import com.zerone_catering.adapter.expandlistview.MyExpandableListViewAdapter;
 import com.zerone_catering.avtivity.BaseSet.BaseActvity;
+import com.zerone_catering.avtivity.details.Order_Details_Cashier_ForThePayment_Activity;
 import com.zerone_catering.avtivity.openorderpage.MakeSureMethod;
 import com.zerone_catering.avtivity.openorderpage.OrderListActvity;
+import com.zerone_catering.domain.NormalBean;
 import com.zerone_catering.domain.UserInfo;
 import com.zerone_catering.domain.UserInfoVip;
-import com.zerone_catering.domain.order.SubmitDataBean;
-import com.zerone_catering.domain.order.SubmitShopBean;
+import com.zerone_catering.domain.colse.CloseActivity;
 import com.zerone_catering.domain.payorderlistbean.OrderCashierListBean;
 import com.zerone_catering.domain.refresh.RefreshBean;
 import com.zerone_catering.domain.tablefinal.cashiertable.TableListInfoCashierFinal;
 import com.zerone_catering.domain.twolist.CashierDetailsListBean;
 import com.zerone_catering.utils.AppSharePreferenceMgr;
+import com.zerone_catering.utils.DoubleUtils;
 import com.zerone_catering.utils.GetUserInfo;
 import com.zerone_catering.utils.LoadingUtils;
 import com.zerone_catering.utils.NetUtils;
@@ -80,7 +82,6 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
     private Intent intent;
     private ArrayList<OrderCashierListBean> listObj;
     private RelativeLayout submitbtn;
-    private List<SubmitShopBean> subbeanlist;
     private ZLoadingDialog loading_dailog;
     private ListView goodslist;
     private MakeOrderDetialsCashierListItemAdapter mAdapter;
@@ -107,7 +108,6 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
     private int signInt = 1;
     //签退页面
     private Dialog out_dialog;
-    private UserInfoVip userinfovip;
     private CircleImageView userHeadImg;
     private TextView vip_;
     private Dialog sure_submit_order_dialog;
@@ -117,6 +117,7 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
     private CustomExpandableListView expandableListView;
     private List<CashierDetailsListBean> mGroupList = null;
     private MyExpandableListViewAdapter myAdapter;
+    private UserInfoVip userinfovip;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -141,6 +142,7 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
                             if (sure_submit_order_dialog != null) {
                                 sure_submit_order_dialog.dismiss();
                             }
+                            OutSignCustomer.signOut(userinfo, MakeSure_Cashier_Order_Activity.this, terminalId, handler, 5);
                             MakeSure_Cashier_Order_Activity.this.removeALLActivity();
                         } else if (status == 0) {
                             //订单提交失败  提示用户失败的原因
@@ -204,6 +206,7 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
                             if ("false".equals(id)) {
                                 Log.i("URL", "用户没有注册，正在注册中请稍后！！！！！！！！！！！！！！！");
                             } else {
+                                userinfovip = new UserInfoVip();
                                 userinfovip.setDevice_num(userInfoJson.getJSONObject("data").getString("device_num"));
                                 userinfovip.setHead_imgurl(userInfoJson.getJSONObject("data").getString("head_imgurl"));
                                 userinfovip.setNickname(userInfoJson.getJSONObject("data").getString("nickname"));
@@ -266,7 +269,7 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
                     String json = (String) msg.obj;
                     try {
                         if (!MakeSure_Cashier_Order_Activity.this.isFinishing()) {
-                            loading_dailog.show();
+                            loading_dailog.dismiss();
                         }
                         JSONObject jsonObject = new JSONObject(json);
                         int status = jsonObject.getInt("status");
@@ -289,8 +292,11 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
                                 }
                                 cdlb.setGoodsdata(zlist);
                                 mGroupList.add(cdlb);
-                                sureOrderMoney.setText("￥" + jsonObject.getJSONObject("data").getString("order_price"));
-                                subMoney.setText("￥" + jsonObject.getJSONObject("data").getString("order_price"));
+
+                                String order_price = jsonObject.getJSONObject("data").getString("order_price");
+
+                                sureOrderMoney.setText("￥" + DoubleUtils.setDouble(Double.parseDouble(order_price)));
+                                subMoney.setText("￥" + DoubleUtils.setDouble(Double.parseDouble(order_price)));
                             }
                             setExpandListView();
                         } else if (status == 0) {
@@ -301,6 +307,32 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
                     } finally {
 
                     }
+                    break;
+                case 51:
+                    try {
+                        String cashierJson = (String) msg.obj;
+                        JSONObject jsonObject = new JSONObject(cashierJson);
+                        int status = jsonObject.getInt("status");
+                        if (status == 1) {
+                            Gson gson = new Gson();
+                            NormalBean normalBean = gson.fromJson(cashierJson, NormalBean.class);
+                            Intent intent = new Intent(MakeSure_Cashier_Order_Activity.this, Order_Details_Cashier_ForThePayment_Activity.class);
+                            intent.putExtra("order_id", normalBean.getData().getOrder_id() + "");
+                            startActivity(intent);
+                            sure_submit_order_dialog.dismiss();
+                            EventBus.getDefault().post(new CloseActivity("收银订单详情生成", 400));
+                            MakeSure_Cashier_Order_Activity.this.finish();
+                        } else if (status == 0) {
+                            Toast.makeText(mContext, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        if (!MakeSure_Cashier_Order_Activity.this.isFinishing()) {
+                            confirm_loading.dismiss();
+                        }
+                    }
+
                     break;
             }
         }
@@ -420,7 +452,6 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
         for (int i = 0; i < groupCount; i++) {
             expandableListView.expandGroup(i);
         }
-
     }
 
     /**
@@ -439,7 +470,6 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
                 MakeSure_Cashier_Order_Activity.this.finish();
             }
         });
-
         actionremark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -464,63 +494,49 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
     }
 
     /**
-     * 设置提交订单时的数据整理
+     * 设置提交收银订单时的数据整合
      */
     private void gotoSubmit() {
         if (userinfo == null) {
             return;
         }
-        Log.i("URL", "我没有被调用吗？？？？");
-        String tableid = intent.getStringExtra("tableid");
-        subbeanlist = new ArrayList<>();
-        String timestamp = System.currentTimeMillis() + "";
-        String token = CreateToken.createToken(userinfo.getUuid(), timestamp, userinfo.getAccount());
-        Map<String, String> subMap = new HashMap<String, String>();
-        if (userinfo.getOrganization_id() != null) {
-            subMap.put("organization_id", userinfo.getOrganization_id());
-        }
-        if (userinfo.getAccount_id() != null) {
-            subMap.put("account_id", userinfo.getAccount_id());
-        }
-        if (token != null) {
-            subMap.put("token", token);
-        }
-
-        if (timestamp != null) {
-            subMap.put("timestamp", timestamp);
-        }
-        String remarks = remark.getText().toString();
-        if (!TextUtils.isEmpty(remarks)) {
-            subMap.put("remarks", remarks);
-        }
-        for (int i = 0; i < listObj.size(); i++) {
-            //提交订单时的需要处理
-        }
-        SubmitDataBean sdb = new SubmitDataBean(subbeanlist);
-        String listJSOn = JSON.toJSONString(sdb);
-        String goodsdata = null;
         try {
-            goodsdata = new String(listJSOn.getBytes(), "utf-8");
+            String timestamp = System.currentTimeMillis() + "";
+            String token = CreateToken.createToken(userinfo.getUuid(), timestamp, userinfo.getAccount());
+            Map<String, String> subMap = new HashMap<String, String>();
+            String remarks = remark.getText().toString();
+            subMap.put("account_id", userinfo.getAccount_id());
+            subMap.put("timestamp", timestamp);
+            subMap.put("organization_id", userinfo.getOrganization_id());
+            subMap.put("token", token);
+            subMap.put("fansmanage_id", userinfo.getAccount_id());
+            if (!TextUtils.isEmpty(remarks)) {
+                subMap.put("remarks", remarks);
+            }
+            String ordersnline = getOrderSn();
+            Log.i("URL", "ordersnline=" + ordersnline);
+            subMap.put("order_array", ordersnline);
+            if (zkou != null && !"0.0".equals(zkou)) {
+                subMap.put("discount", zkou);
+            }
+            if (userinfovip == null) {
+                //有会员就提交会员没有会员就默认时散客
+                subMap.put("user_id", "0");
+            } else {
+                subMap.put("user_id", userinfovip.getUser_id());
+            }
+            confirm_loading = LoadingUtils.getDailog(mContext, Color.RED, "生成收银订单中...");
+            if (!MakeSure_Cashier_Order_Activity.this.isFinishing()) {
+                confirm_loading.show();
+            }
+            NetUtils.netWorkByMethodPost(mContext, subMap, IpConfig.URL_SUBMIT_CASHIER, handler, 51);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (goodsdata != null) {
-            subMap.put("goods_list", goodsdata);
-        }
-        if (tableid != null) {
-            subMap.put("table_id", tableid);
-        }
-
-//        if (zkou != null && !"0.0".equals(zkou)) {
-//            subMap.put("discount", zkou);
-//        }
-//        confirm_loading = LoadingUtils.getDailog(mContext, Color.RED, "提交订单中。。。。");
-//        confirm_loading.show();
-//        NetUtils.netWorkByMethodPost(mContext, subMap, IpConfig.URL_SUBMIT, handler, 0);
     }
 
     /**
-     * 自定义对话框
+     * 备注信息对话框
      */
     private void customDialog() {
         final Dialog dialog = new Dialog(this, R.style.NormalDialogStyle);
@@ -551,11 +567,10 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
         });
         dialog.show();
     }
-
     //================================客户签入=============================
 
     /**
-     * 自定义对话框
+     * 折扣选择会话框
      */
     private void setDiscount() {
         final Dialog dialog = new Dialog(this, R.style.NormalDialogStyle);
@@ -694,8 +709,10 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
     private void sure_submit_order() {
         sure_submit_order_dialog = new Dialog(this, R.style.NormalDialogStyle);
         View view = View.inflate(this, R.layout.activity_dialog_makesureorder_view, null);
+        TextView msg = view.findViewById(R.id.msg);
         TextView cancel = view.findViewById(R.id.ordersure_cancel);
         TextView confirm = view.findViewById(R.id.ordersure_confirm);
+        msg.setText("提交收银订单？");
         sure_submit_order_dialog.setContentView(view);
         //使得点击对话框外部不消失对话框
         sure_submit_order_dialog.setCanceledOnTouchOutside(false);
@@ -711,7 +728,7 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
             @Override
             public void onClick(View v) {
                 //提交订单
-//                gotoSubmit();
+                gotoSubmit();
             }
         });
         sure_submit_order_dialog.show();
@@ -737,21 +754,20 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
      * @return
      */
     public void getqrcode() {
-//        //有问题
-//        try {
-//            String timestamp = System.currentTimeMillis() + "";
-//            String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
-//            Map<String, String> codeMap = new HashMap<>();
-//            codeMap.put("organization_id", userInfo.getFansnamage_id());
-//            Log.i("URL", "organization_id=" + userInfo.getFansnamage_id());
-//            codeMap.put("store_id", userInfo.getOrganization_id());
-//            codeMap.put("device_num", terminalId);
-//            get_qrcode_loading = LoadingUtils.getDailog(MakeSureTheOrderActivity.this, Color.RED, "获取签入二维中...");
-//            get_qrcode_loading.show();
-//            NetUtils.netWorkByMethodPost(MakeSureTheOrderActivity.this, codeMap, IpConfig.URL_GETCODE, handler, 3);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        //有问题
+        try {
+            String timestamp = System.currentTimeMillis() + "";
+            String token = CreateToken.createToken(userinfo.getUuid(), timestamp, userinfo.getAccount());
+            Map<String, String> codeMap = new HashMap<>();
+            codeMap.put("organization_id", userinfo.getFansmanage_id());
+            codeMap.put("store_id", userinfo.getOrganization_id());
+            codeMap.put("device_num", terminalId);
+            get_qrcode_loading = LoadingUtils.getDailog(mContext, Color.RED, "获取签入二维中...");
+            get_qrcode_loading.show();
+            NetUtils.netWorkByMethodPost(mContext, codeMap, IpConfig.URL_GETCODE, handler, 3);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -761,11 +777,11 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
      * @return
      */
     public void getUserInfo() {
-//        String timestamp = System.currentTimeMillis() + "";
-//        String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
-//        Map<String, String> codeMap = new HashMap<>();
-//        codeMap.put("device_num", terminalId);
-//        NetUtils.netWorkByMethodPost(MakeSureTheOrderActivity.this, codeMap, IpConfig.URL_GETUSERINFO, handler, 4);
+        String timestamp = System.currentTimeMillis() + "";
+        String token = CreateToken.createToken(userinfo.getUuid(), timestamp, userinfo.getAccount());
+        Map<String, String> codeMap = new HashMap<>();
+        codeMap.put("device_num", terminalId);
+        NetUtils.netWorkByMethodPost(mContext, codeMap, IpConfig.URL_GETUSERINFO, handler, 4);
     }
 
     @Override
@@ -802,5 +818,23 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
                 + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
         listView.requestLayout();
+    }
+
+    /**
+     * 把订单id以 12,23,35,56 的形式拼接
+     *
+     * @return
+     */
+    public String getOrderSn() {
+        String orderSn = "";
+        for (int i = 0; i < listObj.size(); i++) {
+            //提交订单时的需要处理
+            if (i == 0) {
+                orderSn += listObj.get(i).getId();
+            } else {
+                orderSn += "," + listObj.get(i).getId();
+            }
+        }
+        return orderSn;
     }
 }

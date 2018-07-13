@@ -55,4 +55,7 @@ public class ContantData implements Serializable {
     //刷新商品列表的购车并清空
     public static final int REFRESH_ONE = 1;
 
+    public static final int SUCCESS = 200;
+    public static final int REQUEST = 300;
+
 }

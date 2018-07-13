@@ -228,6 +228,7 @@ public class SystemSettingsActivity extends BaseActvity {
         }
     };
     private long secondtime;
+    private CheckBox system_speak;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -238,7 +239,7 @@ public class SystemSettingsActivity extends BaseActvity {
         EventBus.getDefault().register(this);
         mContext = SystemSettingsActivity.this;
         remberChecked = (boolean) AppSharePreferenceMgr.get(mContext, "remberChecked", false);
-//        initGetUserInfo();
+        initGetUserInfo();
         initView();
         aciton();
 //        initCheckBoxStates();
@@ -277,19 +278,7 @@ public class SystemSettingsActivity extends BaseActvity {
         });
     }
 
-    private void initCheckBoxStates() {
-        //默认是没有开启的
-        String timestamp = System.currentTimeMillis() + "";
-        String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
-        Map<String, String> kdMap = new HashMap<String, String>();
-        kdMap.put("account_id", userInfo.getAccount_id());
-        kdMap.put("organization_id", userInfo.getOrganization_id());
-        kdMap.put("token", token);
-        kdMap.put("timestamp", timestamp);
-        loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取状态中...");
-        loading_dailog.show();
-        NetUtils.netWorkByMethodPost(mContext, kdMap, IpConfig.URL_DPSZ, handler, 4);
-    }
+
 
     /**
      * 获取用户信息
@@ -334,6 +323,20 @@ public class SystemSettingsActivity extends BaseActvity {
         } else {
             signTime.setText("上次签到时间为：" + UtilsTime.setTime(firsttime));
         }
+        system_speak = (CheckBox) findViewById(R.id.system_speak);
+        Boolean speak = (Boolean) AppSharePreferenceMgr.get(SystemSettingsActivity.this, "speak", true);
+        if (speak != null) {
+            system_speak.setChecked(speak);
+        }
+        system_speak.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.i("URL", isChecked + "");
+                system_speak.setChecked(isChecked);
+                AppSharePreferenceMgr.put(SystemSettingsActivity.this, "speak", isChecked);
+            }
+        });
+
     }
 
     /**
@@ -413,6 +416,7 @@ public class SystemSettingsActivity extends BaseActvity {
                 AppSharePreferenceMgr.put(mContext, "remberChecked", isChecked);
             }
         });
+
     }
 
     /**

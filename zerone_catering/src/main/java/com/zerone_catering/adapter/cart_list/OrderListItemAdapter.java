@@ -12,7 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zerone_catering.R;
-import com.zerone_catering.domain.order.OrderBean;
+import com.zerone_catering.avtivity.manageorderpage.orderlist.TheOrderListBean;
+import com.zerone_catering.utils.JavaUtilsNormal;
 
 import java.util.List;
 
@@ -23,11 +24,11 @@ import java.util.List;
 
 public class OrderListItemAdapter extends BaseAdapter {
     private Context context;
-    private List<OrderBean> list;
+    private List<TheOrderListBean.DataBean.OrderListBean> list;
     private LayoutInflater inflate;
     private Handler handler;
 
-    public OrderListItemAdapter(Context context, List<OrderBean> list, Handler handler) {
+    public OrderListItemAdapter(Context context, List<TheOrderListBean.DataBean.OrderListBean> list, Handler handler) {
         this.context = context;
         this.list = list;
         this.inflate = LayoutInflater.from(context);
@@ -78,19 +79,12 @@ public class OrderListItemAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.orderNumber.setText(list.get(position).getOrdersn());
-        holder.orderTime.setText(list.get(position).getCreated_at());
+        holder.orderTime.setText(JavaUtilsNormal.getTime(Long.parseLong(list.get(position).getCreated_at())));
         holder.orderMoney.setText(list.get(position).getOrder_price());
-
         holder.discountmoney.setText(list.get(position).getDiscount_price());
-
-        if ("null".equals(list.get(position).getPayment_price())) {
-            holder.paymoney.setText("无实收");
-        } else {
-            holder.paymoney.setText("￥" + list.get(position).getPayment_price());
-        }
-
         //这个地方需要修改 根据不同的id去判断是什么订单
         //holder.orderStates.setText();
+
         if ("0".equals(list.get(position).getStatus())) {
             //待付款
             holder.orderStates.setText("待付款");
@@ -101,35 +95,25 @@ public class OrderListItemAdapter extends BaseAdapter {
             //已付款
             holder.orderStates.setText("已付款");
             holder.orderStates.setTextColor(Color.parseColor("#000000"));
+            holder.paymoney.setText("￥" + list.get(position).getPayment_price());
         } else if ("-1".equals(list.get(position).getStatus())) {
             //已取消
             holder.orderStates.setText("已取消");
             holder.orderStates.setTextColor(Color.parseColor("#000000"));
+            holder.paymoney.setText("无实收金额");
         }
         holder.lookoverorder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if ("0".equals(list.get(position).getStatus())) {
-                    //待付款
-                    Message message = new Message();
-                    message.what = 20000;
-                    message.obj = position;
-                    handler.sendMessage(message);
-                } else if ("1".equals(list.get(position).getStatus())) {
-                    //已付款
-//                    Intent intent02 = new Intent(context, OrderDetailsYFKActivity.class);
-//                    intent02.putExtra("orderid", list.get(position).getId());
-//                    context.startActivity(intent02);
-                } else if ("-1".equals(list.get(position).getStatus())) {
-                    //已取消
-//                    Intent intent03 = new Intent(context, OrderDetailsYQXActivity.class);
-//                    intent03.putExtra("orderid", list.get(position).getId());
-//                    context.startActivity(intent03);
-                }
+                //待付款
+                Message message = new Message();
+                message.what = 20000;
+                message.obj = position;
+                handler.sendMessage(message);
+
             }
         });
 
-//       Glide.with(context).load(list.get(position).getThumb()).centerCrop().placeholder(R.mipmap.ic_launcher).crossFade().into(holder.shop_img);
         return convertView;
     }
 

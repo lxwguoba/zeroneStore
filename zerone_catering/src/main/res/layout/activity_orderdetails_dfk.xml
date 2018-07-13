@@ -147,7 +147,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:fontFamily="SourceHanSansCN-Medium"
-                    android:text="取消打印"
+                    android:text="取消订单"
                     android:textColor="#000000"
                     android:textSize="16sp" />
             </LinearLayout>
@@ -158,7 +158,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/daohang"
-        android:layout_marginBottom="50dp"
         android:layout_marginTop="10dp">
 
         <LinearLayout
@@ -451,48 +450,4 @@
 
         </LinearLayout>
     </ScrollView>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:background="#fff"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp">
-
-        <RelativeLayout
-            android:id="@+id/subSurePay"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:background="#fe4543">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true">
-
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="SourceHanSansCN-Medium"
-                    android:text="打印订单"
-                    android:textColor="#ffffff"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/ordermoney"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="SourceHanSansCN-Medium"
-                    android:textColor="#ffffff"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-        </RelativeLayout>
-    </LinearLayout>
-
 </RelativeLayout>

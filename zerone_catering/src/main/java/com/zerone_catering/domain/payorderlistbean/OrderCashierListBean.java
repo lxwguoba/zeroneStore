@@ -17,6 +17,7 @@ public class OrderCashierListBean implements Serializable {
      * order_price : 807986.00
      * status : 0
      * created_at : 1530171712
+     * type : 1为已查看，0为未查看
      */
     private int id;
 
@@ -28,7 +29,17 @@ public class OrderCashierListBean implements Serializable {
 
     private String created_at;
 
+    private int type;
     private boolean ochecklean;
+
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public boolean isOchecklean() {
         return ochecklean;

@@ -125,7 +125,7 @@
                         android:id="@+id/cashier"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="小可爱的收银台："
+                        android:text="收银台："
                         android:textColor="#cecece"
                         android:textSize="14sp"
                         android:textStyle="bold" />

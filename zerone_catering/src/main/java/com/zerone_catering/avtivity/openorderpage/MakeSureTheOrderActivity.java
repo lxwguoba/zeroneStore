@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,8 +28,8 @@ import com.zerone_catering.Contants.IpConfig;
 import com.zerone_catering.R;
 import com.zerone_catering.adapter.cart_list.MakeOrderDetialsListItemAdapter;
 import com.zerone_catering.avtivity.BaseSet.BaseActvity;
+import com.zerone_catering.avtivity.details.Order_Details_Print_Activity;
 import com.zerone_catering.domain.UserInfo;
-import com.zerone_catering.domain.UserInfoVip;
 import com.zerone_catering.domain.colse.CloseActivity;
 import com.zerone_catering.domain.order.SubmitShopBean;
 import com.zerone_catering.domain.refresh.RefreshBean;
@@ -101,12 +100,12 @@ public class MakeSureTheOrderActivity extends BaseActvity implements NumberPicke
     private int signInt = 1;
     //签退页面
     private Dialog out_dialog;
-    private UserInfoVip userinfovip;
-    private CircleImageView userHeadImg;
-    private TextView vip_;
     private Dialog sure_submit_order_dialog;
     private ZLoadingDialog confirm_loading;
     private ZLoadingDialog get_qrcode_loading;
+
+    //0为支付不成功可以点击 1为该订单已提交
+    private int payPostion = 0;
 
     Handler handler = new Handler() {
         @Override
@@ -115,7 +114,6 @@ public class MakeSureTheOrderActivity extends BaseActvity implements NumberPicke
             switch (msg.what) {
                 case 0:
                     String subJSon = (String) msg.obj;
-                    Log.i("URL", "subJSon=" + subJSon);
                     try {
                         JSONObject jsonObject = new JSONObject(subJSon);
                         int status = jsonObject.getInt("status");
@@ -127,14 +125,16 @@ public class MakeSureTheOrderActivity extends BaseActvity implements NumberPicke
                             AppSharePreferenceMgr.put(MakeSureTheOrderActivity.this, "orderid", orderid);
                             EventBus.getDefault().post(new RefreshBean("清空购物车的类", ContantData.REFRESH_ONE));
                             //发送通知关闭activity页面
-                            EventBus.getDefault().post(new CloseActivity("关闭页面", 200));
+                            EventBus.getDefault().post(new CloseActivity("open", 1000));
                             if (sure_submit_order_dialog != null) {
                                 sure_submit_order_dialog.dismiss();
                             }
-                            MakeSureTheOrderActivity.this.finish();
+                            customDialog("下单成功，去打印吧。", orderid);
+                            payPostion = 1;
                         } else if (status == 0) {
                             //订单提交失败  提示用户失败的原因
                             Toast.makeText(MakeSureTheOrderActivity.this, "错误返回：" + jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                            payPostion = 0;
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -149,26 +149,7 @@ public class MakeSureTheOrderActivity extends BaseActvity implements NumberPicke
                         remark.setText(reinfo);
                     }
                     break;
-                case 3:
-                    String qrcodeJson = (String) msg.obj;
-                    try {
-                        JSONObject jsonObject = new JSONObject(qrcodeJson);
-                        int return_code = jsonObject.getInt("return_code");
-                        if (return_code == 1) {
-                            String qrUrl = jsonObject.getJSONObject("data").getString("url");
-                            setSignInCustomer(qrUrl);
-                        } else if (return_code == 0) {
-                            Toast.makeText(MakeSureTheOrderActivity.this, "获取图片二维码失败，请重新获取", Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(MakeSureTheOrderActivity.this, qrcodeJson.toString(), Toast.LENGTH_SHORT).show();
-                    } finally {
-                        if (get_qrcode_loading != null) {
-                            get_qrcode_loading.dismiss();
-                        }
-                    }
-                    break;
+
                 case 10:
                     String rein = (String) msg.obj;
                     if (rein != null) {
@@ -180,78 +161,9 @@ public class MakeSureTheOrderActivity extends BaseActvity implements NumberPicke
                         loading_dailog.dismiss();
                     }
                     break;
-                case 1100:
-                    getUserInfo();
-                    break;
-                case 4:
-                    String userinfoJson = (String) msg.obj;
-                    try {
-                        JSONObject userInfoJson = new JSONObject(userinfoJson);
-                        int return_code = userInfoJson.getInt("return_code");
-                        if (return_code == 1) {
-                            String id = userInfoJson.getJSONObject("data").getString("fansmanage_user_id");
-                            if ("false".equals(id)) {
-                                Log.i("URL", "用户没有注册，正在注册中请稍后！！！！！！！！！！！！！！！");
-                            } else {
-                                userinfovip.setDevice_num(userInfoJson.getJSONObject("data").getString("device_num"));
-                                userinfovip.setHead_imgurl(userInfoJson.getJSONObject("data").getString("head_imgurl"));
-                                userinfovip.setNickname(userInfoJson.getJSONObject("data").getString("nickname"));
-                                userinfovip.setUser_id(userInfoJson.getJSONObject("data").getString("user_id"));
-                                userinfovip.setFansmanage_user_id(userInfoJson.getJSONObject("data").getString("fansmanage_user_id"));
-                                userHeadImg.setVisibility(View.VISIBLE);
-                                Glide.with(MakeSureTheOrderActivity.this).load(userinfovip.getHead_imgurl()).into(userHeadImg);
-                                vip_.setText(userinfovip.getNickname());
-                                btn_signin.setText("客户签退");
-                                btn_signin.setBackgroundColor(Color.parseColor("#aafe4543"));
-                                signInt = 2;
-                                MakeSureMethod.stopTimer(timer, task, dialog);
-                            }
-                        } else {
-                            Log.i("URL", "查询数据失败，正在努力查询中。。。");
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                case 5:
-                    String outSignJson = (String) msg.obj;
-                    try {
-                        JSONObject outJson = new JSONObject(outSignJson);
-                        int return_code = outJson.getInt("return_code");
-                        if (return_code == 1) {
-                            userHeadImg.setVisibility(View.GONE);
-                            vip_.setText("");
-                            btn_signin.setText("客户签入");
-                            btn_signin.setBackgroundColor(Color.parseColor("#fe4543"));
-                            if (out_dialog != null) {
-                                out_dialog.dismiss();
-                            }
-                        } else if (return_code == 0) {
-                            Toast.makeText(MakeSureTheOrderActivity.this, "签退失败,请重试", Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                case 6:
-                    String outSignJso = (String) msg.obj;
-                    try {
-                        JSONObject outJso = new JSONObject(outSignJso);
-                        int return_code = outJso.getInt("return_code");
-                        if (return_code == 1) {
-                            Toast.makeText(MakeSureTheOrderActivity.this, "签退成功", Toast.LENGTH_SHORT).show();
-                            userHeadImg.setVisibility(View.GONE);
-                            btn_signin.setText("客户签入");
-                            btn_signin.setBackgroundColor(Color.parseColor("#fe4543"));
-                            vip_.setText("");
-                        } else if (return_code == 0) {
-                            Toast.makeText(MakeSureTheOrderActivity.this, "签退失败,您需要手动试试", Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    break;
             }
+
+
         }
     };
     private String tableid;
@@ -269,56 +181,30 @@ public class MakeSureTheOrderActivity extends BaseActvity implements NumberPicke
         terminalId = (String) AppSharePreferenceMgr.get(mContext, "terminalId", "");
         //pos商户号
         merchantId = (String) AppSharePreferenceMgr.get(mContext, "merchantId", "");
-        userinfovip = new UserInfoVip();
         initView();
-        initViewBtn();
         initAction();
     }
 
-    private void initViewBtn() {
-        btn_signin = (Button) findViewById(R.id.btn_Signin);
-        btn_signin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //1、这个地方需要一个开关按钮，用来签入活者是签退。
-                //2、我们用signInt 来做区分 1是没有会员直接开启签到  2是有会员直接启用签退
-                //3、signInt 这个默认值是1 默认开启的是签到
-                if (signInt == 1) {
-                    //终端号
-                    if (terminalId != null && terminalId.length() > 0) {
-                        //1、调用签入的接口 获取二维码
-                        getqrcode();
-                        //2、二维码获取成功打开签入的二维码
-                        //3、如果没有获取成功就提示重新获取
-                    }
-                } else if (signInt == 2) {
-                    setSignOutCustomer();
-                }
-            }
-        });
-    }
 
     /**
      * view的初始化
      */
     private void initView() {
-        for (int i = 0; i < listObj.size(); i++) {
-            listObj.get(i).getSp_price();
-            dSOMoney += Double.parseDouble(listObj.get(i).getSp_price()) * Integer.parseInt(listObj.get(i).getSp_count());
+        if (listObj != null) {
+            for (int i = 0; i < listObj.size(); i++) {
+                listObj.get(i).getSp_price();
+                dSOMoney += Double.parseDouble(listObj.get(i).getSp_price()) * Integer.parseInt(listObj.get(i).getSp_count());
+            }
         }
+
         scrollView = (ScrollView) findViewById(R.id.scrollView);
         zhekouValue = (TextView) findViewById(R.id.zhekouValue);
         goodslist = (ListView) findViewById(R.id.goodslist);
-//        goodslist.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                //事件处理
-//                scrollView.requestDisallowInterceptTouchEvent(true);
-//                return false;
-//            }
-//        });
-        mAdapter = new MakeOrderDetialsListItemAdapter(MakeSureTheOrderActivity.this, listObj);
-        goodslist.setAdapter(mAdapter);
+        if (listObj != null) {
+            mAdapter = new MakeOrderDetialsListItemAdapter(MakeSureTheOrderActivity.this, listObj);
+            goodslist.setAdapter(mAdapter);
+        }
+
         ListViewSetHightUtils.setListViewHeightBasedOnChildren(goodslist);
         subMoney = (TextView) findViewById(R.id.subMoney);
         sureOrderMoney = (TextView) findViewById(R.id.sureOrderMoney);
@@ -334,8 +220,7 @@ public class MakeSureTheOrderActivity extends BaseActvity implements NumberPicke
             jiedaiyuan.setText(userInfo.getRealName());
         }
         zhekou = (TextView) findViewById(R.id.zhekou);
-        userHeadImg = (CircleImageView) findViewById(R.id.userHeandImg);
-        vip_ = (TextView) findViewById(R.id.vip_);
+
         if (listObj == null) {
             return;
         }
@@ -349,7 +234,11 @@ public class MakeSureTheOrderActivity extends BaseActvity implements NumberPicke
         submitbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sure_submit_order();
+                if (payPostion == 0) {
+                    sure_submit_order();
+                } else if (payPostion == 1) {
+                    Toast.makeText(MakeSureTheOrderActivity.this, "该单已提交，请不要重复提交", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         relative_back.setOnClickListener(new View.OnClickListener() {
@@ -403,8 +292,8 @@ public class MakeSureTheOrderActivity extends BaseActvity implements NumberPicke
             if (token != null) {
                 subMap.put("token", token);
             }
-            if (userInfo.getFansnamage_id() != null) {
-                subMap.put("fansmanage_id", userInfo.getFansnamage_id());
+            if (userInfo.getFansmanage_id() != null) {
+                subMap.put("fansmanage_id", userInfo.getFansmanage_id());
             }
             if (timestamp != null) {
                 subMap.put("timestamp", timestamp);
@@ -585,10 +474,6 @@ public class MakeSureTheOrderActivity extends BaseActvity implements NumberPicke
         TextView confirm = view.findViewById(R.id.signinout_confirm);
         CircleImageView signvipimg = view.findViewById(R.id.signvipimg);
         TextView signvipname = view.findViewById(R.id.signvipname);
-        if (userinfovip != null) {
-            Glide.with(MakeSureTheOrderActivity.this).load(userinfovip.getHead_imgurl()).into(signvipimg);
-            signvipname.setText(userinfovip.getNickname());
-        }
 
         out_dialog.setContentView(view);
         //使得点击对话框外部不消失对话框
@@ -616,16 +501,23 @@ public class MakeSureTheOrderActivity extends BaseActvity implements NumberPicke
     private void sure_submit_order() {
         sure_submit_order_dialog = new Dialog(this, R.style.NormalDialogStyle);
         View view = View.inflate(this, R.layout.activity_dialog_makesureorder_view, null);
+        TextView sure = view.findViewById(R.id.sure);
+        TextView msg = view.findViewById(R.id.msg);
         TextView cancel = view.findViewById(R.id.ordersure_cancel);
         TextView confirm = view.findViewById(R.id.ordersure_confirm);
         sure_submit_order_dialog.setContentView(view);
         //使得点击对话框外部不消失对话框
         sure_submit_order_dialog.setCanceledOnTouchOutside(false);
         //设置对话框的大小
+        msg.setText("确认提交点餐订单？");
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sure_submit_order_dialog.dismiss();
+                EventBus.getDefault().post(new RefreshBean("清空购物车的类", ContantData.REFRESH_ONE));
+                //发送通知关闭activity页面
+                EventBus.getDefault().post(new CloseActivity("open", 1000));
+                MakeSureTheOrderActivity.this.finish();
             }
         });
         confirm.setOnClickListener(new View.OnClickListener() {
@@ -652,46 +544,44 @@ public class MakeSureTheOrderActivity extends BaseActvity implements NumberPicke
     }
 
 
-    /**
-     * 获取二维码
-     *
-     * @return
-     */
-    public void getqrcode() {
-//        //有问题
-//        try {
-//            String timestamp = System.currentTimeMillis() + "";
-//            String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
-//            Map<String, String> codeMap = new HashMap<>();
-//            codeMap.put("organization_id", userInfo.getFansnamage_id());
-//            Log.i("URL", "organization_id=" + userInfo.getFansnamage_id());
-//            codeMap.put("store_id", userInfo.getOrganization_id());
-//            codeMap.put("device_num", terminalId);
-//            get_qrcode_loading = LoadingUtils.getDailog(MakeSureTheOrderActivity.this, Color.RED, "获取签入二维中...");
-//            get_qrcode_loading.show();
-//            NetUtils.netWorkByMethodPost(MakeSureTheOrderActivity.this, codeMap, IpConfig.URL_GETCODE, handler, 3);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-    }
-
-    /**
-     * 获取会员信息
-     *
-     * @return
-     */
-    public void getUserInfo() {
-//        String timestamp = System.currentTimeMillis() + "";
-//        String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
-//        Map<String, String> codeMap = new HashMap<>();
-//        codeMap.put("device_num", terminalId);
-//        NetUtils.netWorkByMethodPost(MakeSureTheOrderActivity.this, codeMap, IpConfig.URL_GETUSERINFO, handler, 4);
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        OutSignCustomer.signOut(userInfo, MakeSureTheOrderActivity.this, terminalId, handler, 580);
     }
+
+    /**
+     * 弹框提示
+     *
+     * @param msg 提示消息
+     */
+    private void customDialog(String msg, final String orderid) {
+        dialog = new Dialog(this, R.style.NormalDialogStyle);
+        View view = View.inflate(this, R.layout.activity_dialog_view, null);
+        TextView cancel = view.findViewById(R.id.cancel);
+        TextView confirm = view.findViewById(R.id.confirm);
+        TextView errormsg = view.findViewById(R.id.errormsg);
+        errormsg.setText(msg);
+        dialog.setContentView(view);
+        //使得点击对话框外部不消失对话框
+        dialog.setCanceledOnTouchOutside(false);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+            }
+        });
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MakeSureTheOrderActivity.this, Order_Details_Print_Activity.class);
+                intent.putExtra("order_id", orderid);
+                startActivity(intent);
+                MakeSureTheOrderActivity.this.finish();
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
 }

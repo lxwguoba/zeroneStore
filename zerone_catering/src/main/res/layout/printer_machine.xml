@@ -10,24 +10,99 @@
         android:layout_height="40dp"
         android:gravity="center_vertical">
 
-        <CheckBox
-            android:id="@+id/choice_lean"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/order_item_check"
-            android:button="@null"
-            android:checked="true"
-            android:enabled="false" />
-
-        <TextView
-            android:id="@+id/machineName"
+        <LinearLayout
+            android:id="@+id/layout_check"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="前台打印机"
-            android:textColor="#000000"
-            android:textSize="18sp" />
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/choice_lean"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/order_item_check"
+                android:button="@null"
+                android:checked="true"
+                android:enabled="false" />
+
+            <TextView
+                android:id="@+id/machineName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="前台打印机"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="#fff"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/decrease_shop"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="@drawable/shape_shop_decrease"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:src="@mipmap/jian_" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/showTextCount"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_shop_decrease_top_bottom"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/shopCount"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/add_shop"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="@drawable/shape_shop_decrease"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="4dp"
+                    android:src="@mipmap/add_" />
+            </LinearLayout>
+
+
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

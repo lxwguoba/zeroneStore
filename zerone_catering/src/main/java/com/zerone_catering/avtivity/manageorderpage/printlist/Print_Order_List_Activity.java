@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,7 +21,9 @@ import com.zerone_catering.adapter.Print_Order_Item_ListAdapter;
 import com.zerone_catering.avtivity.BaseSet.BaseActvity;
 import com.zerone_catering.avtivity.details.Order_Details_Print_Activity;
 import com.zerone_catering.domain.UserInfo;
+import com.zerone_catering.domain.colse.CloseActivity;
 import com.zerone_catering.domain.payorderlistbean.OrderCashierListBean;
+import com.zerone_catering.domain.refresh.RefreshBean;
 import com.zerone_catering.domain.tablefinal.cashiertable.TableListInfoCashierFinal;
 import com.zerone_catering.utils.GetUserInfo;
 import com.zerone_catering.utils.LoadingUtils;
@@ -30,6 +31,9 @@ import com.zerone_catering.utils.NetUtils;
 import com.zerone_catering.utils.NetworkUtil;
 import com.zyao89.view.zloading.ZLoadingDialog;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,15 +71,16 @@ public class Print_Order_List_Activity extends BaseActvity {
                     String orderlistJson = (String) msg.obj;
                     try {
                         JSONObject jsonObject = new JSONObject(orderlistJson);
-                        Log.i("URL", jsonObject.toString());
                         int status = jsonObject.getInt("status");
                         if (status == 1) {
+                            list.clear();
                             JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("orderlist");
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 OrderCashierListBean ocl = new OrderCashierListBean();
                                 ocl.setId(jsonArray.getJSONObject(i).getInt("id"));
                                 ocl.setCreated_at(jsonArray.getJSONObject(i).getString("created_at"));
                                 ocl.setOchecklean(false);
+                                ocl.setType(jsonArray.getJSONObject(i).getInt("type"));
                                 ocl.setOrder_price(jsonArray.getJSONObject(i).getString("order_price"));
                                 ocl.setOrdersn(jsonArray.getJSONObject(i).getString("ordersn"));
                                 ocl.setStatus(jsonArray.getJSONObject(i).getString("status"));
@@ -96,7 +101,7 @@ public class Print_Order_List_Activity extends BaseActvity {
                 case 1:
                     OrderCashierListBean oclb = (OrderCashierListBean) msg.obj;
                     Intent intent = new Intent(Print_Order_List_Activity.this, Order_Details_Print_Activity.class);
-                    intent.putExtra("orderInfo", oclb);
+                    intent.putExtra("order_id", oclb.getId() + "");
                     startActivity(intent);
                     break;
             }
@@ -110,13 +115,13 @@ public class Print_Order_List_Activity extends BaseActvity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.print_order_list_activity);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
         userInfo = GetUserInfo.initGetUserInfo(this);
         mContext = Print_Order_List_Activity.this;
         tableInfo = (TableListInfoCashierFinal) getIntent().getSerializableExtra("tableInfo");
         list = new ArrayList<>();
         initView();
-        initData();
-
+        initData("0");
     }
 
     /**
@@ -144,7 +149,7 @@ public class Print_Order_List_Activity extends BaseActvity {
     /**
      * 获取订单列表信息
      */
-    private void initData() {
+    private void initData(String str) {
         list = new ArrayList<>();
         if (userInfo == null) {
             return;
@@ -161,10 +166,43 @@ public class Print_Order_List_Activity extends BaseActvity {
             Toast.makeText(mContext, "网络不可用，请检查", Toast.LENGTH_SHORT).show();
             return;
         }
-        loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取订单中...");
-        if (!mContext.isFinishing()) {
-            loading_dailog.show();
+        if ("0".equals(str)) {
+            loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取订单中...");
+            if (!mContext.isFinishing()) {
+                loading_dailog.show();
+            }
         }
         NetUtils.netWorkByMethodPost(mContext, tMap, IpConfig.URL_CASHIER_ORDER_LIST, handler, 0);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    /**
+     * 刷新页面的数据
+     *
+     * @param refreshBean
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void refresh(RefreshBean refreshBean) {
+        if (refreshBean.getRefreshCode() == 100) {
+            initData("1");
+        }
+    }
+
+    /**
+     * 关闭页面
+     *
+     * @param ca
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void closeActivity(CloseActivity ca) {
+        //接收到清空购车的信息了
+        if (ca.getCode() == 1000 && "print".equals(ca.getMsg())) {
+            Print_Order_List_Activity.this.finish();
+        }
     }
 }

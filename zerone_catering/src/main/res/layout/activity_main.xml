@@ -141,6 +141,19 @@
                 android:layout_weight="1"
                 android:background="#ffffff">
 
+                <TextView
+                    android:id="@+id/main_order_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/shape_c_red"
+                    android:gravity="center"
+                    android:textColor="#ffffff"
+                    android:textSize="16sp"
+                    android:visibility="gone" />
+
                 <LinearLayout
                     android:id="@+id/btn_main_order_manage"
                     android:layout_width="wrap_content"

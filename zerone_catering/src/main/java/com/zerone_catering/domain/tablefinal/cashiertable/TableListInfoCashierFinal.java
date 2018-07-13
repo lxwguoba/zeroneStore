@@ -15,6 +15,7 @@ public class TableListInfoCashierFinal implements Serializable {
      * table_sort : 0
      * order_num : 2
      * order_unpaid : 1
+     *num : 桌子的新的订单
      */
     private int id;
     private String table_name;
@@ -22,6 +23,17 @@ public class TableListInfoCashierFinal implements Serializable {
     private int table_sort;
     private int order_num;
     private int order_unpaid;
+
+    private int num;
+
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
 
     public int getId() {
         return id;

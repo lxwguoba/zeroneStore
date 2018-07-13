@@ -8,7 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.zerone_catering.avtivity.ResultActivity;
+import com.zerone_catering.avtivity.resutl.ResultActivity;
 import com.zerone_catering.utils.AppSharePreferenceMgr;
 
 /**

@@ -14,68 +14,104 @@
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="4dp"
             android:layout_marginTop="10dp"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:id="@+id/check_item_talbe"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                <TextView
+                <LinearLayout
+                    android:id="@+id/check_item_talbe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="桌子名称：" />
+
+                    <TextView
+                        android:id="@+id/table_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1"
+                        android:text="天上人间天上人间天上人间天上人间天上人间天上人间天上人间天上人间"
+                        android:textColor="#000000"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="桌子名称：" />
+                    android:layout_marginTop="4dp"
 
-                <TextView
-                    android:id="@+id/table_name"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="订单总数：" />
+
+                    <TextView
+                        android:id="@+id/orderNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="01"
+                        android:textColor="#000000"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:lines="1"
-                    android:text="天上人间天上人间天上人间天上人间天上人间天上人间天上人间天上人间"
-                    android:textColor="#000000"
-                    android:textSize="14sp" />
+                    android:layout_marginTop="4dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="未结账订单数：" />
+
+                    <TextView
+                        android:id="@+id/ordernopay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="01"
+                        android:textColor="#000000"
+                        android:textSize="16sp" />
+                </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
+
+            <RelativeLayout
+                android:id="@+id/neworderrelat"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="15dp">
 
-                >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="订单总数：" />
-
-                <TextView
-                    android:id="@+id/orderNumber"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="01"
-                    android:textColor="#000000"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp">
+                <ImageView
+                    android:id="@+id/laba"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@mipmap/icon_new_order_table" />
 
                 <TextView
+                    android:id="@+id/newt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="未结账订单数：" />
+                    android:layout_alignBottom="@id/laba"
+                    android:layout_alignTop="@id/laba"
+                    android:layout_toRightOf="@id/laba"
+                    android:gravity="center_vertical"
+                    android:text="新22单"
+                    android:textColor="#f00"
+                    android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/ordernopay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="01"
-                    android:textColor="#000000"
-                    android:textSize="16sp" />
-            </LinearLayout>
+
+            </RelativeLayout>
 
         </LinearLayout>
 

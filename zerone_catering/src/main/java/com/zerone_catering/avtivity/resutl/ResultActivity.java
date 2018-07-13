@@ -11,24 +11,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.qzs.voiceannouncementlibrary.VoiceUtils;
+import com.google.gson.Gson;
+import com.zerone_catering.Base64AndMD5.CreateToken;
+import com.zerone_catering.Contants.IpConfig;
+import com.zerone_catering.DB.impl.UserInfoImpl;
 import com.zerone_catering.R;
 import com.zerone_catering.avtivity.BaseSet.BaseActvity;
+import com.zerone_catering.domain.PayOrderDetails;
 import com.zerone_catering.domain.UserInfo;
 import com.zerone_catering.domain.refresh.RefreshBean;
-import com.zerone_catering.print.PrintBean;
 import com.zerone_catering.print.PrintItem;
 import com.zerone_catering.utils.AppSharePreferenceMgr;
-import com.zerone_catering.utils.UtilsTime;
-import com.zerone_catering.utils.printutils.PrintUtils;
+import com.zerone_catering.utils.LoadingUtils;
+import com.zerone_catering.utils.NetUtils;
+import com.zerone_catering.utils.printutils.PrintPayUtils;
 import com.zyao89.view.zloading.ZLoadingDialog;
 
 import org.greenrobot.eventbus.EventBus;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author xurong on 2017/5/15.
@@ -49,7 +54,6 @@ public class ResultActivity extends BaseActvity {
     private ResultActivity mContext;
     Handler handler = new Handler() {
         private List<PrintItem> printItemList;
-
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -57,13 +61,14 @@ public class ResultActivity extends BaseActvity {
                 case 0:
                     loading_dailog.dismiss();
                     String upDataStates = (String) msg.obj;
+                    Log.i("URL", upDataStates);
                     try {
                         JSONObject jsonObject = new JSONObject(upDataStates);
-                        Log.i("URL", jsonObject.toString());
                         int status = jsonObject.getInt("status");
                         if (status == 1) {
                             String order_id = jsonObject.getJSONObject("data").getString("order_id");
                             gotoPrint(order_id);
+                            EventBus.getDefault().post(new RefreshBean("orderlist", 6000));
                         } else if (status == 0) {
                             Toast.makeText(mContext, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                         }
@@ -74,58 +79,26 @@ public class ResultActivity extends BaseActvity {
                     }
                     break;
                 case 2:
-                    String upprint = (String) msg.obj;
-                    loading_dailog.dismiss();
-                    PrintBean printBean = new PrintBean();
-                    printItemList = new ArrayList<>();
+                    String orderJSOn = (String) msg.obj;
+                    String nmber = (String) AppSharePreferenceMgr.get(ResultActivity.this, "numberGroup", "1");
                     try {
-                        JSONObject jsonObject = new JSONObject(upprint);
+                        JSONObject jsonObject = new JSONObject(orderJSOn);
                         int status = jsonObject.getInt("status");
                         if (status == 1) {
-                            EventBus.getDefault().post(new RefreshBean("收款通知刷新", 100));
-                            //封装打印类 的数据
-                            long aLong = jsonObject.getJSONObject("data").getJSONObject("orderdata").getLong("created_at");
-                            //下单时间
-                            String otime = UtilsTime.getTime(aLong);
-                            printBean.setCreateTime(otime);
-                            printBean.setOrdersn(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("ordersn"));
-                            printBean.setDiscount(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount"));
-                            int payStatus = jsonObject.getJSONObject("data").getJSONObject("orderdata").getInt("status");
-                            if (payStatus == -1) {
-                                printBean.setOrderTuype("取消状态");
-                            } else if (payStatus == 0) {
-                                printBean.setOrderTuype("待付款");
-                            } else if (payStatus == 1) {
-                                printBean.setOrderTuype("已付款");
+                            Gson gson = new Gson();
+                            PayOrderDetails payOrderDetails = gson.fromJson(orderJSOn, PayOrderDetails.class);
+                            //语音播报
+                            VoiceUtils.with(ResultActivity.this).Play(payOrderDetails.getData().getOrderdata().getPayment_price(), true);
+                            for (int i = 0; i < Integer.parseInt(nmber); i++) {
+                                PrintPayUtils.print(userInfo.getOrganization_name(), payOrderDetails, i);
                             }
-                            printBean.setPmoney(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price"));
-                            printBean.setRemark(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("remarks"));
-                            printBean.setPayment_price(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount_price"));
-                            /**
-                             *  这个是商品列表
-                             */
-                            JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("ordergoods");
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject Item = jsonArray.getJSONObject(i);
-                                PrintItem printItem = new PrintItem();
-                                printItem.setGcount(Item.getString("total"));
-                                printItem.setGoodsname(Item.getString("title"));
-                                printItem.setGprice(Item.getString("price"));
-                                printItemList.add(printItem);
-                            }
-                            printBean.setList(printItemList);
-                            if (printBean != null) {
-                                if (userInfo != null) {
-                                    if (userInfo.getOrganization_name().length() > 0 && userInfo.getOrganization_name() != null) {
-                                        PrintUtils.print(userInfo.getOrganization_name(), printBean);
-                                    }
-                                }
-                            }
-                        } else if (status == 0) {
-                            Toast.makeText(mContext, "没有这个订单，打印失败", Toast.LENGTH_SHORT).show();
                         }
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
+                    } finally {
+                        if (loading_dailog != null) {
+                            loading_dailog.dismiss();
+                        }
                     }
                     break;
                 case 511:
@@ -172,9 +145,9 @@ public class ResultActivity extends BaseActvity {
         if (resultCode == 0) {
             // 交易成功
             result_info.setText("支付成功！");
-            double dmoney = Double.parseDouble(money) / 100;
-            //语音播报
-            VoiceUtils.with(this).Play(dmoney + "", true);
+//            double dmoney = Double.parseDouble(money) / 100;
+//            //语音播报
+//            VoiceUtils.with(this).Play(dmoney + "", true);
             //打印小票  获取订单详情
             goUpDataOrderState();
         } else if (resultCode == -1) {
@@ -197,55 +170,53 @@ public class ResultActivity extends BaseActvity {
         if (userInfo == null) {
             return;
         }
-//        String timestamp = System.currentTimeMillis() + "";
-//        String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
-//        Map<String, String> getOrderDetails = new HashMap<String, String>();
-//        getOrderDetails.put("account_id", userInfo.getAccount_id());
-//        getOrderDetails.put("organization_id", userInfo.getOrganization_id());
-//        getOrderDetails.put("order_id", orderid);
-//        getOrderDetails.put("token", token);
-//        getOrderDetails.put("timestamp", timestamp);
-//        loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取订单中。。。。");
-//        loading_dailog.show();
-//        NetUtils.netWorkByMethodPost(mContext, getOrderDetails, IpConfig.URL_ORDERDETAILS, handler, 2);
-
+        String timestamp = System.currentTimeMillis() + "";
+        String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
+        Map<String, String> getOrderDetails = new HashMap<String, String>();
+        getOrderDetails.put("account_id", userInfo.getAccount_id());
+        getOrderDetails.put("organization_id", userInfo.getOrganization_id());
+        getOrderDetails.put("order_id", orderid);
+        getOrderDetails.put("token", token);
+        getOrderDetails.put("timestamp", timestamp);
+        loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "获取订单中。。。。");
+        loading_dailog.show();
+        NetUtils.netWorkByMethodPost(mContext, getOrderDetails, IpConfig.URL_ORDER_MERGE_DETAIL, handler, 2);
     }
 
     /**
      * 发送数据给服务器修改订单状态
      */
     private void goUpDataOrderState() {
-//        if (userInfo == null) {
-//            return;
-//        }
-
-//        String timestamp = System.currentTimeMillis() + "";
-//        String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
-//        Map<String, String> loginMap = new HashMap<String, String>();
-//        loginMap.put("organization_id", userInfo.getOrganization_id());
-//        loginMap.put("account_id", userInfo.getAccount_id());
-//        loginMap.put("token", token);
-//        String orderid = (String) AppSharePreferenceMgr.get(ResultActivity.this, "orderid", "");
-//        if (orderid != null && orderid.length() > 0) {
-//            loginMap.put("order_id", orderid);
-//        }
-//        loginMap.put("paytype", "5");
-//        loginMap.put("timestamp", timestamp);
-//        loginMap.put("payment_company", "乐刷支付");
-//        loading_dailog = LoadingUtils.getDailog(ResultActivity.this, Color.RED, "修改中...");
-//        loading_dailog.show();
-//        NetUtils.netWorkByMethodPost(ResultActivity.this, loginMap, IpConfig.URL_UPDATAPAY, handler, 0);
+        if (userInfo == null) {
+            return;
+        }
+        String timestamp = System.currentTimeMillis() + "";
+        String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
+        Map<String, String> pyMap = new HashMap<String, String>();
+        pyMap.put("organization_id", userInfo.getOrganization_id());
+        pyMap.put("account_id", userInfo.getAccount_id());
+        pyMap.put("token", token);
+        String orderid = (String) AppSharePreferenceMgr.get(ResultActivity.this, "orderid", "");
+        if (orderid != null && orderid.length() > 0) {
+            pyMap.put("order_id", orderid);
+        }
+        pyMap.put("paytype", "5");
+        pyMap.put("timestamp", timestamp);
+        pyMap.put("payment_company", "乐刷支付");
+        loading_dailog = LoadingUtils.getDailog(ResultActivity.this, Color.RED, "修改中...");
+        loading_dailog.show();
+        NetUtils.netWorkByMethodPost(ResultActivity.this, pyMap, IpConfig.URL_OTHER_PAYMENT, handler, 0);
     }
 
     /**
      * 获取用户信息
      */
     private void initGetUserInfo() {
-//        UserInfoImpl userInfoImpl = new UserInfoImpl(ResultActivity.this);
-//        try {
-//            userInfo = userInfoImpl.getUserInfo("10");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        UserInfoImpl userInfoImpl = new UserInfoImpl(ResultActivity.this);
+        try {
+            userInfo = userInfoImpl.getUserInfo("10");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -115,7 +115,7 @@ public class SearchActivity extends BaseActvity {
                                 shopBean.setShop_Count("1");
                                 shopBean.setName(jsonArray.getJSONObject(i).getString("name"));
                                 shopBean.setCategory_id(jsonArray.getJSONObject(i).getInt("category_id"));
-                                shopBean.setDetails(jsonArray.getJSONObject(i).getString("details"));
+//                                shopBean.setDetails(jsonArray.getJSONObject(i).getString("details"));
                                 shopBean.setId(jsonArray.getJSONObject(i).getInt("id"));
                                 shopBean.setPrice(jsonArray.getJSONObject(i).getString("price"));
                                 JSONArray thumb1 = jsonArray.getJSONObject(i).getJSONArray("thumb");

@@ -1,6 +1,7 @@
 package com.zerone_catering.adapter.shopplistadapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.RecyclerView;
@@ -20,18 +21,18 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.zerone_catering.Contants.IpConfig;
 import com.zerone_catering.R;
+import com.zerone_catering.avtivity.product_details.Activity_Product_Details;
 import com.zerone_catering.domain.main.ProductBean;
-import com.zerone_catering.domain.shoplistbean.GoodsBeanUp;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ViewHolder> {
     //从新封装数据
-    private List<GoodsBeanUp> list;
     private List<ProductBean> plist;
     private Context mContext;
     private Handler handler;
+    private OnItemClickListener mOnItemClickListener;//声明接口
 
     /**
      * @param context
@@ -41,7 +42,6 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         this.mContext = context;
         this.plist = plist;
         this.handler = handler;
-        list = new ArrayList<>();
         setHasStableIds(true);
     }
 
@@ -102,8 +102,9 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         //设置名
         holder.shop_name.setText(plist.get(position).getName());
-        //设置说明
-        holder.shop_shopdiscount.setText(plist.get(position).getDetails());
+        //设置说明textView.setText(Html.fromHtml(str));
+
+//        holder.shop_shopdiscount.setText(Html.fromHtml(plist.get(position).getDetails()));
         //设置价格
         holder.shopprice.setText(plist.get(position).getPrice());
         //商品数量
@@ -140,6 +141,21 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
                 message.what = 1110;
                 message.obj = position;
                 handler.sendMessage(message);
+            }
+        });
+        holder.shop_picture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, Activity_Product_Details.class);
+                intent.putExtra("ordreinfo", plist.get(position));
+                mContext.startActivity(intent);
+            }
+        });
+        holder.root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = holder.getLayoutPosition();
+                mOnItemClickListener.onItemClick(holder.root, position);
             }
         });
     }
@@ -191,12 +207,20 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         return set;
     }
 
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
+    }
+
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public final ImageView shop_picture;
         public final TextView shop_name;
-        public final TextView shop_shopdiscount;
+        //        public final TextView shop_shopdiscount;
         public final TextView shopprice;
         public final LinearLayout decrease_shop;
         public final TextView shopCount;
@@ -208,7 +232,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             super(root);
             shop_picture = root.findViewById(R.id.picture);
             shop_name = root.findViewById(R.id.shopname);
-            shop_shopdiscount = root.findViewById(R.id.shopdiscount);
+//            shop_shopdiscount = root.findViewById(R.id.shopdiscount);
             shopprice = root.findViewById(R.id.shopprice);
             decrease_shop = root.findViewById(R.id.decrease_shop);
             shopCount = root.findViewById(R.id.shopCount);

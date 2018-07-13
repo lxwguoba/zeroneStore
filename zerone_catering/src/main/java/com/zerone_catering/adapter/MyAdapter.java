@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.zerone_catering.Contants.IpConfig;
 import com.zerone_catering.R;
 import com.zerone_catering.domain.shoplistbean.ShopBean;
 
@@ -68,9 +69,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         //设置商品图
         String s = "";
         if (mData.get(position).getThumb().size() > 0) {
-//            s = IpConfig.URL_GETPICTURE + mData.get(position).getThumb().get(0).getThumb();
+            s = IpConfig.URL_GETPICTURE + mData.get(position).getThumb().get(0).getThumb();
         }
-
         Glide.with(mContext).load(s).centerCrop().placeholder(R.mipmap.app_logo).crossFade().into(holder.shop_picture);
 
         holder.root.setOnClickListener(new View.OnClickListener() {
