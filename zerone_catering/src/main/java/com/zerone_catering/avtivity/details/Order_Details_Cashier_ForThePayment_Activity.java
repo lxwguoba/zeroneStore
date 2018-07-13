@@ -263,6 +263,7 @@ public class Order_Details_Cashier_ForThePayment_Activity extends BaseActvity {
         //确认订单的按钮 显示的价格
         ordermoney = (TextView) findViewById(R.id.ordermoney);
         exit = (LinearLayout) findViewById(R.id.exit);
+
         //======================
         ordertime = (TextView) findViewById(R.id.ordertime);
         customer = (TextView) findViewById(R.id.xiaofeizhe);
