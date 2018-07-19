@@ -43,7 +43,7 @@ public class PrintUtils {
         ti02.setWidth(headwid02);
         //------------------------
         TableItem ti03 = new TableItem();
-        String[] headti03 = {"", "现场订单", "第" + (b + 1) + "联"};
+        String[] headti03 = {"", "点餐订单", "第" + (b + 1) + "联"};
         int[] headalt03 = {1, 1, 2};
         int[] headwid03 = new int[]{0, 4, 2};
         ti03.setText(headti03);
@@ -51,19 +51,28 @@ public class PrintUtils {
         ti03.setWidth(headwid03);
 
         TableItem ti05 = new TableItem();
-        String[] headti05 = {"", "已付款", ""};
-        int[] headalt05 = {1, 1, 2};
+        String[] headti05 = {"", "待付款", ""};
+        int[] headalt05 = {1, 1, 1};
         int[] headwid05 = new int[]{0, 4, 0};
         ti05.setText(headti05);
         ti05.setAlign(headalt05);
         ti05.setWidth(headwid05);
         //----------------------------------
+        TableItem ti06 = new TableItem();
+        String[] headti06 = {"", pb.getRoomAndTable(), ""};
+        int[] headalt06 = {1, 1, 1};
+        int[] headwid06 = new int[]{0, 4, 0};
+        ti06.setText(headti06);
+        ti06.setAlign(headalt06);
+        ti06.setWidth(headwid06);
+        //-------------------------
         head.add(ti01);
         head.add(ti02);
         head.add(ti03);
         head.add(ti02);
         head.add(ti05);
-        head.add(ti02);
+        head.add(ti06);
+//        head.add(ti02);
         //-------------------标题的打印------------------------
         LinkedList<TableItem> title = new LinkedList<>();
         TableItem t0 = new TableItem();
@@ -176,7 +185,7 @@ public class PrintUtils {
 //        monT.setWidth(monTiwi);
 //        moneylist.add(monT);
         //---------------------------金额----------------------------------
-        AidlUtil.getInstance().printTable(head, 40, true);
+        AidlUtil.getInstance().printTable(head, 38, true);
         AidlUtil.getInstance().printTable(title, 36, true);
         AidlUtil.getInstance().printTable(datalist, 26, false);
         AidlUtil.getInstance().printTable(orderprint, 26, false);

@@ -101,6 +101,7 @@ public class Activity_Product_Details extends BaseActvity {
         }
     };
     private LinearLayout back;
+    private TextView store_name;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -150,6 +151,8 @@ public class Activity_Product_Details extends BaseActvity {
     }
 
     private void initView() {
+        store_name = (TextView) findViewById(R.id.store_name);
+        store_name.setText(userInfo.getOrganization_name());
         banner = (Banner) findViewById(R.id.banner);
         back = (LinearLayout) findViewById(R.id.back);
         product_name = (TextView) findViewById(R.id.product_name);

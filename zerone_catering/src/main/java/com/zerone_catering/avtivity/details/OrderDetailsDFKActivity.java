@@ -121,7 +121,7 @@ public class OrderDetailsDFKActivity extends BaseActvity {
                             } else {
                                 remarks.setText(remark);
                             }
-                            String nmoney = DoubleUtils.setDouble(Double.parseDouble(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price")));
+                            String nmoney = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price");
                             listOrderMoney.setText("￥" + DoubleUtils.subMoney(nmoney));
                             codlia.notifyDataSetChanged();
                             ListViewSetHightUtils.setListViewHeightBasedOnChildren(listView);
@@ -156,6 +156,7 @@ public class OrderDetailsDFKActivity extends BaseActvity {
     };
     private UserInfo userInfo;
     private TextView discount;
+    private TextView roomAndTable;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -222,6 +223,7 @@ public class OrderDetailsDFKActivity extends BaseActvity {
      * 初始化view
      */
     private void initView() {
+        roomAndTable = (TextView) findViewById(R.id.roomAndTable);
         listOrderMoney = (TextView) findViewById(R.id.listOrderMoney);
         //确认订单按钮
         subSurePay = (RelativeLayout) findViewById(R.id.subSurePay);

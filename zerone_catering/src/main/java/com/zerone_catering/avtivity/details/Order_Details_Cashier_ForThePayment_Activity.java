@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -84,6 +85,7 @@ public class Order_Details_Cashier_ForThePayment_Activity extends BaseActvity {
     private Dialog pay_dialog;
     private Dialog dmsg;
     private String pagestatus;
+    private TextView roomAndTable;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -92,23 +94,23 @@ public class Order_Details_Cashier_ForThePayment_Activity extends BaseActvity {
                 case 0:
                     try {
                         loading_dailog.dismiss();
-
                         String forthepaymentJson = (String) msg.obj;
                         JSONObject jsonObject = new JSONObject(forthepaymentJson);
+                        Log.i("URL", forthepaymentJson);
                         int status = jsonObject.getInt("status");
                         if (status == 1) {
                             Gson gson = new Gson();
                             ForThePaymentBean forThePaymentBean = gson.fromJson(forthepaymentJson, ForThePaymentBean.class);
                             String discount_price = forThePaymentBean.getData().getOrderdata().getDiscount_price();
-                            String nmoney = DoubleUtils.setDouble(Double.parseDouble(forThePaymentBean.getData().getOrderdata().getOrder_price()));
-                            String dnmoney = DoubleUtils.setDouble(Double.parseDouble(discount_price));
-
-
+                            String nmoney = Double.parseDouble(forThePaymentBean.getData().getOrderdata().getOrder_price()) + "";
+                            String dnmoney = discount_price;
+                            roomAndTable.setText(forThePaymentBean.getData().getOrderdata().getRoom_name() + "：" + forThePaymentBean.getData().getOrderdata().getTable_name());
                             if (discount_price.length() > 0) {
                                 ordermoney.setText(" ￥：" + DoubleUtils.subMoney(dnmoney));
                             } else {
                                 ordermoney.setText(" ￥：" + DoubleUtils.subMoney(nmoney));
                             }
+                            discount_mone = DoubleUtils.subMoney(nmoney);
                             listOrderMoney.setText("￥：" + DoubleUtils.subMoney(nmoney));
                             ordertime.setText(UtilsTime.getTime(Long.parseLong(forThePaymentBean.getData().getOrderdata().getCreated_at())));
                             customer.setText(forThePaymentBean.getData().getOrderdata().getNickname());
@@ -121,7 +123,6 @@ public class Order_Details_Cashier_ForThePayment_Activity extends BaseActvity {
                             } else {
                                 remarks.setText(remark);
                             }
-
                             String discounts = forThePaymentBean.getData().getOrderdata().getDiscount();
                             if ("10.00".equals(discounts)) {
                                 discount.setText("无折扣");
@@ -257,6 +258,7 @@ public class Order_Details_Cashier_ForThePayment_Activity extends BaseActvity {
      * 初始化view
      */
     private void initView() {
+        roomAndTable = (TextView) findViewById(R.id.roomAndTable);
         listOrderMoney = (TextView) findViewById(R.id.listOrderMoney);
         //确认订单按钮
         subSurePay = (RelativeLayout) findViewById(R.id.subSurePay);
@@ -350,11 +352,12 @@ public class Order_Details_Cashier_ForThePayment_Activity extends BaseActvity {
             public void onClick(View v) {
                 //调起其他支付方式  盛付通支付
                 //吊起支付
-                discount_mone = "0.01";
                 if (discount_mone != null) {
                     PayUtils.LiftThePayment(discount_mone, Order_Details_Cashier_ForThePayment_Activity.this);
                     pay_dialog.dismiss();
                     Order_Details_Cashier_ForThePayment_Activity.this.finish();
+                } else {
+                    Toast.makeText(Order_Details_Cashier_ForThePayment_Activity.this, "钱不能为空，该订单无效", Toast.LENGTH_SHORT).show();
                 }
             }
         });

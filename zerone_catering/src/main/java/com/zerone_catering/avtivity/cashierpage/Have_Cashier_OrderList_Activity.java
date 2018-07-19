@@ -129,7 +129,7 @@ public class Have_Cashier_OrderList_Activity extends BaseActvity {
                         allcheck = false;
                     }
 
-                    String nmoney = DoubleUtils.setDouble(money);
+                    String nmoney = DoubleUtils.subMoney(money + "");
                     allPrice.setText("共计：￥" + nmoney);
                     break;
                 case 10:
@@ -140,7 +140,7 @@ public class Have_Cashier_OrderList_Activity extends BaseActvity {
                             mmoney += Double.parseDouble(list.get(i).getOrder_price());
                         }
                     }
-                    String mmmoney = DoubleUtils.setDouble(mmoney);
+                    String mmmoney = DoubleUtils.subMoney(mmoney + "");
                     allPrice.setText("共计：￥" + mmmoney);
                     break;
             }

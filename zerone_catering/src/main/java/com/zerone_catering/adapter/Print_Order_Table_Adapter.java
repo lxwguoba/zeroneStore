@@ -68,9 +68,7 @@ public class Print_Order_Table_Adapter extends RecyclerView.Adapter<Print_Order_
                 }
             }
         });
-
     }
-
     public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {
         this.mOnItemClickListener = mOnItemClickListener;
     }

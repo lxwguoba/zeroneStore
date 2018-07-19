@@ -67,7 +67,6 @@ public class Order_Details_Print_Activity extends BaseActvity {
     private ListView listView;
     private Order_Details_Print_Activity mContext;
     private Intent intent;
-    private LinearLayout qxorder;
     private TextView ordermoney;
     private RelativeLayout subSurePay;
     private String money;
@@ -101,6 +100,7 @@ public class Order_Details_Print_Activity extends BaseActvity {
     private PrintBean printBean;
     private List<PrintItem> printItemList;
     private TextView confirm;
+    private TextView tableandroom;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -131,8 +131,12 @@ public class Order_Details_Print_Activity extends BaseActvity {
                             } else if (payStatus == 1) {
                                 printBean.setOrderTuype("已付款");
                             }
-                            printBean.setPmoney(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price"));
 
+                            printBean.setPmoney(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price"));
+                            String table_name = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("table_name");
+                            String room_name = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("room_name");
+                            printBean.setRoomAndTable(room_name + "：" + table_name);
+                            tableandroom.setText(room_name + "：" + table_name);
                             JSONArray jsonArra = jsonObject.getJSONObject("data").getJSONArray("ordergoods");
                             for (int i = 0; i < jsonArra.length(); i++) {
                                 JSONObject Item = jsonArra.getJSONObject(i);
@@ -169,7 +173,7 @@ public class Order_Details_Print_Activity extends BaseActvity {
                                 remarks.setText(remark);
                                 printBean.setRemark(remark);
                             }
-                            String nmoney = DoubleUtils.setDouble(Double.parseDouble(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price")));
+                            String nmoney = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price");
                             Log.i("URL", "nomney=" + nmoney);
                             listOrderMoney.setText("￥" + DoubleUtils.subMoney(nmoney));
                             codlia.notifyDataSetChanged();
@@ -209,21 +213,27 @@ public class Order_Details_Print_Activity extends BaseActvity {
                             String trim = goodsnumber.getText().toString().trim();
                             String price = listOrderMoney.getText().toString().trim().substring(1);
                             double nprice = Double.parseDouble(price);
+
                             if ("".equals(trim)) {
                                 nprice -= (Double.parseDouble(list.get(position).getPrice()) * list.get(position).getTotal());
                                 list.remove(position);
+                                printBean.getList().remove(position);
+                                printBean.setPmoney(nprice + "");
                             } else {
                                 int gNum = Integer.parseInt(trim);
                                 int newNum = list.get(position).getTotal() - gNum;
                                 nprice -= (Double.parseDouble(list.get(position).getPrice()) * gNum);
                                 if (newNum == 0) {
                                     list.remove(position);
+                                    printBean.getList().remove(position);
                                 } else {
                                     list.get(position).setTotal(newNum);
+                                    printBean.getList().get(position).setGcount(newNum + "");
                                 }
+                                printBean.setPmoney(nprice + "");
                             }
                             EventBus.getDefault().post(new RefreshBean("100", 100));
-                            listOrderMoney.setText("￥" + nprice);
+                            listOrderMoney.setText("￥" + DoubleUtils.subMoney(nprice + ""));
                             codlia.notifyDataSetChanged();
                             ListViewSetHightUtils.setListViewHeightBasedOnChildren(listView);
                         } else if (status == 0) {
@@ -281,6 +291,7 @@ public class Order_Details_Print_Activity extends BaseActvity {
                     break;
                 case 4:
                     String nmber = (String) AppSharePreferenceMgr.get(Order_Details_Print_Activity.this, "numberGroup", "1");
+                    Boolean plean = (Boolean) AppSharePreferenceMgr.get(Order_Details_Print_Activity.this, "print", false);
                     String pjson = (String) msg.obj;
                     try {
                         JSONObject pjsonObject = new JSONObject(pjson);
@@ -289,11 +300,14 @@ public class Order_Details_Print_Activity extends BaseActvity {
                             Intent intent = new Intent(Order_Details_Print_Activity.this, PrintResponseActivity.class);
                             startActivity(intent);
                             EventBus.getDefault().post(new CloseActivity("print", 1000));
-                            for (int i = 0; i < Integer.parseInt(nmber); i++) {
-                                PrintUtils.print("锅巴来也", printBean, i);
+                            if (plean) {
+                                if (printerCode == 0) {
+                                    for (int i = 0; i < Integer.parseInt(nmber); i++) {
+                                        PrintUtils.print(userInfo.getOrganization_name(), printBean, i);
+                                    }
+                                }
                             }
                             Order_Details_Print_Activity.this.finish();
-                            dpay.dismiss();
                         } else if (status == 0) {
                             JSONArray data = pjsonObject.getJSONArray("data");
                             StringBuffer sb = new StringBuffer();
@@ -302,12 +316,17 @@ public class Order_Details_Print_Activity extends BaseActvity {
                                 sb.append(jsonObject.getString("error_description") + "\r\n");
                             }
                             Toast.makeText(Order_Details_Print_Activity.this, sb.toString(), Toast.LENGTH_SHORT).show();
+                        } else if (status == 2) {
+                            Toast.makeText(Order_Details_Print_Activity.this, pjsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } finally {
                         if (!Order_Details_Print_Activity.this.isFinishing()) {
                             loading_dailog.dismiss();
+                        }
+                        if (dpay != null) {
+                            dpay.dismiss();
                         }
                         confirm.setEnabled(true);
                     }
@@ -339,14 +358,7 @@ public class Order_Details_Print_Activity extends BaseActvity {
     }
 
     private void intiAction() {
-        qxorder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                qxorder.setEnabled(false);
-                outDialog();
-            }
-        });
-        //打开对话框
+
         subSurePay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -402,13 +414,13 @@ public class Order_Details_Print_Activity extends BaseActvity {
      */
     private void initView() {
         printList = new ArrayList<PrinterMachine>();
+        tableandroom = (TextView) findViewById(R.id.tableandroom);
         printName = (TextView) findViewById(R.id.printName);
         listOrderMoney = (TextView) findViewById(R.id.listOrderMoney);
         //确认订单按钮
         subSurePay = (RelativeLayout) findViewById(R.id.subSurePay);
         //确认订单的按钮 显示的价格
         ordermoney = (TextView) findViewById(R.id.ordermoney);
-        qxorder = (LinearLayout) findViewById(R.id.qxorder);
         //======================
         ordertime = (TextView) findViewById(R.id.ordertime);
         customer = (TextView) findViewById(R.id.xiaofeizhe);
@@ -476,10 +488,11 @@ public class Order_Details_Print_Activity extends BaseActvity {
 
     private void doPrint() {
         if (userInfo == null) {
+            confirm.setEnabled(true);
             return;
         }
-        String mpinfo = getPrintM();
-        Log.i("URL", "mpinfo=" + printList.toString());
+        String json = getPrintJson();
+        Log.i("URL", "mpinfo=" + json);
         String timestamp = System.currentTimeMillis() + "";
         String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
         Map<String, String> tMap = new HashMap<String, String>();
@@ -488,16 +501,28 @@ public class Order_Details_Print_Activity extends BaseActvity {
         tMap.put("organization_id", userInfo.getOrganization_id());
         tMap.put("token", token);
         tMap.put("order_id", order_id);
-        tMap.put("printer_array", mpinfo);
+        Log.i("URL", "json=" + json);
+        if ("{}".equals(json)) {
+            Toast.makeText(Order_Details_Print_Activity.this, "请选择打印机", Toast.LENGTH_SHORT).show();
+            confirm.setEnabled(true);
+            return;
+        }
+        tMap.put("printer_array", json);
         if (!NetworkUtil.isNetworkAvailable(mContext)) {
             Toast.makeText(mContext, "网络不可用，请检查", Toast.LENGTH_SHORT).show();
+            confirm.setEnabled(true);
             return;
         }
         loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "打印中请稍后...");
         if (!Order_Details_Print_Activity.this.isFinishing()) {
             loading_dailog.show();
         }
-        NetUtils.netWorkByMethodPost(mContext, tMap, IpConfig.URL_ORDER_PRINTER, handler, 4);
+        if (printerCode > 0) {
+            NetUtils.netWorkByMethodPost(mContext, tMap, IpConfig.URL_ORDER_PRINTER_AGAIN, handler, 4);
+        } else {
+            NetUtils.netWorkByMethodPost(mContext, tMap, IpConfig.URL_ORDER_PRINTER, handler, 4);
+        }
+
 
     }
 
@@ -629,7 +654,26 @@ public class Order_Details_Print_Activity extends BaseActvity {
         NetUtils.netWorkByMethodPost(mContext, tMap, IpConfig.URL_CANCEL_GOODS, handler, 2);
     }
 
+
+    /**
+     * @return
+     */
+    public String getPrintJson() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            for (int i = 0; i < printList.size(); i++) {
+                if (printList.get(i).isChblen()) {
+                    jsonObject.put(printList.get(i).getMaId() + "", printList.get(i).getPrintNum());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObject.toString();
+    }
+
     public String getPrintM() {
+        JSONObject jsonObject = new JSONObject();
         String pminfo = "";
         for (int i = 0; i < printList.size(); i++) {
             if (printList.get(i).isChblen()) {

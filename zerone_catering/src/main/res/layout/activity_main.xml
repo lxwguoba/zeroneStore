@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#f3f2fc"
     android:orientation="vertical"
     tools:context="com.zerone_catering.avtivity.MainActivity">
 
@@ -15,32 +16,34 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:fontFamily="SourceHanSansCN-Regular"
             android:text="功能页面"
-            android:textColor="#000000"
-            android:textSize="30sp" />
+            android:textColor="#1c2544"
+            android:textSize="26sp" />
 
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#f1f1f1"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
             android:layout_weight="1"
             android:orientation="horizontal">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="1dp"
+                android:layout_marginRight="10dp"
                 android:layout_marginTop="2dp"
                 android:layout_weight="1"
-                android:background="#ffffff">
+                android:background="@drawable/main_btn_bg">
 
                 <LinearLayout
                     android:id="@+id/btn_main_open_order"
@@ -53,25 +56,26 @@
                     <ImageView
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:src="@mipmap/icon_open_order" />
+                        android:src="@mipmap/icon_open_order_bg" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
+                        android:fontFamily="SourceHanSansCN-Regular"
                         android:text="开单"
-                        android:textSize="22sp" />
+                        android:textColor="#1c2544"
+                        android:textSize="20sp" />
                 </LinearLayout>
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="1dp"
-                android:layout_marginRight="2dp"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
                 android:layout_weight="1"
-                android:background="#ffffff">
+                android:background="@drawable/main_btn_bg">
 
                 <LinearLayout
                     android:id="@+id/btn_main_collect_money"
@@ -84,14 +88,16 @@
                     <ImageView
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:src="@mipmap/icon_center_pay" />
+                        android:src="@mipmap/icon_cashier_order_bg" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
+                        android:fontFamily="SourceHanSansCN-Regular"
                         android:text="收银"
-                        android:textSize="22sp" />
+                        android:textColor="#1c2544"
+                        android:textSize="20sp" />
                 </LinearLayout>
             </RelativeLayout>
         </LinearLayout>
@@ -99,16 +105,18 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
             android:layout_weight="1">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="1dp"
+                android:layout_marginRight="10dp"
                 android:layout_marginTop="2dp"
                 android:layout_weight="1"
-                android:background="#ffffff">
+                android:background="@drawable/main_btn_bg">
 
                 <LinearLayout
                     android:id="@+id/btn_main_set_system"
@@ -121,25 +129,26 @@
                     <ImageView
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:src="@mipmap/icon_set_system" />
+                        android:src="@mipmap/icon_system_bg" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
+                        android:fontFamily="SourceHanSansCN-Regular"
                         android:text="系统设置"
-                        android:textSize="22sp" />
+                        android:textColor="#1c2544"
+                        android:textSize="20sp" />
                 </LinearLayout>
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="1dp"
-                android:layout_marginRight="2dp"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
                 android:layout_weight="1"
-                android:background="#ffffff">
+                android:background="@drawable/main_btn_bg">
 
                 <TextView
                     android:id="@+id/main_order_count"
@@ -165,14 +174,16 @@
                     <ImageView
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:src="@mipmap/icon_order_manage" />
+                        android:src="@mipmap/icon_manage_order_bg" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
+                        android:fontFamily="SourceHanSansCN-Regular"
                         android:text="订单管理"
-                        android:textSize="22sp" />
+                        android:textColor="#1c2544"
+                        android:textSize="20sp" />
                 </LinearLayout>
             </RelativeLayout>
         </LinearLayout>
@@ -180,16 +191,19 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
             android:layout_weight="1">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="1dp"
+                android:layout_marginRight="10dp"
                 android:layout_marginTop="2dp"
                 android:layout_weight="1"
-                android:background="#ffffff">
+                android:background="@drawable/main_btn_bg">
 
                 <LinearLayout
                     android:id="@+id/btn_main_out_app"
@@ -202,25 +216,25 @@
                     <ImageView
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:src="@mipmap/icon_out_app" />
+                        android:src="@mipmap/icon_system_out_bg" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
+                        android:fontFamily="SourceHanSansCN-Regular"
                         android:text="退出系统"
-                        android:textSize="22sp" />
+                        android:textColor="#1c2544"
+                        android:textSize="20sp" />
                 </LinearLayout>
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="1dp"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
-                android:layout_weight="1"
-                android:background="#ffffff">
+                android:layout_weight="1">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -241,5 +255,7 @@
                 </LinearLayout>
             </RelativeLayout>
         </LinearLayout>
+
+
     </LinearLayout>
 </LinearLayout>

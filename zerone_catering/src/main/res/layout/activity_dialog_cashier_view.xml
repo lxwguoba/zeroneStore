@@ -46,7 +46,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:background="#a2e1fb"
-                    android:text="打印订单"
+                    android:text="打印点餐订单"
                     android:textAlignment="center"
                     android:textColor="#ffffff"
                     android:textSize="18sp"
@@ -65,7 +65,7 @@
                     android:layout_height="50dp"
                     android:layout_centerInParent="true"
                     android:background="#a2e1fb"
-                    android:text="订单列表"
+                    android:text="收银订单列表"
                     android:textColor="#ffffff"
                     android:textSize="18sp"
                     android:textStyle="bold|italic" />

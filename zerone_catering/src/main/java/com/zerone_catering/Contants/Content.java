@@ -7,9 +7,9 @@ package com.zerone_catering.Contants;
 
 public class Content {
     //基本连接
-    public static final String BASEURL = "http://develop2.01nnt.com/api/androidCateringApi/";
+    public static final String BASEURL = "http://o2o.01nnt.com/api/androidCateringApi/";
     //二维码的基本连接
-    public static final String BASE_CODE = "http://develop2.01nnt.com/api/androidRetailApi/";
+    public static final String BASE_CODE = "http://o2o.01nnt.com/api/androidRetailApi/";
     //获取图片接口
-    public static final String URL_GETPICTURE = "http://develop2.01nnt.com/";
+    public static final String URL_GETPICTURE = "http://o2o.01nnt.com/";
 }

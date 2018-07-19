@@ -45,7 +45,7 @@ public class PrintPayUtils {
         //------------------------
         TableItem ti03 = new TableItem();
 
-        String[] headti03 = {"", "现场订单", "第" + (lian + 1) + "联"};
+        String[] headti03 = {"", "收银订单", "第" + (lian + 1) + "联"};
         int[] headalt03 = {1, 1, 2};
         int[] headwid03 = new int[]{0, 4, 2};
         ti03.setText(headti03);
@@ -60,11 +60,20 @@ public class PrintPayUtils {
         ti05.setAlign(headalt05);
         ti05.setWidth(headwid05);
         //----------------------------------
+        TableItem ti06 = new TableItem();
+        String[] headti06 = {"", pd.getData().getOrderdata().getRoom_name() + "：" + pd.getData().getOrderdata().getTable_name(), ""};
+        int[] headalt06 = {1, 1, 2};
+        int[] headwid06 = new int[]{0, 4, 0};
+        ti06.setText(headti06);
+        ti06.setAlign(headalt06);
+        ti06.setWidth(headwid06);
+        //----------------------------------
         head.add(ti01);
         head.add(ti02);
         head.add(ti03);
         head.add(ti02);
         head.add(ti05);
+        head.add(ti06);
         head.add(ti02);
         //-------------------标题的打印------------------------
         LinkedList<TableItem> title = new LinkedList<>();

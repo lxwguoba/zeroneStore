@@ -565,7 +565,7 @@ public class MainActivity extends BaseActvity {
         if (mSpeechSynthesizer == null) {
             return;
         }
-        String text = "零壹新科技温馨提示您，您有" + num + "份订单没有处理，请及时处理";
+        String text = "温馨提示，您有" + num + "份订单没有处理，请及时处理";
         int result = mSpeechSynthesizer.speak(text);
         checkResult(result, "speak");
     }

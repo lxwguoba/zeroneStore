@@ -100,6 +100,26 @@ public class TheOrderListBean implements Serializable {
             private String payment_price;
             private String created_at;
 
+            private String table_name;
+            private String room_name;
+
+
+            public String getTable_name() {
+                return table_name;
+            }
+
+            public void setTable_name(String table_name) {
+                this.table_name = table_name;
+            }
+
+            public String getRoom_name() {
+                return room_name;
+            }
+
+            public void setRoom_name(String room_name) {
+                this.room_name = room_name;
+            }
+
             public int getId() {
                 return id;
             }

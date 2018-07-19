@@ -32,7 +32,6 @@ public class Print_Choose_Item_Adapter extends RecyclerView.Adapter<Print_Choose
         this.mContext = context;
     }
 
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.printer_machine,

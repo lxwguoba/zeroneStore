@@ -207,9 +207,11 @@ public class OrderListActvity extends BaseActvity {
                                 clist.add(cb);
                             }
                             plist.clear();
-                            List<ProductBean> pblist = clist.get(0).getMap().get(clist.get(0).getId() + "");
-                            for (int l = 0; l < pblist.size(); l++) {
-                                plist.add(pblist.get(l));
+                            if (clist.size() > 0) {
+                                List<ProductBean> pblist = clist.get(0).getMap().get(clist.get(0).getId() + "");
+                                for (int l = 0; l < pblist.size(); l++) {
+                                    plist.add(pblist.get(l));
+                                }
                             }
                             initRecycleView();
                         } else if (status == 0) {
@@ -888,33 +890,6 @@ public class OrderListActvity extends BaseActvity {
             }
         });
 
-        if (refresh_layout != null) {
-            refresh_layout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (userInfo == null) {
-                        return;
-                    }
-                    REFRESH_CODE = 1;
-                    String timestamp = System.currentTimeMillis() + "";
-                    String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
-                    Map<String, String> loginMap = new HashMap<String, String>();
-                    loginMap.put("organization_id", userInfo.getOrganization_id());
-                    loginMap.put("account_id", userInfo.getAccount_id());
-                    loginMap.put("token", token);
-                    loginMap.put("timestamp", timestamp);
-                    if (!NetworkUtil.isNetworkAvailable(mContent)) {
-                        Toast.makeText(OrderListActvity.this, "网络不可用，请检查", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    loading_dailog = LoadingUtils.getDailog(mContent, Color.RED, "刷新数据中。。。。");
-                    if (!OrderListActvity.this.isFinishing()) {
-                        loading_dailog.show();
-                    }
-                    NetUtils.netWorkByMethodPost(mContent, loginMap, IpConfig.URL_GOODSLIST, handler, 0);
-                }
-            });
-        }
     }
 
     /**

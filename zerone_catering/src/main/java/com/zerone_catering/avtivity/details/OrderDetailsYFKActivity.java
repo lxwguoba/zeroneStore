@@ -59,8 +59,6 @@ public class OrderDetailsYFKActivity extends BaseActvity {
     LinearLayout head;
     @Bind(R.id.ordertime)
     TextView ordertime;
-    @Bind(R.id.exit)
-    LinearLayout exit;
     @Bind(R.id.daohang)
     LinearLayout daohang;
     @Bind(R.id.cancel_goods)
@@ -89,6 +87,8 @@ public class OrderDetailsYFKActivity extends BaseActvity {
     private Intent intent;
     private List<Order_Cashier_Details_Bean> list;
     private CheckCancel_OrderListItemAdapter codlia;
+    private String order_id;
+    private TextView roomAndTable;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -115,7 +115,9 @@ public class OrderDetailsYFKActivity extends BaseActvity {
                                 list.add(ocdb);
                             }
                             ordertime.setText(UtilsTime.getTime(Long.parseLong(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("created_at"))));
-
+                            String table_name = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("table_name");
+                            String room_name = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("room_name");
+                            roomAndTable.setText(room_name + "：" + table_name);
                             ordersn.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("ordersn"));
 
                             xiaofeizhe.setText(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("nickname"));
@@ -128,8 +130,7 @@ public class OrderDetailsYFKActivity extends BaseActvity {
                             } else {
                                 beizhu.setText(remarks);
                             }
-
-                            String nmoney = DoubleUtils.setDouble(Double.parseDouble(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price")));
+                            String nmoney = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("order_price");
                             listOrderMoney.setText("￥" + DoubleUtils.subMoney(nmoney));
                             String discoun = jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("discount");
                             if ("10.00".equals(discoun)) {
@@ -137,7 +138,7 @@ public class OrderDetailsYFKActivity extends BaseActvity {
                             } else {
                                 discount.setText(discoun);
                             }
-                            String payment_price = DoubleUtils.setDouble(Double.parseDouble(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("payment_price")));
+                            String payment_price = DoubleUtils.subMoney(jsonObject.getJSONObject("data").getJSONObject("orderdata").getString("payment_price"));
                             if ("null".equals(payment_price)) {
                                 discountPrice.setText("您还没有收钱");
                             } else {
@@ -158,7 +159,6 @@ public class OrderDetailsYFKActivity extends BaseActvity {
             }
         }
     };
-    private String order_id;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -178,6 +178,7 @@ public class OrderDetailsYFKActivity extends BaseActvity {
      */
     private void initView() {
         list = new ArrayList<>();
+        roomAndTable = (TextView) findViewById(R.id.roomAndTable);
         codlia = new CheckCancel_OrderListItemAdapter(this, list);
         listView.setAdapter(codlia);
         ListViewSetHightUtils.setListViewHeightBasedOnChildren(listView);
@@ -219,7 +220,7 @@ public class OrderDetailsYFKActivity extends BaseActvity {
         NetUtils.netWorkByMethodPost(mContext, tMap, IpConfig.URL_ORDER_MERGE_DETAIL, handler, 0);
     }
 
-    @OnClick({R.id.relative_back, R.id.refresh_data, R.id.exit})
+    @OnClick({R.id.relative_back, R.id.refresh_data})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.relative_back:
@@ -228,9 +229,7 @@ public class OrderDetailsYFKActivity extends BaseActvity {
             case R.id.refresh_data:
                 initGetDataOrderDetails();
                 break;
-            case R.id.exit:
-                OrderDetailsYFKActivity.this.finish();
-                break;
+
         }
     }
 }

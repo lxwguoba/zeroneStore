@@ -39,8 +39,6 @@ import com.zyao89.view.zloading.ZLoadingDialog;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -90,6 +88,7 @@ public class Login_Activity extends BaseActvity {
             switch (msg.what) {
                 case 0:
                     String loginJson = (String) msg.obj;
+                    Log.i("URL", loginJson);
                     if (loading_dailog != null) {
                         loading_dailog.dismiss();
                     }
@@ -99,6 +98,7 @@ public class Login_Activity extends BaseActvity {
                         if (status == 0) {
                             //失败
                             String errormsg = jsonObject.getString("msg");
+                            Toast.makeText(Login_Activity.this, errormsg, Toast.LENGTH_SHORT).show();
                         } else if (status == 1) {
                             JSONObject data = jsonObject.getJSONObject("data");
                             UserInfo userInfo = new UserInfo();
@@ -220,7 +220,6 @@ public class Login_Activity extends BaseActvity {
         String terminalId = (String) AppSharePreferenceMgr.get(Login_Activity.this, "terminalId", "");
         loading_dailog = LoadingUtils.getDailog(Login_Activity.this, Color.RED, "登录中...");
         loading_dailog.show();
-
         CateringIp cateringIp = ResponseUtils.getCateringIp();
         Call<ResponseBody> userInfo = cateringIp.login(user, pwd, terminalId);
         userInfo.enqueue(new Callback<ResponseBody>() {
@@ -228,10 +227,11 @@ public class Login_Activity extends BaseActvity {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     Message message = new Message();
+                    Log.i("URL", response.toString());
                     message.obj = response.body().string();
                     message.what = 0;
                     handler.sendMessage(message);
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

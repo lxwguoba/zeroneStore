@@ -9,11 +9,10 @@ import java.util.List;
  */
 
 public class PayOrderDetails implements Serializable {
-
     /**
      * status : 1
      * msg : 订单详情查询成功
-     * data : {"orderdata":{"id":12,"ordersn":"XC20180702035702_14_100012","order_price":"349233.20","remarks":"特辣","user_id":4,"nickname":"武影","status":"1","operator_id":14,"organization_id":14,"realname":"顾客手机下单","created_at":"1530518222","payment_company":null,"paytype":"-1","discount_price":"342248.54","payment_price":"342248.54","discount":"9.80"},"ordergoods":[{"goods_id":1,"title":"1","thumb":"http://develop2.01nnt.com/public/thumb.png","total":3,"price":"1.00"},{"goods_id":4,"title":"劳力士","thumb":"http://develop2.01nnt.com/public/thumb.png","total":2,"price":"156125.00"},{"goods_id":5,"title":"商品一","thumb":"http://develop2.01nnt.com/public/thumb.png","total":2,"price":"5465.00"},{"goods_id":9,"title":"纯牛奶","thumb":"http://develop2.01nnt.com/public/thumb.png","total":2,"price":"5.00"},{"goods_id":1,"title":"1","thumb":"http://develop2.01nnt.com/public/thumb.png","total":2,"price":"1.00"},{"goods_id":4,"title":"劳力士","thumb":"http://develop2.01nnt.com/public/thumb.png","total":2,"price":"156125.00"},{"goods_id":1,"title":"1","thumb":"http://develop2.01nnt.com/public/thumb.png","total":2,"price":"1.00"},{"goods_id":4,"title":"劳力士","thumb":"http://develop2.01nnt.com/public/thumb.png","total":2,"price":"156125.00"},{"goods_id":5,"title":"商品一","thumb":"http://develop2.01nnt.com/public/thumb.png","total":2,"price":"5465.00"},{"goods_id":9,"title":"纯牛奶","thumb":"http://develop2.01nnt.com/public/thumb.png","total":1,"price":"5.00"},{"goods_id":2,"title":"2","thumb":"http://develop2.01nnt.com/public/thumb.png","total":3,"price":"2.00"},{"goods_id":6,"title":"商品二","thumb":"http://develop2.01nnt.com/public/thumb.png","total":4,"price":"6500.00"},{"goods_id":3,"title":"炸酱面","thumb":"http://develop2.01nnt.com/uploads/catering/20180626020919862.jpg","total":3,"price":"10.05"},{"goods_id":3,"title":"炸酱面","thumb":"http://develop2.01nnt.com/uploads/catering/20180626020919862.jpg","total":1,"price":"10.05"}]}
+     * data : {"orderdata":{"id":4,"ordersn":"XC20180717060422_14_100002","order_price":"563668.83","remarks":null,"user_id":0,"nickname":"散客","status":"0","operator_id":14,"organization_id":14,"realname":"果粒橙1","created_at":"1531821862","payment_company":null,"paytype":null,"discount_price":"563668.83","payment_price":null,"discount":"10.00","table_name":"桌子一号","room_name":"雅座1"},"ordergoods":[{"goods_id":1,"title":"1","thumb":"http://develop2.01nnt.com/public/thumb.png","total":3,"price":"1.00"},{"goods_id":4,"title":"劳力士","thumb":"http://develop2.01nnt.com/uploads/catering/20180703034625226.jpg","total":3,"price":"187888.61"}]}
      */
 
     private String status;
@@ -44,10 +43,10 @@ public class PayOrderDetails implements Serializable {
         this.data = data;
     }
 
-    public static class DataBean implements Serializable {
+    public static class DataBean {
         /**
-         * orderdata : {"id":12,"ordersn":"XC20180702035702_14_100012","order_price":"349233.20","remarks":"特辣","user_id":4,"nickname":"武影","status":"1","operator_id":14,"organization_id":14,"realname":"顾客手机下单","created_at":"1530518222","payment_company":null,"paytype":"-1","discount_price":"342248.54","payment_price":"342248.54","discount":"9.80"}
-         * ordergoods : [{"goods_id":1,"title":"1","thumb":"http://develop2.01nnt.com/public/thumb.png","total":3,"price":"1.00"},{"goods_id":4,"title":"劳力士","thumb":"http://develop2.01nnt.com/public/thumb.png","total":2,"price":"156125.00"},{"goods_id":5,"title":"商品一","thumb":"http://develop2.01nnt.com/public/thumb.png","total":2,"price":"5465.00"},{"goods_id":9,"title":"纯牛奶","thumb":"http://develop2.01nnt.com/public/thumb.png","total":2,"price":"5.00"},{"goods_id":1,"title":"1","thumb":"http://develop2.01nnt.com/public/thumb.png","total":2,"price":"1.00"},{"goods_id":4,"title":"劳力士","thumb":"http://develop2.01nnt.com/public/thumb.png","total":2,"price":"156125.00"},{"goods_id":1,"title":"1","thumb":"http://develop2.01nnt.com/public/thumb.png","total":2,"price":"1.00"},{"goods_id":4,"title":"劳力士","thumb":"http://develop2.01nnt.com/public/thumb.png","total":2,"price":"156125.00"},{"goods_id":5,"title":"商品一","thumb":"http://develop2.01nnt.com/public/thumb.png","total":2,"price":"5465.00"},{"goods_id":9,"title":"纯牛奶","thumb":"http://develop2.01nnt.com/public/thumb.png","total":1,"price":"5.00"},{"goods_id":2,"title":"2","thumb":"http://develop2.01nnt.com/public/thumb.png","total":3,"price":"2.00"},{"goods_id":6,"title":"商品二","thumb":"http://develop2.01nnt.com/public/thumb.png","total":4,"price":"6500.00"},{"goods_id":3,"title":"炸酱面","thumb":"http://develop2.01nnt.com/uploads/catering/20180626020919862.jpg","total":3,"price":"10.05"},{"goods_id":3,"title":"炸酱面","thumb":"http://develop2.01nnt.com/uploads/catering/20180626020919862.jpg","total":1,"price":"10.05"}]
+         * orderdata : {"id":4,"ordersn":"XC20180717060422_14_100002","order_price":"563668.83","remarks":null,"user_id":0,"nickname":"散客","status":"0","operator_id":14,"organization_id":14,"realname":"果粒橙1","created_at":"1531821862","payment_company":null,"paytype":null,"discount_price":"563668.83","payment_price":null,"discount":"10.00","table_name":"桌子一号","room_name":"雅座1"}
+         * ordergoods : [{"goods_id":1,"title":"1","thumb":"http://develop2.01nnt.com/public/thumb.png","total":3,"price":"1.00"},{"goods_id":4,"title":"劳力士","thumb":"http://develop2.01nnt.com/uploads/catering/20180703034625226.jpg","total":3,"price":"187888.61"}]
          */
 
         private OrderdataBean orderdata;
@@ -69,24 +68,26 @@ public class PayOrderDetails implements Serializable {
             this.ordergoods = ordergoods;
         }
 
-        public static class OrderdataBean implements Serializable {
+        public static class OrderdataBean {
             /**
-             * id : 12
-             * ordersn : XC20180702035702_14_100012
-             * order_price : 349233.20
-             * remarks : 特辣
-             * user_id : 4
-             * nickname : 武影
-             * status : 1
+             * id : 4
+             * ordersn : XC20180717060422_14_100002
+             * order_price : 563668.83
+             * remarks : null
+             * user_id : 0
+             * nickname : 散客
+             * status : 0
              * operator_id : 14
              * organization_id : 14
-             * realname : 顾客手机下单
-             * created_at : 1530518222
+             * realname : 果粒橙1
+             * created_at : 1531821862
              * payment_company : null
-             * paytype : -1
-             * discount_price : 342248.54
-             * payment_price : 342248.54
-             * discount : 9.80
+             * paytype : null
+             * discount_price : 563668.83
+             * payment_price : null
+             * discount : 10.00
+             * table_name : 桌子一号
+             * room_name : 雅座1
              */
 
             private int id;
@@ -100,11 +101,13 @@ public class PayOrderDetails implements Serializable {
             private int organization_id;
             private String realname;
             private String created_at;
-            private Object payment_company;
+            private String payment_company;
             private String paytype;
             private String discount_price;
             private String payment_price;
             private String discount;
+            private String table_name;
+            private String room_name;
 
             public int getId() {
                 return id;
@@ -198,11 +201,11 @@ public class PayOrderDetails implements Serializable {
                 return payment_company;
             }
 
-            public void setPayment_company(Object payment_company) {
+            public void setPayment_company(String payment_company) {
                 this.payment_company = payment_company;
             }
 
-            public String getPaytype() {
+            public Object getPaytype() {
                 return paytype;
             }
 
@@ -233,9 +236,25 @@ public class PayOrderDetails implements Serializable {
             public void setDiscount(String discount) {
                 this.discount = discount;
             }
+
+            public String getTable_name() {
+                return table_name;
+            }
+
+            public void setTable_name(String table_name) {
+                this.table_name = table_name;
+            }
+
+            public String getRoom_name() {
+                return room_name;
+            }
+
+            public void setRoom_name(String room_name) {
+                this.room_name = room_name;
+            }
         }
 
-        public static class OrdergoodsBean implements Serializable {
+        public static class OrdergoodsBean {
             /**
              * goods_id : 1
              * title : 1

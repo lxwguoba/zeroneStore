@@ -295,8 +295,8 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
 
                                 String order_price = jsonObject.getJSONObject("data").getString("order_price");
 
-                                sureOrderMoney.setText("￥" + DoubleUtils.setDouble(Double.parseDouble(order_price)));
-                                subMoney.setText("￥" + DoubleUtils.setDouble(Double.parseDouble(order_price)));
+                                sureOrderMoney.setText("￥" + DoubleUtils.subMoney(order_price));
+                                subMoney.setText("￥" + DoubleUtils.subMoney(order_price));
                             }
                             setExpandListView();
                         } else if (status == 0) {
@@ -525,6 +525,7 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
             } else {
                 subMap.put("user_id", userinfovip.getUser_id());
             }
+            subMap.put("table_id", tabinfo.getId() + "");
             confirm_loading = LoadingUtils.getDailog(mContext, Color.RED, "生成收银订单中...");
             if (!MakeSure_Cashier_Order_Activity.this.isFinishing()) {
                 confirm_loading.show();
@@ -762,6 +763,7 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
             codeMap.put("organization_id", userinfo.getFansmanage_id());
             codeMap.put("store_id", userinfo.getOrganization_id());
             codeMap.put("device_num", terminalId);
+            Log.i("URL", "organization_id=" + userinfo.getFansmanage_id() + "store_id=" + userinfo.getOrganization_id() + "device_num=" + terminalId);
             get_qrcode_loading = LoadingUtils.getDailog(mContext, Color.RED, "获取签入二维中...");
             get_qrcode_loading.show();
             NetUtils.netWorkByMethodPost(mContext, codeMap, IpConfig.URL_GETCODE, handler, 3);

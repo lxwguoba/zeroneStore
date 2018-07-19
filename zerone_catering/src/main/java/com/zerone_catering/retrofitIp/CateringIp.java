@@ -28,7 +28,6 @@ public interface CateringIp {
     @FormUrlEncoded
     Call<ResponseBody> login(@Field("account") String username, @Field("password") String passwrod, @Field("terminal_num") String terminalId);
 
-
     /**
      * 获取桌子列表
      *
@@ -283,6 +282,4 @@ public interface CateringIp {
     @POST("cancel_order_merge")
     @FormUrlEncoded
     Call<ResponseBody> cancelOrderMerge(@FieldMap() Map<String, String> map);
-
-
 }

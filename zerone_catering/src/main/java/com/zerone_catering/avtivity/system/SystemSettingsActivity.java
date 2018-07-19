@@ -20,8 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.githang.statusbar.StatusBarCompat;
-import com.zerone_catering.Base64AndMD5.CreateToken;
-import com.zerone_catering.Contants.IpConfig;
 import com.zerone_catering.DB.impl.UserInfoImpl;
 import com.zerone_catering.R;
 import com.zerone_catering.avtivity.BaseSet.BaseActvity;
@@ -29,8 +27,6 @@ import com.zerone_catering.domain.SignCompleteStatus;
 import com.zerone_catering.domain.UserInfo;
 import com.zerone_catering.utils.AppSharePreferenceMgr;
 import com.zerone_catering.utils.IsIntentExite;
-import com.zerone_catering.utils.LoadingUtils;
-import com.zerone_catering.utils.NetUtils;
 import com.zerone_catering.utils.UtilsTime;
 import com.zyao89.view.zloading.ZLoadingDialog;
 
@@ -40,9 +36,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by on 2018/3/30 0030 13 54.
@@ -229,6 +222,7 @@ public class SystemSettingsActivity extends BaseActvity {
     };
     private long secondtime;
     private CheckBox system_speak;
+    private CheckBox prch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -337,79 +331,25 @@ public class SystemSettingsActivity extends BaseActvity {
             }
         });
 
+        Boolean print = (Boolean) AppSharePreferenceMgr.get(SystemSettingsActivity.this, "print", false);
+
+        prch = (CheckBox) findViewById(R.id.system_print);
+        prch.setChecked(print);
+        prch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                prch.setChecked(isChecked);
+                AppSharePreferenceMgr.put(SystemSettingsActivity.this, "print", isChecked);
+            }
+        });
+
     }
 
     /**
      * 点击checkbox的提交信息到服务器
      */
     private void checkBoxAction() {
-        system_kaidan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //默认是没有开启的
-                String timestamp = System.currentTimeMillis() + "";
-                String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
-                Map<String, String> kdMap = new HashMap<String, String>();
-                kdMap.put("account_id", userInfo.getAccount_id());
-                kdMap.put("organization_id", userInfo.getOrganization_id());
-                if (system_kaidan.isChecked()) {
-                    //开启0库存开单   值为  1
-                    kdMap.put("cfg_value", "1");
-                } else {
-                    //关闭0库存开单  值为  2
-                    kdMap.put("cfg_value", "2");
-                }
-                kdMap.put("token", token);
-                kdMap.put("timestamp", timestamp);
-                loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "修改中。。。。");
-                loading_dailog.show();
-                NetUtils.netWorkByMethodPost(mContext, kdMap, IpConfig.URL_KQLKC, handler, 0);
-            }
-        });
 
-        system_fkjkc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //默认是没有开启的
-                String timestamp = System.currentTimeMillis() + "";
-                String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
-                Map<String, String> kdMap = new HashMap<String, String>();
-                kdMap.put("account_id", userInfo.getAccount_id());
-                kdMap.put("organization_id", userInfo.getOrganization_id());
-
-                if (system_fkjkc.isChecked()) {
-                    kdMap.put("cfg_value", "1");
-                } else {
-                    kdMap.put("cfg_value", "2");
-                }
-                kdMap.put("token", token);
-                kdMap.put("timestamp", timestamp);
-                loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "修改中。。。。");
-                loading_dailog.show();
-                NetUtils.netWorkByMethodPost(mContext, kdMap, IpConfig.URL_FKJKC, handler, 2);
-            }
-        });
-        system_xdjkc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //默认是没有开启的
-                String timestamp = System.currentTimeMillis() + "";
-                String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
-                Map<String, String> kdMap = new HashMap<String, String>();
-                kdMap.put("account_id", userInfo.getAccount_id());
-                kdMap.put("organization_id", userInfo.getOrganization_id());
-                if (system_xdjkc.isChecked()) {
-                    kdMap.put("cfg_value", "2");
-                } else {
-                    kdMap.put("cfg_value", "1");
-                }
-                kdMap.put("token", token);
-                kdMap.put("timestamp", timestamp);
-                loading_dailog = LoadingUtils.getDailog(mContext, Color.RED, "修改中。。。。");
-                loading_dailog.show();
-                NetUtils.netWorkByMethodPost(mContext, kdMap, IpConfig.URL_FKJKC, handler, 3);
-            }
-        });
         system_login_rember_account.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

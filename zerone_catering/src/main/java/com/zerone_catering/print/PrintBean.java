@@ -25,8 +25,17 @@ public class PrintBean implements Serializable {
     private String discount;
     //备注
     private String remark;
+
+    private String roomAndTable;
     private List<PrintItem> list;
 
+    public String getRoomAndTable() {
+        return roomAndTable;
+    }
+
+    public void setRoomAndTable(String roomAndTable) {
+        this.roomAndTable = roomAndTable;
+    }
 
     public String getPayment_price() {
         return payment_price;

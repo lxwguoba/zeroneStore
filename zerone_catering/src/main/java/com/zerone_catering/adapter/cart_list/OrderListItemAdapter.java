@@ -73,6 +73,7 @@ public class OrderListItemAdapter extends BaseAdapter {
             holder.lookoverorder = convertView.findViewById(R.id.lookover);
             holder.discountmoney = convertView.findViewById(R.id.discountmoney);
             holder.paymoney = convertView.findViewById(R.id.paymoney);
+            holder.roomAndTable = convertView.findViewById(R.id.roomAndTable);
             convertView.setTag(holder);
         } else {
             //直接通过holder获取下面三个子控件，不必使用findviewbyid，加快了 UI 的响应速度
@@ -82,6 +83,7 @@ public class OrderListItemAdapter extends BaseAdapter {
         holder.orderTime.setText(JavaUtilsNormal.getTime(Long.parseLong(list.get(position).getCreated_at())));
         holder.orderMoney.setText(list.get(position).getOrder_price());
         holder.discountmoney.setText(list.get(position).getDiscount_price());
+        holder.roomAndTable.setText(list.get(position).getRoom_name() + "：" + list.get(position).getTable_name());
         //这个地方需要修改 根据不同的id去判断是什么订单
         //holder.orderStates.setText();
 
@@ -127,6 +129,7 @@ public class OrderListItemAdapter extends BaseAdapter {
         TextView lookoverorder;
         TextView paymoney;
         TextView discountmoney;
+        TextView roomAndTable;
 
     }
 }
