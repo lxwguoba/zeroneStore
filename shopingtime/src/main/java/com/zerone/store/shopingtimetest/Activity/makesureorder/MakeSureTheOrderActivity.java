@@ -108,6 +108,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
     private Dialog sure_submit_order_dialog;
     private ZLoadingDialog confirm_loading;
     private ZLoadingDialog get_qrcode_loading;
+    private Button confir;
 
     Handler handler = new Handler() {
         @Override
@@ -141,6 +142,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
                         e.printStackTrace();
                     } finally {
                         confirm_loading.dismiss();
+                        confir.setEnabled(true);
                     }
                     break;
 
@@ -154,7 +156,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
                     String qrcodeJson = (String) msg.obj;
                     try {
                         JSONObject jsonObject = new JSONObject(qrcodeJson);
-                        int return_code = jsonObject.getInt("return_code");
+                        int return_code = jsonObject.getInt("status");
                         if (return_code == 1) {
                             String qrUrl = jsonObject.getJSONObject("data").getString("url");
                             setSignInCustomer(qrUrl);
@@ -188,7 +190,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
                     String userinfoJson = (String) msg.obj;
                     try {
                         JSONObject userInfoJson = new JSONObject(userinfoJson);
-                        int return_code = userInfoJson.getInt("return_code");
+                        int return_code = userInfoJson.getInt("status");
                         if (return_code == 1) {
                             String id = userInfoJson.getJSONObject("data").getString("fansmanage_user_id");
                             if ("false".equals(id)) {
@@ -218,7 +220,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
                     String outSignJson = (String) msg.obj;
                     try {
                         JSONObject outJson = new JSONObject(outSignJson);
-                        int return_code = outJson.getInt("return_code");
+                        int return_code = outJson.getInt("status");
                         if (return_code == 1) {
                             userHeadImg.setVisibility(View.GONE);
                             vip_.setText("");
@@ -238,7 +240,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
                     String outSignJso = (String) msg.obj;
                     try {
                         JSONObject outJso = new JSONObject(outSignJso);
-                        int return_code = outJso.getInt("return_code");
+                        int return_code = outJso.getInt("status");
                         if (return_code == 1) {
                             Toast.makeText(MakeSureTheOrderActivity.this, "签退成功", Toast.LENGTH_SHORT).show();
                             userHeadImg.setVisibility(View.GONE);
@@ -255,6 +257,7 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
             }
         }
     };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -395,6 +398,10 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
         if (userInfo.getOrganization_id() != null) {
             subMap.put("organization_id", userInfo.getOrganization_id());
         }
+        if (userInfo.getFansmanage_id() != null) {
+            Log.i("URL", "getFansmanage_id=" + userInfo.getFansmanage_id() + "");
+            subMap.put("fansmanage_id", userInfo.getFansmanage_id());
+        }
         if (userInfo.getAccount_id() != null) {
             subMap.put("account_id", userInfo.getAccount_id());
         }
@@ -433,8 +440,8 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
         }
         if (goodsdata != null) {
             subMap.put("goodsdata", goodsdata);
+            Log.i("URL", goodsdata);
         }
-
         if (zkou != null && !"0.0".equals(zkou)) {
             subMap.put("discount", zkou);
         }
@@ -617,8 +624,8 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
     private void sure_submit_order() {
         sure_submit_order_dialog = new Dialog(this, R.style.NormalDialogStyle);
         View view = View.inflate(this, R.layout.activity_dialog_makesureorder_view, null);
-        TextView cancel = view.findViewById(R.id.ordersure_cancel);
-        TextView confirm = view.findViewById(R.id.ordersure_confirm);
+        Button cancel = view.findViewById(R.id.ordersure_cancel);
+        confir = view.findViewById(R.id.ordersure_confirm);
         sure_submit_order_dialog.setContentView(view);
         //使得点击对话框外部不消失对话框
         sure_submit_order_dialog.setCanceledOnTouchOutside(false);
@@ -629,11 +636,13 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
                 sure_submit_order_dialog.dismiss();
             }
         });
-        confirm.setOnClickListener(new View.OnClickListener() {
+        confir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //提交订单
+                confir.setEnabled(false);
                 gotoSubmit();
+
             }
         });
         sure_submit_order_dialog.show();
@@ -650,8 +659,6 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
         };
         timer.schedule(task, 0, 2000);
     }
-
-
     /**
      * 获取二维码
      *
@@ -663,8 +670,8 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
             String timestamp = System.currentTimeMillis() + "";
             String token = CreateToken.createToken(userInfo.getUuid(), timestamp, userInfo.getAccount());
             Map<String, String> codeMap = new HashMap<>();
-            codeMap.put("organization_id", userInfo.getFansnamage_id());
-            Log.i("URL", "organization_id=" + userInfo.getFansnamage_id());
+            codeMap.put("organization_id", userInfo.getFansmanage_id());
+            Log.i("URL", "organization_id=" + userInfo.getFansmanage_id());
             codeMap.put("store_id", userInfo.getOrganization_id());
             codeMap.put("device_num", terminalId);
             get_qrcode_loading = LoadingUtils.getDailog(MakeSureTheOrderActivity.this, Color.RED, "获取签入二维中...");
