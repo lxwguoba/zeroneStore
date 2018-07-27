@@ -15,7 +15,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.qzs.voiceannouncementlibrary.VoiceUtils;
 import com.google.gson.Gson;
 import com.zerone_catering.Base64AndMD5.CreateToken;
 import com.zerone_catering.Contants.IpConfig;
@@ -82,7 +81,8 @@ public class Success_Status_Activity extends BaseActvity {
                             for (int i = 0; i < Integer.parseInt(nmber); i++) {
                                 PrintPayUtils.print(userInfo.getOrganization_name(), payOrderDetails, i);
                             }
-                            VoiceUtils.with(Success_Status_Activity.this).Play(payOrderDetails.getData().getOrderdata().getPayment_price(), true);
+                            speechUtil.speakMone(payOrderDetails.getData().getOrderdata().getPayment_price());
+//                          VoiceUtils.with(Success_Status_Activity.this).Play(payOrderDetails.getData().getOrderdata().getPayment_price(), true);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -95,7 +95,6 @@ public class Success_Status_Activity extends BaseActvity {
             }
         }
     };
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

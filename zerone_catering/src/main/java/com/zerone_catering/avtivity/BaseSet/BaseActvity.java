@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 
 import com.githang.statusbar.StatusBarCompat;
+import com.zerone_catering.utils.SpeechUtil;
 
 import java.util.ArrayList;
 
@@ -20,6 +21,7 @@ import java.util.ArrayList;
  */
 
 public class BaseActvity extends AppCompatActivity {
+    public SpeechUtil speechUtil;
     private MyApplication baseApp;
     private BaseActvity oContext;
 
@@ -30,7 +32,7 @@ public class BaseActvity extends AppCompatActivity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题栏
         //去掉标题栏8be7b2
 //        StatusBarCompat.setStatusBarColor(this, Color.parseColor("#8be7b2"));
-        StatusBarCompat.setStatusBarColor(this, Color.parseColor("#fedc42"));
+        StatusBarCompat.setStatusBarColor(this, Color.parseColor("#f7f7f7"));
         if (baseApp == null) {
             // 得到Application对象
             baseApp = (MyApplication) getApplication();
@@ -41,8 +43,10 @@ public class BaseActvity extends AppCompatActivity {
         addActivity();
         //权限的设置
         initPermission();
+        speechUtil = new SpeechUtil(this);
+        //初始化
+        speechUtil.initTTs();
     }
-
     /**
      * 添加Activity方法
      */

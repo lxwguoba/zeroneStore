@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.qzs.voiceannouncementlibrary.VoiceUtils;
 import com.google.gson.Gson;
 import com.zerone_catering.Base64AndMD5.CreateToken;
 import com.zerone_catering.Contants.IpConfig;
@@ -88,7 +87,7 @@ public class ResultActivity extends BaseActvity {
                             Gson gson = new Gson();
                             PayOrderDetails payOrderDetails = gson.fromJson(orderJSOn, PayOrderDetails.class);
                             //语音播报
-                            VoiceUtils.with(ResultActivity.this).Play(payOrderDetails.getData().getOrderdata().getPayment_price(), true);
+                            speechUtil.speakMone(payOrderDetails.getData().getOrderdata().getPayment_price());
                             for (int i = 0; i < Integer.parseInt(nmber); i++) {
                                 PrintPayUtils.print(userInfo.getOrganization_name(), payOrderDetails, i);
                             }

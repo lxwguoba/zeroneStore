@@ -3,23 +3,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f3f2fc"
+    android:background="#f7f7f7"
     android:orientation="vertical"
     tools:context="com.zerone_catering.avtivity.MainActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#fedc42">
+        android:layout_height="48dp">
 
+        <ImageView
+            android:id="@+id/out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="18dp"
+            android:src="@mipmap/syste_reture" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="18dp"
+            android:layout_toRightOf="@id/out"
             android:fontFamily="SourceHanSansCN-Regular"
-            android:text="功能页面"
-            android:textColor="#1c2544"
-            android:textSize="26sp" />
+            android:text="系统功能"
+            android:textColor="#323232"
+            android:textSize="20sp" />
 
     </RelativeLayout>
 
@@ -28,128 +36,80 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/banner01" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_weight="1"
+            android:layout_marginLeft="11dp"
+            android:layout_marginRight="11dp"
+            android:layout_marginTop="30dp"
             android:orientation="horizontal">
-
             <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="2dp"
-                android:layout_weight="1"
+                android:id="@+id/btn_main_open_order"
+                android:layout_width="160dp"
+                android:layout_height="110dp"
                 android:background="@drawable/main_btn_bg">
-
-                <LinearLayout
-                    android:id="@+id/btn_main_open_order"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
                     <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:src="@mipmap/icon_open_order_bg" />
-
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="23dp"
+                        android:src="@mipmap/kaidan" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="12dp"
                         android:fontFamily="SourceHanSansCN-Regular"
                         android:text="开单"
-                        android:textColor="#1c2544"
+                        android:textColor="#323232"
                         android:textSize="20sp" />
-                </LinearLayout>
             </RelativeLayout>
 
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
             <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="2dp"
-                android:layout_weight="1"
+                android:id="@+id/btn_main_collect_money"
+                android:layout_width="160dp"
+                android:layout_height="110dp"
                 android:background="@drawable/main_btn_bg">
-
-                <LinearLayout
-                    android:id="@+id/btn_main_collect_money"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
                     <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:src="@mipmap/icon_cashier_order_bg" />
-
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="23dp"
+                        android:src="@mipmap/shouyin" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="12dp"
                         android:fontFamily="SourceHanSansCN-Regular"
                         android:text="收银"
-                        android:textColor="#1c2544"
+                        android:textColor="#323232"
                         android:textSize="20sp" />
-                </LinearLayout>
             </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_weight="1">
-
+            android:layout_marginLeft="11dp"
+            android:layout_marginRight="11dp"
+            android:layout_marginTop="16dp">
             <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="2dp"
-                android:layout_weight="1"
+                android:layout_width="160dp"
+                android:layout_height="111dp"
                 android:background="@drawable/main_btn_bg">
-
-                <LinearLayout
-                    android:id="@+id/btn_main_set_system"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:src="@mipmap/icon_system_bg" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:fontFamily="SourceHanSansCN-Regular"
-                        android:text="系统设置"
-                        android:textColor="#1c2544"
-                        android:textSize="20sp" />
-                </LinearLayout>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="2dp"
-                android:layout_weight="1"
-                android:background="@drawable/main_btn_bg">
-
                 <TextView
                     android:id="@+id/main_order_count"
                     android:layout_width="wrap_content"
@@ -163,99 +123,60 @@
                     android:textSize="16sp"
                     android:visibility="gone" />
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/btn_main_order_manage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:src="@mipmap/icon_manage_order_bg" />
-
+                    android:layout_width="160dp"
+                    android:layout_height="111dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="12dp"
                         android:fontFamily="SourceHanSansCN-Regular"
-                        android:text="订单管理"
-                        android:textColor="#1c2544"
+                        android:text="订单"
+                        android:textColor="#323232"
                         android:textSize="20sp" />
-                </LinearLayout>
-            </RelativeLayout>
-        </LinearLayout>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="23dp"
+                        android:src="@mipmap/order" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_weight="1">
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
 
             <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="2dp"
-                android:layout_weight="1"
+                android:id="@+id/btn_main_set_system"
+                android:layout_width="160dp"
+                android:layout_height="111dp"
                 android:background="@drawable/main_btn_bg">
 
-                <LinearLayout
-                    android:id="@+id/btn_main_out_app"
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="23dp"
+                    android:src="@mipmap/set_up" />
 
-                    <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:src="@mipmap/icon_system_out_bg" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:fontFamily="SourceHanSansCN-Regular"
-                        android:text="退出系统"
-                        android:textColor="#1c2544"
-                        android:textSize="20sp" />
-                </LinearLayout>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="2dp"
-                android:layout_weight="1">
-
-                <LinearLayout
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginTop="12dp"
+                    android:fontFamily="SourceHanSansCN-Regular"
+                    android:text="设置"
+                    android:textColor="#323232"
+                    android:textSize="20sp" />
 
-                    <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:textSize="22sp" />
-                </LinearLayout>
             </RelativeLayout>
         </LinearLayout>
-
-
     </LinearLayout>
 </LinearLayout>

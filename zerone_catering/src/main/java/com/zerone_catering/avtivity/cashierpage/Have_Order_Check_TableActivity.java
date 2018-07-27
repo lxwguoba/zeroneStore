@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -78,6 +79,7 @@ public class Have_Order_Check_TableActivity extends BaseActvity {
                             loading_dailog.dismiss();
                         }
                         String tablelistJson = (String) msg.obj;
+                        Log.i("URL", "tablelistJson=" + tablelistJson);
                         JSONObject jsonObject = new JSONObject(tablelistJson);
                         int status = jsonObject.getInt("status");
                         if (status == 1) {

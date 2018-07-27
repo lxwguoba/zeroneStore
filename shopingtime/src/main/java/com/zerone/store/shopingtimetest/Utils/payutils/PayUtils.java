@@ -58,4 +58,10 @@ public class PayUtils {
             Toast.makeText(context, "此机器上没有安装L3应用", Toast.LENGTH_SHORT).show();
         }
     }
+
+    public static double m() {
+        double random = Math.random();
+        Log.i("URL", "random=" + random + "");
+        return random;
+    }
 }

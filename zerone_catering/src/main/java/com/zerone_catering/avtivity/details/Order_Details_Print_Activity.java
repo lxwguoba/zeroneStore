@@ -408,7 +408,6 @@ public class Order_Details_Print_Activity extends BaseActvity {
         }
         NetUtils.netWorkByMethodPost(mContext, tMap, IpConfig.URL_PRINTER_LIST, handler, 3);
     }
-
     /**
      * 初始化view
      */
@@ -435,7 +434,6 @@ public class Order_Details_Print_Activity extends BaseActvity {
         listView.setAdapter(codlia);
         ListViewSetHightUtils.setListViewHeightBasedOnChildren(listView);
     }
-
     /**
      * 选择需要打印的打印机
      */
@@ -473,14 +471,12 @@ public class Order_Details_Print_Activity extends BaseActvity {
                 dpay.dismiss();
             }
         });
-
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //连接打印机服务器连接
                 confirm.setEnabled(false);
                 doPrint();
-
             }
         });
         dpay.show();
@@ -522,10 +518,7 @@ public class Order_Details_Print_Activity extends BaseActvity {
         } else {
             NetUtils.netWorkByMethodPost(mContext, tMap, IpConfig.URL_ORDER_PRINTER, handler, 4);
         }
-
-
     }
-
     /**
      * 自定义对话框
      */

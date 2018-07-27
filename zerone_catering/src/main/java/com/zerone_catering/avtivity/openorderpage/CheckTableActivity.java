@@ -15,12 +15,14 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.zerone_catering.Base64AndMD5.CreateToken;
 import com.zerone_catering.Contants.IpConfig;
 import com.zerone_catering.R;
 import com.zerone_catering.adapter.RecycleProductCategoryListAdapter;
 import com.zerone_catering.adapter.Recycleview_Table_Adapter;
 import com.zerone_catering.avtivity.BaseSet.BaseActvity;
+import com.zerone_catering.avtivity.loginPage.Login_Activity;
 import com.zerone_catering.domain.UserInfo;
 import com.zerone_catering.domain.colse.CloseActivity;
 import com.zerone_catering.domain.tablefinal.TableCatBeanFinal;
@@ -40,7 +42,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -80,6 +81,7 @@ public class CheckTableActivity extends BaseActvity {
                 case 0:
                     loading_dailog.dismiss();
                     String tableJson = (String) msg.obj;
+                    Log.i("URL", "tableJson=" + tableJson);
                     try {
                         JSONObject tableObject = new JSONObject(tableJson);
                         int status = tableObject.getInt("status");
@@ -118,6 +120,16 @@ public class CheckTableActivity extends BaseActvity {
                         e.printStackTrace();
                     }
                     break;
+                case 511:
+                    VolleyError error = (VolleyError) msg.obj;
+                    String message = error.getMessage();
+                    if (message == null) {
+                        Intent intent = new Intent(mContext, Login_Activity.class);
+                        startActivity(intent);
+                        Toast.makeText(mContext, "老板把你开除了你看看你是不是要去财务结账呢", Toast.LENGTH_SHORT).show();
+                        CheckTableActivity.this.removeALLActivity();
+                    }
+                    break;
             }
         }
     };
@@ -133,12 +145,11 @@ public class CheckTableActivity extends BaseActvity {
         initData();
         initView();
     }
-
     private void initData() {
         tCList = new ArrayList<>();
         tBList = new ArrayList<>();
-//        getTableData();
-        retrofit_getTable();
+        getTableData();
+//      retrofit_getTable();
     }
 
     private void initView() {
@@ -240,15 +251,21 @@ public class CheckTableActivity extends BaseActvity {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
-                    Message message = new Message();
-                    message.obj = response.body().string();
-                    message.what = 0;
-                    handler.sendMessage(message);
-                } catch (IOException e) {
+                    String string = response.body().string();
+                    JSONObject jsonObject = new JSONObject(string);
+                    int status = jsonObject.getInt("status");
+                    if (status == 3) {
+                        EventBus.getDefault().post(new CloseActivity(jsonObject.getString("msg"), 748));
+                    } else {
+                        Message message = new Message();
+                        message.obj = string;
+                        message.what = 0;
+                        handler.sendMessage(message);
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.i("URL", call.toString());

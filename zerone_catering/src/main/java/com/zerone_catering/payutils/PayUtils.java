@@ -14,8 +14,6 @@ import com.zerone_catering.utils.AppSharePreferenceMgr;
  */
 
 public class PayUtils {
-
-
     /**
      * 拉起支付页面
      *
@@ -30,7 +28,7 @@ public class PayUtils {
         intent.putExtra("transId", transId);
         intent.putExtra("transType", 0);
         AppSharePreferenceMgr.put(context, "transType", "0");
-//        用户自选 这里可以让用户选择  默认的是让用户自己选
+//      用户自选 这里可以让用户选择  默认的是让用户自己选
         intent.putExtra("paymentType", "1");
         try {
             intent.putExtra("amount", mone);

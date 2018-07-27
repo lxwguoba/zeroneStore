@@ -3,6 +3,7 @@ package com.zerone_catering.utils;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -12,6 +13,9 @@ import com.android.volley.toolbox.ClearCacheRequest;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.StringRequest;
 import com.zerone_catering.avtivity.BaseSet.MyApplication;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Map;
@@ -32,25 +36,33 @@ public class NetUtils {
      * @param responseID ���ܷ��返回码
      */
     public static void netWorkByMethodPost(final Context context, final Map<String, String> map, String url, final Handler handler, final int responseID) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                url,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Message message = new Message();
-                        message.what = responseID;
-                        message.obj = response;
-                        handler.sendMessage(message);
+                        try {
+                            Log.i("URL", "response=" + response);
+                            JSONObject jsonObject = new JSONObject(response);
+                            int status = jsonObject.getInt("status");
+//                            if (status==3){
+//                                EventBus.getDefault().post(new CloseActivity(jsonObject.getString("msg"),748));
+//                            }else {
+                            Message message = new Message();
+                            message.what = responseID;
+                            message.obj = response;
+                            handler.sendMessage(message);
+//                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse(VolleyError error) {
                 Message message = new Message();
                 message.what = 511;
                 message.obj = error;
                 handler.sendMessage(message);
-
             }
         }) {
             @Override
@@ -76,7 +88,6 @@ public class NetUtils {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
                         Message message = new Message();
                         message.what = responseID;
                         message.obj = response + "=" + goodsid;

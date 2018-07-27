@@ -6,15 +6,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.NetworkError;
@@ -34,6 +30,7 @@ import com.zerone_catering.retrofitIp.ResponseUtils;
 import com.zerone_catering.utils.AppSharePreferenceMgr;
 import com.zerone_catering.utils.IsIntentExite;
 import com.zerone_catering.utils.LoadingUtils;
+import com.zerone_catering.utils.SystemUIUtils;
 import com.zyao89.view.zloading.ZLoadingDialog;
 
 import org.json.JSONException;
@@ -53,34 +50,17 @@ import retrofit2.Response;
  */
 
 public class Login_Activity extends BaseActvity {
-    @Bind(R.id.closeactivity)
-    ImageView closeactivity;
     @Bind(R.id.username)
     EditText username;
-    @Bind(R.id.clearusername)
-    ImageView clearusername;
-    @Bind(R.id.noneinfo)
-    ImageView noneinfo;
     @Bind(R.id.password)
     EditText password;
-    @Bind(R.id.showpassword)
-    ImageView showpassword;
     @Bind(R.id.loginbtn)
     Button loginbtn;
     @Bind(R.id.login_rember_account)
     CheckBox loginRemberAccount;
-    @Bind(R.id.tongyi)
-    TextView tongyi;
-    @Bind(R.id.agreement)
-    TextView agreement;
-    @Bind(R.id.xiyi)
-    RelativeLayout xiyi;
-    @Bind(R.id.companyname)
-    TextView companyname;
     private ZLoadingDialog loading_dailog;
     private AccountInfoDao accountInfoDao;
     private boolean remberChecked = true;
-    private boolean showBoolean = false;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -97,6 +77,7 @@ public class Login_Activity extends BaseActvity {
                         int status = jsonObject.getInt("status");
                         if (status == 0) {
                             //失败
+                            SystemUIUtils.setStickFullScreen(getWindow().getDecorView());
                             String errormsg = jsonObject.getString("msg");
                             Toast.makeText(Login_Activity.this, errormsg, Toast.LENGTH_SHORT).show();
                         } else if (status == 1) {
@@ -122,13 +103,6 @@ public class Login_Activity extends BaseActvity {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                    }
-                    break;
-                case 2:
-                    if (showBoolean) {
-                        password.setInputType(InputType.TYPE_CLASS_TEXT);
-                    } else {
-                        password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
                     }
                     break;
                 case 511:
@@ -167,6 +141,7 @@ public class Login_Activity extends BaseActvity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        SystemUIUtils.setStickFullScreen(getWindow().getDecorView());
         //获取POS机的信息
         initPosInfo();
         initView();
@@ -187,27 +162,14 @@ public class Login_Activity extends BaseActvity {
         }
     }
 
-    @OnClick({R.id.closeactivity, R.id.clearusername, R.id.loginbtn, R.id.login_rember_account, R.id.xiyi, R.id.showpassword})
+    @OnClick({R.id.loginbtn, R.id.login_rember_account})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.closeactivity:
-                Login_Activity.this.finish();
-                break;
-            case R.id.clearusername:
-                break;
             case R.id.loginbtn:
                 gotoLogin();
                 break;
             case R.id.login_rember_account:
                 AppSharePreferenceMgr.put(Login_Activity.this, "remberChecked", loginRemberAccount.isChecked());
-                break;
-            case R.id.xiyi:
-                break;
-            case R.id.showpassword:
-                showBoolean = !showBoolean;
-                Message message = new Message();
-                message.what = 2;
-                handler.sendMessage(message);
                 break;
         }
     }

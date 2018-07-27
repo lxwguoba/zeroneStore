@@ -105,7 +105,7 @@ public class SearchActivity extends BaseAppActivity {
                                 shopBean.setName(jsonArray.getJSONObject(i).getString("name"));
                                 shopBean.setCategory_id(jsonArray.getJSONObject(i).getInt("category_id"));
                                 shopBean.setCategory_name(jsonArray.getJSONObject(i).getString("category_name"));
-                                shopBean.setDetails(jsonArray.getJSONObject(i).getString("details"));
+//                                shopBean.setDetails(jsonArray.getJSONObject(i).getString("details"));
                                 shopBean.setId(jsonArray.getJSONObject(i).getInt("id"));
                                 shopBean.setPrice(jsonArray.getJSONObject(i).getString("price"));
                                 shopBean.setStock(jsonArray.getJSONObject(i).getInt("stock"));

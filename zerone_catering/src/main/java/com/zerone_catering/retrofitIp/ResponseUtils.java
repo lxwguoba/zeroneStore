@@ -13,10 +13,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ResponseUtils {
     public static CateringIp getCateringIp() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Content.BASEURL)
+                .baseUrl(Content.BASEURLZS)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-
         return retrofit.create(CateringIp.class);
     }
 }

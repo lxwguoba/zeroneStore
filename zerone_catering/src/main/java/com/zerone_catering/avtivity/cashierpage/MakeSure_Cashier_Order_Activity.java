@@ -152,7 +152,6 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
                         e.printStackTrace();
                     } finally {
                         confirm_loading.dismiss();
-
                     }
                     break;
 
@@ -164,14 +163,15 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
                     break;
                 case 3:
                     String qrcodeJson = (String) msg.obj;
+                    Log.i("URL", "qrcodeJson=" + qrcodeJson);
                     try {
                         JSONObject jsonObject = new JSONObject(qrcodeJson);
-                        int return_code = jsonObject.getInt("return_code");
+                        int return_code = jsonObject.getInt("status");
                         if (return_code == 1) {
                             String qrUrl = jsonObject.getJSONObject("data").getString("url");
                             setSignInCustomer(qrUrl);
                         } else if (return_code == 0) {
-                            Toast.makeText(MakeSure_Cashier_Order_Activity.this, "获取图片二维码失败，请重新获取", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MakeSure_Cashier_Order_Activity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -200,7 +200,7 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
                     String userinfoJson = (String) msg.obj;
                     try {
                         JSONObject userInfoJson = new JSONObject(userinfoJson);
-                        int return_code = userInfoJson.getInt("return_code");
+                        int return_code = userInfoJson.getInt("status");
                         if (return_code == 1) {
                             String id = userInfoJson.getJSONObject("data").getString("fansmanage_user_id");
                             if ("false".equals(id)) {
@@ -213,7 +213,11 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
                                 userinfovip.setUser_id(userInfoJson.getJSONObject("data").getString("user_id"));
                                 userinfovip.setFansmanage_user_id(userInfoJson.getJSONObject("data").getString("fansmanage_user_id"));
                                 userHeadImg.setVisibility(View.VISIBLE);
-                                Glide.with(MakeSure_Cashier_Order_Activity.this).load(userinfovip.getHead_imgurl()).into(userHeadImg);
+                                try {
+                                    Glide.with(MakeSure_Cashier_Order_Activity.this).load(userinfovip.getHead_imgurl()).into(userHeadImg);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                                 vip_.setText(userinfovip.getNickname());
                                 btn_signin.setText("客户签退");
                                 btn_signin.setBackgroundColor(Color.parseColor("#aafe4543"));
@@ -251,7 +255,7 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
                     String outSignJso = (String) msg.obj;
                     try {
                         JSONObject outJso = new JSONObject(outSignJso);
-                        int return_code = outJso.getInt("return_code");
+                        int return_code = outJso.getInt("status ");
                         if (return_code == 1) {
                             Toast.makeText(MakeSure_Cashier_Order_Activity.this, "签退成功", Toast.LENGTH_SHORT).show();
                             userHeadImg.setVisibility(View.GONE);
@@ -292,9 +296,7 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
                                 }
                                 cdlb.setGoodsdata(zlist);
                                 mGroupList.add(cdlb);
-
                                 String order_price = jsonObject.getJSONObject("data").getString("order_price");
-
                                 sureOrderMoney.setText("￥" + DoubleUtils.subMoney(order_price));
                                 subMoney.setText("￥" + DoubleUtils.subMoney(order_price));
                             }
@@ -760,6 +762,7 @@ public class MakeSure_Cashier_Order_Activity extends BaseActvity implements Numb
             String timestamp = System.currentTimeMillis() + "";
             String token = CreateToken.createToken(userinfo.getUuid(), timestamp, userinfo.getAccount());
             Map<String, String> codeMap = new HashMap<>();
+//
             codeMap.put("organization_id", userinfo.getFansmanage_id());
             codeMap.put("store_id", userinfo.getOrganization_id());
             codeMap.put("device_num", terminalId);

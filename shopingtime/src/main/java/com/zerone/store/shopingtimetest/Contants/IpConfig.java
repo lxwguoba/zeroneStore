@@ -19,7 +19,7 @@ public class IpConfig {
     // 商品查询接口
     public static final String URL_SERACH = URL + "goodslist";
     //获取图片接口
-    public static final String URL_GETPICTURE = "http://o2o.01nnt.com/";
+    public static final String URL_GETPICTURE = "http://o2o.01nnt.com/retail/";
     public static final String URL_GOODSLIST = URL + "goodslist";
     //开启/关闭零库存开单接口
     public static final String URL_KQLKC = URL + "allow_zero_stock";

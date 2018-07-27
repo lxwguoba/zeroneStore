@@ -55,7 +55,6 @@
         <activity android:name=".avtivity.resutl.ResultActivity" />
         <activity android:name=".avtivity.details.OrderDetailsYFKActivity" />
         <activity android:name=".avtivity.details.OrderDetailsYQXActivity" />
-
         <service
             android:name="com.zerone_catering.service.PushNotificationService"
             android:enabled="true"

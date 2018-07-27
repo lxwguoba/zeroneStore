@@ -23,7 +23,7 @@ public class IpConfig {
     // 商品查询接口
     public static final String URL_SERACH = URL + "goods_list";
     //获取图片接口
-    public static final String URL_GETPICTURE = "http://o2o.01nnt.com/";
+    public static final String URL_GETPICTURE = "http://o2o.01nnt.com/catering/";
     //提交订单接口
     public static final String URL_SUBMIT = URL + "order_submit";
     //收银订单的桌子分类

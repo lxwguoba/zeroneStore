@@ -308,8 +308,8 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
             return;
         }
         for (int i = 0; i < listObj.size(); i++) {
-            listObj.get(i).getSp_price();
             dSOMoney += Double.parseDouble(listObj.get(i).getSp_price()) * Integer.parseInt(listObj.get(i).getSp_count());
+
         }
         scrollView = (ScrollView) findViewById(R.id.scrollView);
         zhekouValue = (TextView) findViewById(R.id.zhekouValue);
@@ -322,7 +322,6 @@ public class MakeSureTheOrderActivity extends BaseAppActivity implements NumberP
                 return false;
             }
         });
-
         mAdapter = new MakeOrderDetialsListItemAdapter(MakeSureTheOrderActivity.this, listObj);
         goodslist.setAdapter(mAdapter);
         subMoney = (TextView) findViewById(R.id.subMoney);

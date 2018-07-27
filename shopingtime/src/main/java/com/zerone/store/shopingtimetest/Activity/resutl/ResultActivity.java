@@ -162,7 +162,6 @@ public class ResultActivity extends BaseAppActivity {
             }
         });
     }
-
     private void initView() {
         result_tv = (TextView) findViewById(R.id.result_tv);
         result_iv = (ImageView) findViewById(R.id.result_iv);
